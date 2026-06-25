@@ -1,0 +1,123 @@
+.bca-container {
+  min-height: 100vh;
+  padding: 40px 8%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.bca-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.bca-header h1 {
+  font-size: 3rem;
+  color: var(--hero-title);
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.bca-header p {
+  font-size: 1.2rem;
+  color: var(--hero-text);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+.subject-card {
+  background-color: var(--card-bg);
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.subject-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.subject-card h2 {
+  font-size: 1.8rem;
+  color: var(--text-color);
+  margin-bottom: 25px;
+  text-transform: capitalize;
+  border-bottom: 3px solid var(--accent-color);
+  width: fit-content;
+  padding-bottom: 5px;
+}
+
+.subject-list {
+  list-style: none;
+  padding: 0;
+  flex-grow: 1;
+}
+
+.subject-list li {
+  margin-bottom: 12px;
+  position: relative;
+  padding-left: 25px;
+}
+
+.subject-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+.subject-list a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1.05rem;
+  transition: color 0.2s ease;
+  opacity: 0.9;
+}
+
+.subject-list a:hover {
+  color: var(--accent-color);
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* Mathematics specific list layout */
+.math-card .subject-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 1200px) {
+  .math-card {
+    grid-column: span 2;
+  }
+  .math-card .subject-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .bca-header h1 {
+    font-size: 2.2rem;
+  }
+  .bca-container {
+    padding: 30px 5%;
+  }
+}

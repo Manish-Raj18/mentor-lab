@@ -1,0 +1,138 @@
+/* login.css */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container1{
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--bg-color);
+    padding: 20px;
+}
+
+.form-box{
+    width: 100%;
+    max-width: 400px;
+
+    background: var(--card-bg);
+    padding: 40px;
+
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.1);
+}
+
+.form-box h2{
+    text-align: center;
+    margin-bottom: 25px;
+
+    color: var(--text-color);
+    font-size: 30px;
+}
+
+.input-group{
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 20px;
+}
+
+.input-group label{
+    margin-bottom: 8px;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    color: var(--text-color);
+    opacity: 0.9;
+}
+
+.input-group input{
+    padding: 12px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+
+    font-size: 15px;
+    outline: none;
+
+    transition: 0.3s;
+}
+
+.input-group input:focus{
+    border-color: var(--accent-color);
+    box-shadow: 0px 0px 5px var(--accent-color);
+}
+
+button{
+    width: 100%;
+
+    padding: 12px;
+
+    border: none;
+    border-radius: 6px;
+
+    background-color: var(--accent-color);
+
+    color: var(--hero-text);
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+button:hover{
+    opacity: 0.9;
+}
+.Forgot-password-box {
+    
+  text-overflow: left; 
+  margin-inline: -10px; 
+  margin-bottom: 15px; 
+}
+
+.Forgot-link {
+  color: var(--accent-color); 
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.Forgot-link:hover {
+  text-decoration: underline;
+}
+
+.link{
+    margin-top: 20px;
+
+    text-align: center;
+
+    font-size: 15px;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.link a{
+    margin-left: 5px;
+
+    color: var(--accent-color);
+
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link a:hover{
+    text-decoration: underline;
+}

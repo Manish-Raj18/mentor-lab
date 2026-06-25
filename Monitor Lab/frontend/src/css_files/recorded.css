@@ -1,0 +1,159 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.abc{
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Navbar */
+.navbar1{
+  background: var(--nav-bg);
+  color: var(--hero-text);
+  padding:18px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.navbar1 h1{
+  font-size:24px;
+}
+
+.nav-links a{
+  color: var(--hero-text);
+  opacity: 0.8;
+  text-decoration:none;
+  margin-left:20px;
+  transition:0.3s;
+}
+
+.nav-links a:hover{
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+/* Main Layout */
+.container{
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  width: 100vw;
+  gap:30px;
+  padding:20px;
+}
+
+/* Video Section */
+.video-section{
+  flex: 7;
+  background: var(--card-bg);
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  border: 1px solid var(--border-color);
+}
+
+video{
+  width:100%;
+  border-radius:12px;
+}
+
+.lecture-title{
+  margin-top:18px;
+  font-size:28px;
+  color: var(--text-color);
+}
+
+.lecture-info{
+  margin-top:10px;
+  color: var(--text-color);
+  opacity: 0.7;
+  font-size:15px;
+}
+
+.description{
+  margin-top:20px;
+  line-height:1.7;
+  color: var(--text-color);
+  opacity: 0.9;
+}
+
+/* Sidebar */
+.sidebar{
+  flex: 3;
+  background: var(--card-bg);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  height:fit-content;
+  border: 1px solid var(--border-color);
+}
+
+.sidebar h2{
+  margin-bottom:20px;
+  color: var(--text-color);
+}
+
+.playlist-item{
+  display:flex;
+  gap:12px;
+  margin-bottom:18px;
+  padding:10px;
+  border-radius:10px;
+  transition:0.3s;
+  cursor:pointer;
+}
+
+.playlist-item:hover{
+  background: var(--secondary-bg);
+}
+
+.thumbnail{
+  width:100px;
+  height:60px;
+  background: var(--secondary-bg);
+  border-radius:8px;
+  flex-shrink:0;
+}
+
+.playlist-content h4{
+  font-size:15px;
+  margin-bottom:6px;
+  color: var(--text-color);
+}
+
+.playlist-content p{
+  font-size:13px;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+/* Footer */
+footer{
+  margin-top:30px;
+  background: var(--footer-bg);
+  color: var(--hero-text);
+  text-align:center;
+  padding:18px;
+}
+
+/* Responsive */
+@media(max-width:900px){
+
+  .container{
+    flex-direction: column;
+  }
+
+  .navbar1{
+    flex-direction:column;
+    gap:10px;
+  }
+
+}

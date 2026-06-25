@@ -1,0 +1,86 @@
+/* dashboard.css */
+
+.admin-dashboard {
+  min-height: 100vh;
+  background: var(--bg-color);
+  padding: 30px;
+  color: var(--text-color);
+}
+.add-test-btn{
+  background: var(--accent-color);
+  color: var(--hero-text);
+  border:none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 16px;
+  transition: opacity 0.3s ease;
+}
+.add-test-btn:hover{
+  opacity: 0.9;
+}
+
+.admin-dashboard h1 {
+  text-align: center;
+  color: var(--text-color);
+  margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card h2 {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.stat-card p {
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--accent-color);
+  margin: 0;
+}
+
+/* Different card colors - keeping these as they are specific accents */
+.students {
+  border-top: 5px solid #3498db;
+}
+
+.courses {
+  border-top: 5px solid #2ecc71;
+}
+
+.tests {
+  border-top: 5px solid #f39c12;
+}
+
+.notes {
+  border-top: 5px solid #9b59b6;
+}
+
+.lectures {
+  border-top: 5px solid #e74c3c;
+}
