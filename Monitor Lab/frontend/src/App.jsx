@@ -10,7 +10,7 @@ import Test from "./pages/mock-test";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoadMap from "./pages/bbaroadmap";
 import Login from "./pages/login";
-import Signup from "./pages/SignUp";
+import Signup from "./pages/signUp";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddMockTest from "./pages/AddMockTest";
