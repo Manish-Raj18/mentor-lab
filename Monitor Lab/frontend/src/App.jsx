@@ -15,11 +15,11 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminRoute from "./components/AdminRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import Biotech from "./pages/biotech";
+import Chatbot from "./components/Chatbot";
 import BcaRoadmap from "./pages/roadmapbca";
 import BBA from "./pages/bba";
 import BIO from "./pages/biotechsylla";
 import RoadMap from "./pages/bbaroadmap";
-import Chatbot from "./components/Chatbot";
 
 
 

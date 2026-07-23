@@ -1,21 +1,31 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 export const chat = async (req, res) => {
-  const { message, context } = req.body;
-  
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    const prompt = `Context: ${context || "General college guidance"}. User Question: ${message}`;
-    
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+  const { message } = req.body;
 
-    res.json({ reply: text });
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "system", content: "You are a helpful college guidance assistant for Mentor Lab. Help students with BCA, BBA, and Biotech courses, exams, and career advice." },
+          { role: "user", content: message },
+        ],
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.choices && data.choices.length > 0) {
+      res.json({ reply: data.choices[0].message.content });
+    } else {
+      res.status(500).json({ error: "No response from AI" });
+    }
   } catch (error) {
-    console.error("Error communicating with Gemini API:", error);
+    console.error("Error communicating with Groq API:", error);
     res.status(500).json({ error: "Failed to get AI response", details: error.message });
   }
 };
