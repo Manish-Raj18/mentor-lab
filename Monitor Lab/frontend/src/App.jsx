@@ -19,6 +19,7 @@ import BcaRoadmap from "./pages/roadmapbca";
 import BBA from "./pages/bba";
 import BIO from "./pages/biotechsylla";
 import RoadMap from "./pages/bbaroadmap";
+import Chatbot from "./components/Chatbot";
 
 
 
@@ -51,6 +52,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/biotech" element={<Biotech />} />  
         </Routes>
+        <Chatbot />
       </Router>
     </div>
   );
