@@ -42,9 +42,9 @@ function Home() {
 
       <div className="card">
         <h3>
-            <Link to="/study-notes" className="card-link">Study Notes</Link>
+            <Link to="/contact-us" className="card-link">Contact Us</Link>
         </h3>
-        <p>Get detailed notes and PDFs for all subjects.</p>
+        <p>Have questions? Get in touch with our team.</p>
       </div>
 
       <div className="card">

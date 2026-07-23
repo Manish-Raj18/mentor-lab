@@ -4,7 +4,7 @@ import { ThemeContext } from "./context/ThemeContext";
 import Navbar from "./pages/NavBar";
 import Home from "./pages/home";
 import BCA from "./pages/bca";
-import StudyNotes from "./pages/StudyNotes";
+import ContactUs from "./pages/ContactUs";
 import RecordedLectures from "./pages/RecordedLectures";
 import AboutUs from "./pages/AboutUs";
 import Login from "./pages/login";
@@ -34,7 +34,7 @@ function App() {
           <Route path="/bca" element={<BCA />} />
           <Route path="/bba" element={<BBA />} />
           <Route path="/biotechsylla" element={<BIO />} />
-          <Route path="/study-notes" element={<StudyNotes />} />
+          <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/recorded-lectures" element={<RecordedLectures />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/bbaroadmap" element={<RoadMap />} />
