@@ -190,6 +190,31 @@ body, .home, .light-theme, .dark-theme {
   line-height: 1.5;
 }
 
+.hero-courses {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 40px 0 0;
+}
+
+.hero-courses h2 {
+  color: #ffffff;
+  font-size: 34px;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.hero-courses .course-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-courses .course-card h3,
+.hero-courses .course-card p {
+  color: #ffffff;
+}
+
 /* Features */
 .features {
   padding: 70px 8%;
@@ -242,7 +267,7 @@ body, .home, .light-theme, .dark-theme {
 }
 
 .courses1 h2 {
-  color: var(--text-color);
+  color: white;
   text-align: center;
   font-size: 38px;
   margin-bottom: 50px;
