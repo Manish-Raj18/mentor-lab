@@ -4,7 +4,7 @@ import { ThemeContext } from "./context/ThemeContext";
 import Navbar from "./pages/NavBar";
 import Home from "./pages/home";
 import BCA from "./pages/bca";
-import StudyNotes from "./pages/StudyNotes";
+import ContactUs from "./pages/ContactUs";
 import RecordedLectures from "./pages/RecordedLectures";
 import Test from "./pages/mock-test";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -21,7 +21,7 @@ import Biotech from "./pages/biotech";
 import BcaRoadmap from "./pages/roadmapbca";
 import BBA from "./pages/bba";
 import BIO from "./pages/biotechsylla";
-import Chatbot from "./components/Chatbot";
+
 
 
 function App() {
@@ -31,13 +31,12 @@ function App() {
     <div className={darkMode ? "dark-theme" : "light-theme"}>
       <Router>
         <Navbar/>
-        <Chatbot />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/bca" element={<BCA />} />
           <Route path="/bba" element={<BBA />} />
           <Route path="/biotechsylla" element={<BIO />} />
-          <Route path="/study-notes" element={<StudyNotes />} />
+          <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/recorded-lectures" element={<RecordedLectures />} />
           <Route path="/mock-test" element={
             <ProtectedRoute>
