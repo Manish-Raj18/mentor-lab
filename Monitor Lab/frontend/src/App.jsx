@@ -6,14 +6,11 @@ import Home from "./pages/home";
 import BCA from "./pages/bca";
 import StudyNotes from "./pages/StudyNotes";
 import RecordedLectures from "./pages/RecordedLectures";
-import Test from "./pages/mock-test";
-import ProtectedRoute from "./components/ProtectedRoute";
-import RoadMap from "./pages/bbaroadmap";
+import AboutUs from "./pages/AboutUs";
 import Login from "./pages/login";
 import Signup from "./pages/signUp";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
-import AddMockTest from "./pages/AddMockTest";
 import AdminLogin from "./pages/AdminLogin";
 import AdminRoute from "./components/AdminRoute";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -21,7 +18,8 @@ import Biotech from "./pages/biotech";
 import BcaRoadmap from "./pages/roadmapbca";
 import BBA from "./pages/bba";
 import BIO from "./pages/biotechsylla";
-import Chatbot from "./components/Chatbot";
+import RoadMap from "./pages/bbaroadmap";
+
 
 
 function App() {
@@ -31,7 +29,6 @@ function App() {
     <div className={darkMode ? "dark-theme" : "light-theme"}>
       <Router>
         <Navbar/>
-        <Chatbot />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/bca" element={<BCA />} />
@@ -39,11 +36,7 @@ function App() {
           <Route path="/biotechsylla" element={<BIO />} />
           <Route path="/study-notes" element={<StudyNotes />} />
           <Route path="/recorded-lectures" element={<RecordedLectures />} />
-          <Route path="/mock-test" element={
-            <ProtectedRoute>
-              <Test />
-            </ProtectedRoute>
-          } />
+          <Route path="/about" element={<AboutUs />} />
           <Route path="/bbaroadmap" element={<RoadMap />} />
           <Route path="/roadmapbca" element={<BcaRoadmap />} />
           <Route path="/login" element={<Login />} />
@@ -52,11 +45,6 @@ function App() {
           <Route path="/admin" element={
             <AdminRoute>
               <AdminDashboard />
-            </AdminRoute>
-          } />
-          <Route path="/admin/add-mock-test" element={
-            <AdminRoute>
-              <AddMockTest />
             </AdminRoute>
           } />
           <Route path="/admin-login" element={<AdminLogin />} />

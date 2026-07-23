@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom"
 import "../css_files/dashboard.css";
 function AdminDashboard() {
   const [stats, setStats] = useState({});
-  const navigate = useNavigate();
 
   useEffect(() => {
     getStats();
@@ -25,10 +23,6 @@ function AdminDashboard() {
  return (
   <div className="admin-dashboard">
     <h1>Admin Dashboard</h1>
-      <button className="add-test-btn" onClick={() => navigate("/admin/add-mock-test")}
-      >
-        Add Mock Test
-      </button>
     <div className="stats-container">
       <div className="stat-card students">
         <h2>Total Students</h2>

@@ -28,9 +28,9 @@ function Home() {
 
       <div className="card">
         <h3>
-         <Link to="/mock-test" className="card-link">100+ Mock Test</Link> 
+         <Link to="/about" className="card-link">About Us</Link> 
         </h3>
-        <p>Practice with high-quality exam-level questions.</p>
+        <p>Learn more about our mission and what we offer.</p>
       </div>
 
       <div className="card">

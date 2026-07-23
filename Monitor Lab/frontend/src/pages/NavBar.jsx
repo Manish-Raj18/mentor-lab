@@ -81,8 +81,8 @@ const Navbar = () => {
             </ul>
           </li>
           <li>
-            <NavLink to="/mock-test" onClick={closeMenu} className={({ isActive }) => isActive ? "active-link" : ""}>
-              MOCK TEST
+            <NavLink to="/about" onClick={closeMenu} className={({ isActive }) => isActive ? "active-link" : ""}>
+              ABOUT US
             </NavLink>
           </li>
           <li>
