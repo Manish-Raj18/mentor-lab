@@ -5,6 +5,7 @@ import multer from "multer";
 import { createRequire } from "module";
 import fs from "fs";
 import MockTest from "../model/mocktest.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const require = createRequire(import.meta.url);
 const pdf = require("pdf-parse");
@@ -25,14 +26,11 @@ const upload = multer({ storage });
 // Helper function to parse questions from text
 const parseQuestions = (text) => {
   const questions = [];
-  // Basic regex to find questions starting with a number like "1. Question text"
-  // and options like "A) Option A" or "(a) Option a"
   const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
   
   let currentQuestion = null;
 
   lines.forEach(line => {
-    // Check if line starts with a number followed by . or ) (e.g., "1.", "1)")
     const qMatch = line.match(/^(\d+)[\.\)]\s+(.*)/);
     if (qMatch) {
       if (currentQuestion) questions.push(currentQuestion);
@@ -44,24 +42,21 @@ const parseQuestions = (text) => {
       return;
     }
 
-    // Check for options (A, B, C, D or a, b, c, d followed by . or ))
     const oMatch = line.match(/^[A-Da-d][\.\)]\s+(.*)/);
     if (oMatch && currentQuestion) {
       currentQuestion.options.push(oMatch[1]);
       return;
     }
 
-    // Check for Answer key (e.g., "Ans: A" or "Correct: Option")
     const aMatch = line.match(/^(Ans|Answer|Correct)[:\s]+([A-Da-d]|\w+)/i);
     if (aMatch && currentQuestion) {
       const ansVal = aMatch[2].toUpperCase();
-      // If it's a single letter A-D, map it to the option index
       if (ansVal.length === 1 && "ABCD".includes(ansVal)) {
         const idx = "ABCD".indexOf(ansVal);
         if (currentQuestion.options[idx]) {
           currentQuestion.correctAnswer = currentQuestion.options[idx];
         } else {
-          currentQuestion.correctAnswer = ansVal; // fallback
+          currentQuestion.correctAnswer = ansVal;
         }
       } else {
         currentQuestion.correctAnswer = aMatch[2];
@@ -69,7 +64,6 @@ const parseQuestions = (text) => {
       return;
     }
 
-    // If no match but we have a current question, it might be a multi-line question or option
     if (currentQuestion) {
       if (currentQuestion.options.length === 0) {
         currentQuestion.question += " " + line;
@@ -84,9 +78,12 @@ const parseQuestions = (text) => {
   return questions;
 };
 
-// Add Mock Test via PDF Upload
-router.post("/upload-pdf", upload.single("pdf"), async (req, res) => {
+// Add Mock Test via PDF Upload (Admin only)
+router.post("/upload-pdf", protect, upload.single("pdf"), async (req, res) => {
   try {
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: "Only admins can upload mock tests" });
+    }
     const dataBuffer = fs.readFileSync(req.file.path);
     const data = await pdf(dataBuffer);
     
@@ -105,10 +102,6 @@ router.post("/upload-pdf", upload.single("pdf"), async (req, res) => {
     });
 
     await newTest.save();
-    
-    // Optionally remove file after processing
-    // fs.unlinkSync(req.file.path);
-
     res.status(201).json(newTest);
   } catch (err) {
     console.error(err);
@@ -116,9 +109,12 @@ router.post("/upload-pdf", upload.single("pdf"), async (req, res) => {
   }
 });
 
-// Add Mock Test Manually (Existing)
-router.post("/add", async (req, res) => {
+// Add Mock Test Manually (Admin only)
+router.post("/add", protect, async (req, res) => {
   try {
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: "Only admins can add mock tests" });
+    }
     const test = await MockTest.create(req.body);
     res.status(201).json(test);
   } catch (err) {
@@ -126,10 +122,65 @@ router.post("/add", async (req, res) => {
   }
 });
 
-// Get All Mock Tests
-router.get("/", async (req, res) => {
-  const tests = await MockTest.find();
-  res.json(tests);
+// Get All Mock Tests (Authenticated users)
+router.get("/", protect, async (req, res) => {
+  try {
+    const tests = await MockTest.find().select("-questions.correctAnswer");
+    res.json(tests);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get Single Mock Test by ID (Authenticated users, correctAnswer hidden)
+router.get("/:id", protect, async (req, res) => {
+  try {
+    const test = await MockTest.findById(req.params.id).select("-questions.correctAnswer");
+    if (!test) {
+      return res.status(404).json({ message: "Mock test not found" });
+    }
+    res.json(test);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Submit Test Result (Authenticated users)
+router.post("/:id/submit", protect, async (req, res) => {
+  try {
+    const { answers, score, attempted, correct, wrong } = req.body;
+    const test = await MockTest.findById(req.params.id);
+    if (!test) {
+      return res.status(404).json({ message: "Mock test not found" });
+    }
+
+    let computedCorrect = 0;
+    let computedWrong = 0;
+    test.questions.forEach((q, idx) => {
+      if (answers[idx] !== undefined) {
+        if (q.options[answers[idx]] === q.correctAnswer) {
+          computedCorrect++;
+        } else {
+          computedWrong++;
+        }
+      }
+    });
+
+    const computedScore = (computedCorrect * 4) - (computedWrong * 1);
+
+    res.json({
+      testId: test._id,
+      title: test.title,
+      attempted,
+      correct: computedCorrect,
+      wrong: computedWrong,
+      score: computedScore,
+      totalQuestions: test.questions.length,
+      maxScore: test.questions.length * 4
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 export default router;

@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminRoute from "./components/AdminRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import Biotech from "./pages/biotech";
 import Chatbot from "./components/Chatbot";
@@ -21,6 +22,7 @@ import BcaRoadmap from "./pages/roadmapbca";
 import BBA from "./pages/bba";
 import BIO from "./pages/biotechsylla";
 import RoadMap from "./pages/bbaroadmap";
+import MockTest from "./pages/MockTest";
 
 
 
@@ -53,6 +55,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/biotech" element={<Biotech />} />
           <Route path="/chatbot" element={<ChatbotPage />} />
+          <Route path="/mock-test" element={<ProtectedRoute><MockTest /></ProtectedRoute>} />
         </Routes>
         <Chatbot />
       </Router>
