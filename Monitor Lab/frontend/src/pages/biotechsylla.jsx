@@ -51,10 +51,10 @@ function BIO() {
             <li className="syllabus-item"><a href={getPdfLink("Cell Biology")} target="_blank">Cell Biology</a></li>
             <li className="syllabus-item"><a href={getPdfLink("Genetics")} target="_blank">Genetics</a></li>
             <li className="syllabus-item"><a href={getPdfLink("Molecular Biology")} target="_blank" rel="noreferrer">Molecular Biology</a></li>
-            <li className="syllabus-item"><a href={getPdfLink("Biochemistry")} target="_blank">Biochemistry</a></li>
+            <li className="syllabus-item"><a href={getPdfLink("Biochemistry")} target="_blank" rel="noreferrer">Biochemistry</a></li>
             <li className="syllabus-item"><a href={getPdfLink("Microbiology")} target="_blank">Microbiology</a></li>
             <li className="syllabus-item"><a href={getPdfLink("Physiology")} target="_blank">Physiology</a></li>
-            <li className="syllabus-item"><a href={getPdfLink("Developmental Biology")} target="_blank">Developmental Biology</a></li>
+            <li className="syllabus-item"><a href={getPdfLink("Developmental Biology")} target="_blank" rel="noreferrer">Developmental Biology</a></li>
             <li className="syllabus-item"><a href={getPdfLink("Biomolecules")} target="_blank">Biomolecules</a></li>
             <li className="syllabus-item"><a href={getPdfLink("Biostatistics")} target="_blank">Biostatistics</a></li>
           </ul>

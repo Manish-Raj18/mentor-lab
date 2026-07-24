@@ -1,158 +1,200 @@
-/* Base styles and resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
 body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
+    background-color: #f8fafc;
+    color: #1e293b;
+    line-height: 1.7;
+    padding: 40px 20px;
 }
 
-.syllabus-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
+header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 60px auto;
+    padding: 30px 20px;
 }
 
-/* Header styling */
-.syllabus-header {
-  text-align: center;
-  margin-bottom: 60px;
+.header-badge {
+    display: inline-block;
+    background-color: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
 }
 
-.syllabus-header h1 {
-  font-size: 2.5rem;
-  color: var(--text-color);
-  margin-bottom: 5px;
-  font-weight: 700;
+header h1 {
+    font-size: 2.8rem;
+    color: #0f172a;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
 }
 
-.syllabus-header .subtitle {
-  font-size: 1.1rem;
-  color: var(--accent-color);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 0;
+header p {
+    font-size: 1.1rem;
+    color: #64748b;
 }
 
-/* Timeline Layout */
-.timeline-wrapper {
-  position: relative;
-  width: 100%;
+.roadmap-container {
+    position: relative;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 20px 0;
 }
 
-/* The horizontal bar spanning across the stages */
-.timeline-bar {
-  position: absolute;
-  top: 62px; /* Positions perfectly behind the circle nodes */
-  left: 0;
-  right: 0;
-  height: 16px;
-  background-color: var(--accent-color);
-  z-index: 1;
-  border-radius: 4px;
-  opacity: 0.7;
+/* Central Timeline Line */
+.roadmap-container::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background: linear-gradient(to bottom, #0ea5e9, #2563eb);
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -2px;
+    border-radius: 4px;
 }
 
-.stages-grid {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+.milestone {
+    padding: 15px 50px;
+    position: relative;
+    background-color: inherit;
+    width: 50%;
 }
 
-.stage-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Decorative timeline dots */
+.milestone::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    right: -8px;
+    background-color: #fff;
+    border: 4px solid #0ea5e9;
+    top: 28px;
+    border-radius: 50%;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
 }
 
-/* Stage Text Labels */
-.stage-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-color);
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
+.left {
+    left: 0;
 }
 
-/* Rounded Icon Node */
-.icon-node {
-  width: 50px;
-  height: 50px;
-  background-color: var(--card-bg);
-  border: 2px solid var(--accent-color);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-color);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+.right {
+    left: 50%;
 }
 
-/* Syllabus Content Cards */
-.syllabus-card {
-  background-color: var(--card-bg);
-  border-radius: 12px;
-  padding: 24px;
-  width: 100%;
-  box-sizing: border-box;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 
-              0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--border-color);
-  min-height: 320px; /* Aligns card structures nicely */
+.right::after {
+    left: -8px;
 }
 
-.card-main-title {
-  font-size: 1.25rem;
-  color: var(--text-color);
-  margin-top: 0;
-  margin-bottom: 24px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 12px;
+/* Main Box Design */
+.content {
+    padding: 24px;
+    background-color: #ffffff;
+    position: relative;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Topic blocks within cards */
-.topic-block {
-  margin-bottom: 20px;
+/* Phase Number Badge */
+.phase-number {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #f1f5f9;
+    line-height: 1;
+    transition: color 0.3s ease;
 }
 
-.topic-block:last-child {
-  margin-bottom: 0;
+.content h3 {
+    color: #0f172a;
+    margin-bottom: 16px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    position: relative;
+    padding-right: 40px;
 }
 
-.topic-title {
-  font-size: 1rem;
-  color: var(--accent-color);
-  margin: 0 0 6px 0;
-  font-weight: 600;
+.content ul {
+    list-style-type: none;
 }
 
-.topic-description {
-  font-size: 0.9rem;
-  color: var(--text-color);
-  opacity: 0.8;
-  line-height: 1.5;
-  margin: 0;
+.content li {
+    margin-bottom: 12px;
+    position: relative;
+    padding-left: 24px;
+    font-size: 0.95rem;
+    color: #475569;
 }
 
-/* Responsive adjustments for Tablets/Mobile screens */
-@media (max-width: 900px) {
-  .stages-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
+.content li:last-child {
+    margin-bottom: 0;
+}
 
-  .timeline-bar {
-    display: none; /* Hide horizontal bar on stacked layout */
-  }
+/* Custom Bullet Point (DNA Emoji / Icon placeholder) */
+.content li::before {
+    content: "🧬";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 0.9rem;
+}
 
-  .icon-node {
-    margin-bottom: 15px;
-  }
-  
-  .syllabus-card {
-    min-height: auto;
-  }
+/* Hover Effects */
+.milestone:hover .content {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: #cbd5e1;
+}
+
+.milestone:hover::after {
+    background-color: #0ea5e9;
+    scale: 1.2;
+}
+
+.milestone:hover .phase-number {
+    color: #e2e8f0;
+}
+
+/* Responsive Design for Tablets and Mobiles */
+@media screen and (max-width: 768px) {
+    .roadmap-container::after {
+        left: 20px;
+    }
+
+    .milestone {
+        width: 100%;
+        padding-left: 45px;
+        padding-right: 10px;
+    }
+
+    .milestone::after {
+        left: 12px;
+    }
+
+    .right {
+        left: 0%;
+    }
+    
+    .phase-number {
+        top: 20px;
+        right: 20px;
+    }
 }

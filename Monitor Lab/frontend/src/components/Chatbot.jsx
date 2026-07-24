@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css_files/chatbot.css';
 
 const Chatbot = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     { role: 'bot', content: 'Hi! How can I help you today?' }
@@ -32,12 +34,17 @@ const Chatbot = () => {
     }
   };
 
+  const openFullscreen = () => {
+    navigate('/chatbot');
+  };
+
   return (
     <div className={`chatbot ${isOpen ? 'open' : ''}`}>
       {isOpen && (
         <div className="chat-window">
           <div className="chat-header">
             <span>Mentor Lab Assistant</span>
+            <button className="chat-expand" onClick={openFullscreen} title="Open full screen">⛶</button>
             <button className="chat-close" onClick={() => setIsOpen(false)}>&times;</button>
           </div>
           <div className="messages">
@@ -63,8 +70,8 @@ const Chatbot = () => {
         </div>
       )}
 
-      <button className="chat-fab" onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? '✕' : '💬'}
+      <button className="chat-fab" onClick={openFullscreen} title="Open Mentor Lab Assistant">
+        💬
       </button>
     </div>
   );
