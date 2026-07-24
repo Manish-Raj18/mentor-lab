@@ -30,4 +30,13 @@ router.get("/stats", async (req, res) => {
   }
 });
 
+router.get("/students", async (req, res) => {
+  try {
+    const students = await User.find({ isAdmin: false }).select("name email studentId createdAt");
+    res.json(students);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;

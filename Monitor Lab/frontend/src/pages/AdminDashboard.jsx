@@ -7,6 +7,7 @@ const API_BASE = "http://localhost:5000/api";
 function AdminDashboard() {
   const [stats, setStats] = useState({});
   const [tests, setTests] = useState([]);
+  const [students, setStudents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [uploadMode, setUploadMode] = useState("pdf");
   const [formData, setFormData] = useState({ title: "", subject: "", topic: "", duration: 60 });
@@ -17,6 +18,7 @@ function AdminDashboard() {
   useEffect(() => {
     getStats();
     fetchTests();
+    fetchStudents();
   }, []);
 
   const getStats = async () => {
@@ -35,6 +37,15 @@ function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTests(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchStudents = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/admin/students`);
+      setStudents(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -140,16 +151,12 @@ function AdminDashboard() {
 
       <div className="stats-container">
         <div className="stat-card students">
-          <h2>Total Students</h2>
+          <h2>Student Logins</h2>
           <p>{stats.totalStudents || 0}</p>
         </div>
         <div className="stat-card courses">
           <h2>Total Courses</h2>
           <p>{stats.totalCourses || 0}</p>
-        </div>
-        <div className="stat-card tests">
-          <h2>Total Mock Tests</h2>
-          <p>{stats.totalTests || 0}</p>
         </div>
         <div className="stat-card notes">
           <h2>Total Notes</h2>
@@ -158,6 +165,10 @@ function AdminDashboard() {
         <div className="stat-card lectures">
           <h2>Total Lectures</h2>
           <p>{stats.totalLectures || 0}</p>
+        </div>
+        <div className="stat-card tests">
+          <h2>Total Mock Tests</h2>
+          <p>{stats.totalTests || 0}</p>
         </div>
       </div>
 
@@ -309,6 +320,42 @@ function AdminDashboard() {
                     <td style={{ padding: "0.8rem 1rem", textAlign: "center", color: "var(--text-color)" }}>{test.duration || 60} min</td>
                     <td style={{ padding: "0.8rem 1rem", textAlign: "center", color: "var(--text-color)", fontSize: "0.8rem" }}>
                       {new Date(test.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style={{ marginTop: "40px" }}>
+        <h2 style={{ color: "var(--text-color)", marginBottom: "20px" }}>Student Details</h2>
+        <div style={{ background: "var(--card-bg)", border: "1px solid var(--border-color)", borderRadius: "12px", overflow: "hidden" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: "var(--secondary-bg)", borderBottom: "1px solid var(--border-color)" }}>
+                <th style={{ padding: "0.8rem 1rem", textAlign: "left", color: "var(--text-color)", fontSize: "0.8rem", textTransform: "uppercase" }}>Full Name</th>
+                <th style={{ padding: "0.8rem 1rem", textAlign: "left", color: "var(--text-color)", fontSize: "0.8rem", textTransform: "uppercase" }}>Email</th>
+                <th style={{ padding: "0.8rem 1rem", textAlign: "left", color: "var(--text-color)", fontSize: "0.8rem", textTransform: "uppercase" }}>Student ID</th>
+                <th style={{ padding: "0.8rem 1rem", textAlign: "center", color: "var(--text-color)", fontSize: "0.8rem", textTransform: "uppercase" }}>Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.length === 0 ? (
+                <tr>
+                  <td colSpan="4" style={{ padding: "2rem", textAlign: "center", color: "var(--text-color)", opacity: 0.5 }}>
+                    No students registered yet.
+                  </td>
+                </tr>
+              ) : (
+                students.map((student) => (
+                  <tr key={student._id} style={{ borderBottom: "1px solid var(--border-color)" }}>
+                    <td style={{ padding: "0.8rem 1rem", color: "var(--text-color)", fontWeight: "bold" }}>{student.name}</td>
+                    <td style={{ padding: "0.8rem 1rem", color: "var(--text-color)" }}>{student.email}</td>
+                    <td style={{ padding: "0.8rem 1rem", color: "var(--text-color)" }}>{student.studentId || "-"}</td>
+                    <td style={{ padding: "0.8rem 1rem", textAlign: "center", color: "var(--text-color)", fontSize: "0.8rem" }}>
+                      {new Date(student.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
                 ))
