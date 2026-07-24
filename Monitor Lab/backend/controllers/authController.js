@@ -5,30 +5,36 @@ import generateToken from "../utils/generateToken.js";
 // 1. REGISTER NEW USER
 export const register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { firstName, middleName, lastName, email, password, phone } = req.body;
 
-        // Check if user already exists
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        // Hash the password safely
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create and save the new user using the hashed password
+        const fullName = [firstName, middleName, lastName].filter(Boolean).join(" ");
+
         const newUser = await User.create({
-            name,
+            firstName,
+            middleName: middleName || "",
+            lastName,
+            name: fullName,
             email,
-            password: hashedPassword, // 👈 Ensures the password saves securely
+            phone: phone || "",
+            password: hashedPassword,
         });
 
         if (newUser) {
             res.status(201).json({
                 _id: newUser._id,
                 name: newUser.name,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
                 email: newUser.email,
+                phone: newUser.phone,
                 token: generateToken(newUser._id),
             });
         } else {

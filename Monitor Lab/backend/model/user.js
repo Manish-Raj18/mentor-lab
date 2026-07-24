@@ -1,6 +1,21 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  firstName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  middleName: {
+    type: String,
+    default: "",
+    trim: true
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true
+  },
   name: {
     type: String,
     required: true
@@ -9,6 +24,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true
+  },
+  phone: {
+    type: String,
+    default: ""
   },
   password: {
     type: String,
@@ -19,7 +38,6 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  // New fields for dynamic profile
   studentId: {
     type: String,
     default: ""
