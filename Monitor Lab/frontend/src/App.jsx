@@ -25,6 +25,7 @@ import RoadMap from "./pages/bbaroadmap";
 import MockTest from "./pages/MockTest";
 import StudyNotes from "./pages/StudyNotes";
 import PerformanceAnalytics from "./pages/PerformanceAnalytics";
+import PYQ from "./pages/PYQ";
 
 
 
@@ -60,6 +61,7 @@ function App() {
           <Route path="/chatbot" element={<ChatbotPage />} />
           <Route path="/mock-test" element={<ProtectedRoute><MockTest /></ProtectedRoute>} />
           <Route path="/analytics" element={<ProtectedRoute><PerformanceAnalytics /></ProtectedRoute>} />
+          <Route path="/pyq" element={<PYQ />} />
         </Routes>
         <Chatbot />
       </Router>

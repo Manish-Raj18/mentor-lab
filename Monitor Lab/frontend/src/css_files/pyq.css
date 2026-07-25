@@ -1,0 +1,206 @@
+.pyq-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f0f2f5;
+}
+
+/* ===== Header ===== */
+.pyq-page .pyq-header {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: #fff;
+  text-align: center;
+  padding: 40px 20px 30px;
+}
+
+.pyq-page .pyq-header h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.pyq-page .pyq-header p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.pyq-page .back-btn {
+  display: inline-block;
+  color: #90caf9;
+  text-decoration: none;
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.pyq-page .back-btn:hover {
+  color: #fff;
+}
+
+/* ===== University Grid ===== */
+.pyq-page .university-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+}
+
+.pyq-page .uni-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px 25px;
+  text-decoration: none;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+  border-left: 5px solid #1a1a2e;
+  cursor: pointer;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  font-family: inherit;
+}
+
+.pyq-page .uni-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.pyq-page .uni-card h2 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.pyq-page .uni-card p {
+  color: #1a1a2e;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ===== Courses Page ===== */
+.pyq-page .courses-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+}
+
+.pyq-page .course-column {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.pyq-page .course-header {
+  padding: 18px 20px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.pyq-page .course-header.bba {
+  background: linear-gradient(135deg, #0d47a1, #1565c0);
+}
+
+.pyq-page .course-header.bca {
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+}
+
+.pyq-page .course-header.biotech {
+  background: linear-gradient(135deg, #bf360c, #e65100);
+}
+
+.pyq-page .subject-list {
+  list-style: none;
+  padding: 10px 0;
+}
+
+.pyq-page .subject-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.15s;
+}
+
+.pyq-page .subject-list li:last-child {
+  border-bottom: none;
+}
+
+.pyq-page .subject-list li:hover {
+  background: #f9f9f9;
+}
+
+.pyq-page .subject-name {
+  font-size: 0.95rem;
+  flex: 1;
+  padding-right: 10px;
+}
+
+.pyq-page .download-btn {
+  display: inline-block;
+  background: #1a1a2e;
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.pyq-page .download-btn:hover {
+  background: #2d2d52;
+}
+
+/* ===== Footer ===== */
+.pyq-page .pyq-footer {
+  background: #1a1a2e;
+  color: #aaa;
+  text-align: center;
+  padding: 18px;
+  font-size: 0.85rem;
+  margin-top: auto;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .pyq-page .courses-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .pyq-page .university-grid {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .pyq-page .courses-container {
+    padding: 20px;
+  }
+
+  .pyq-page .pyq-header h1 {
+    font-size: 1.4rem;
+  }
+}

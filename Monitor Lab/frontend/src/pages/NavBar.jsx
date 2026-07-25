@@ -91,8 +91,8 @@ const Navbar = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/recorded-lectures" onClick={closeMenu} className={({ isActive }) => isActive ? "active-link" : ""}>
-              LECTURES
+            <NavLink to="/pyq" onClick={closeMenu} className={({ isActive }) => isActive ? "active-link" : ""}>
+              PYQ
             </NavLink>
           </li>
         </ul>
