@@ -1,0 +1,41 @@
+@import "./roadmapbb.css";
+
+.main {
+    --accent-color: #1a2a6c;
+    --card-bg: #ffffff;
+    --bg-color: #f0f4f8;
+    --text-color: #1a2a6c;
+    --secondary-bg: #e8eef5;
+    --hero-text: #ffffff;
+    --border-color: #c5d0e6;
+}
+
+.header h1 {
+    color: #1a2a6c;
+}
+
+.header p {
+    color: #2c3e7a;
+}
+
+.timeline-content {
+    border-top: 5px solid #1a2a6c;
+    border-left: 5px solid #1a2a6c;
+}
+
+.phase-tag {
+    background: #1a2a6c;
+    color: #ffffff;
+}
+
+.timeline-dot {
+    border-color: #1a2a6c;
+}
+
+.timeline-item:hover .timeline-dot {
+    background-color: #1a2a6c;
+}
+
+.note-container {
+    border: 1px solid #c5d0e6;
+}
