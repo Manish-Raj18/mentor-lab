@@ -77,7 +77,7 @@ function Home() {
 
       <div className="card">
         <h3>
-            <a href="#" className="card-link">Performance Analytics</a>
+            <Link to="/analytics" className="card-link">Performance Analytics</Link>
         </h3>
         <p>Track your preparation with smart analysis tools.</p>
       </div>
