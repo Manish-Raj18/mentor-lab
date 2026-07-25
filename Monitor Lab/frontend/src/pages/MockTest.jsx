@@ -23,6 +23,16 @@ const MockTest = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const timerRef = useRef(null);
   const [candidateName, setCandidateName] = useState('');
+  const paletteScrollRef = useRef(null);
+
+  useEffect(() => {
+    if (paletteScrollRef.current) {
+      const btn = paletteScrollRef.current.querySelector(`.num-btn[data-idx="${currentIndex}"]`);
+      if (btn) {
+        btn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [currentIndex]);
 
   useEffect(() => {
     const fetchTests = async () => {
@@ -120,41 +130,33 @@ const MockTest = () => {
     if (!auto && !confirm("Do you really want to submit this test?")) return;
     clearInterval(timerRef.current);
 
-    let attempted = 0, correct = 0, wrong = 0;
     const answerIndices = {};
+    let attempted = 0;
     questions.forEach((q, idx) => {
       if (userAnswers[idx] !== undefined) {
         attempted++;
         answerIndices[idx] = userAnswers[idx];
-        if (q.options[userAnswers[idx]] === q.correctAnswer) {
-          correct++;
-        } else {
-          wrong++;
-        }
       }
     });
 
-    const score = (correct * 4) - (wrong * 1);
-
     try {
-      await axios.post(`${API_BASE}/mocktest/${selectedTest._id}/submit`, {
+      const res = await axios.post(`${API_BASE}/mocktest/${selectedTest._id}/submit`, {
         answers: answerIndices,
-        score,
-        attempted,
-        correct,
-        wrong
       }, { headers: getAuthHeaders() });
+
+      const { correct, wrong, score, totalQuestions, maxScore } = res.data;
 
       const token = localStorage.getItem("token");
       await axios.post(`${API_BASE}/auth/add-activity`, {
         title: `Mock Test: ${selectedTest.title}`,
-        score: `${score} / ${questions.length * 4}`
+        score: `${score} / ${maxScore}`
       }, { headers: { Authorization: `Bearer ${token}` } });
+
+      setResultData({ attempted, correct, wrong, score, total: totalQuestions, maxScore });
     } catch (err) {
       console.error("Failed to save result:", err);
+      setResultData({ attempted, correct: 0, wrong: 0, score: 0, total: questions.length, maxScore: questions.length * 4 });
     }
-
-    setResultData({ attempted, correct, wrong, score, total: questions.length, maxScore: questions.length * 4 });
     setShowResult(true);
   };
 
@@ -317,11 +319,15 @@ const MockTest = () => {
 
         <aside className="palette-pane">
           <div className="palette-header">QUESTION PALETTE</div>
-          <div className="numbers-grid" style={{ gridTemplateColumns: "repeat(5, 1fr)" }}>
-            {questions.map((q, idx) => (
-              <a key={idx} className={getBtnClass(idx)} onClick={() => navigateTo(idx)}>{idx + 1}</a>
-            ))}
+          <button className="palette-scroll-btn" onClick={() => paletteScrollRef.current?.scrollBy({ top: -120, behavior: 'smooth' })}>&#9650;</button>
+          <div className="numbers-grid-wrapper" ref={paletteScrollRef}>
+            <div className="numbers-grid">
+              {questions.map((q, idx) => (
+                <a key={idx} data-idx={idx} className={getBtnClass(idx)} onClick={() => navigateTo(idx)}>{idx + 1}</a>
+              ))}
+            </div>
           </div>
+          <button className="palette-scroll-btn" onClick={() => paletteScrollRef.current?.scrollBy({ top: 120, behavior: 'smooth' })}>&#9660;</button>
           <div className="palette-footer">
             <button className="btn-submit-test" onClick={() => handleSubmit()}>Submit Test</button>
           </div>

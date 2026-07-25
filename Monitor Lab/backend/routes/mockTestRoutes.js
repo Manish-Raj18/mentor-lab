@@ -8,7 +8,7 @@ import MockTest from "../model/mocktest.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const require = createRequire(import.meta.url);
-const pdf = require("pdf-parse");
+const { PDFParse } = require("pdf-parse");
 
 const router = express.Router();
 
@@ -30,8 +30,26 @@ const parseQuestions = (text) => {
   
   let currentQuestion = null;
 
+  const extractOptionsFromLine = (line) => {
+    const matches = [];
+    const regex = /\(?([A-Da-d])\)?[\.\)]\s+/g;
+    let match;
+    while ((match = regex.exec(line)) !== null) {
+      matches.push({ index: match.index, matchLen: match[0].length, letter: match[1].toUpperCase() });
+    }
+    if (matches.length > 1) {
+      for (let i = 0; i < matches.length; i++) {
+        const start = matches[i].index + matches[i].matchLen;
+        const end = i + 1 < matches.length ? matches[i + 1].index : line.length;
+        matches[i].text = line.substring(start, end).trim();
+      }
+      return matches.map(m => m.text);
+    }
+    return null;
+  };
+
   lines.forEach(line => {
-    const qMatch = line.match(/^(\d+)[\.\)]\s+(.*)/);
+    const qMatch = line.match(/^(?:Q)?(\d+)[\.\)]\s+(.*)/i);
     if (qMatch) {
       if (currentQuestion) questions.push(currentQuestion);
       currentQuestion = {
@@ -42,24 +60,28 @@ const parseQuestions = (text) => {
       return;
     }
 
-    const oMatch = line.match(/^[A-Da-d][\.\)]\s+(.*)/);
+    if (currentQuestion && currentQuestion.options.length < 4) {
+      const multiOpts = extractOptionsFromLine(line);
+      if (multiOpts) {
+        currentQuestion.options.push(...multiOpts);
+        return;
+      }
+    }
+
+    const oMatch = line.match(/^\(?([A-Da-d])\)?[\.\)]\s+(.*)/);
     if (oMatch && currentQuestion) {
-      currentQuestion.options.push(oMatch[1]);
+      currentQuestion.options.push(oMatch[2]);
       return;
     }
 
-    const aMatch = line.match(/^(Ans|Answer|Correct)[:\s]+([A-Da-d]|\w+)/i);
+    const aMatch = line.match(/^(?:Ans|Answer|Correct)[:\s]+\(?([A-Da-d])\)?/i);
     if (aMatch && currentQuestion) {
-      const ansVal = aMatch[2].toUpperCase();
-      if (ansVal.length === 1 && "ABCD".includes(ansVal)) {
-        const idx = "ABCD".indexOf(ansVal);
-        if (currentQuestion.options[idx]) {
-          currentQuestion.correctAnswer = currentQuestion.options[idx];
-        } else {
-          currentQuestion.correctAnswer = ansVal;
-        }
+      const ansVal = aMatch[1].toUpperCase();
+      const idx = "ABCD".indexOf(ansVal);
+      if (idx >= 0 && currentQuestion.options[idx]) {
+        currentQuestion.correctAnswer = currentQuestion.options[idx];
       } else {
-        currentQuestion.correctAnswer = aMatch[2];
+        currentQuestion.correctAnswer = ansVal;
       }
       return;
     }
@@ -85,9 +107,17 @@ router.post("/upload-pdf", protect, upload.single("pdf"), async (req, res) => {
       return res.status(403).json({ message: "Only admins can upload mock tests" });
     }
     const dataBuffer = fs.readFileSync(req.file.path);
-    const data = await pdf(dataBuffer);
+    const arr = new Uint8Array(dataBuffer);
+    const parser = new PDFParse(arr);
+    await parser.load();
+    const result = await parser.getText();
     
-    const questions = parseQuestions(data.text);
+    let fullText = "";
+    if (result && result.pages) {
+      fullText = result.pages.map(p => p.text).join("\n");
+    }
+    
+    const questions = parseQuestions(fullText);
     
     if (questions.length === 0) {
       return res.status(400).json({ message: "No questions could be parsed from the PDF. Please check the format." });
@@ -148,16 +178,18 @@ router.get("/:id", protect, async (req, res) => {
 // Submit Test Result (Authenticated users)
 router.post("/:id/submit", protect, async (req, res) => {
   try {
-    const { answers, score, attempted, correct, wrong } = req.body;
+    const { answers } = req.body;
     const test = await MockTest.findById(req.params.id);
     if (!test) {
       return res.status(404).json({ message: "Mock test not found" });
     }
 
+    let computedAttempted = 0;
     let computedCorrect = 0;
     let computedWrong = 0;
     test.questions.forEach((q, idx) => {
       if (answers[idx] !== undefined) {
+        computedAttempted++;
         if (q.options[answers[idx]] === q.correctAnswer) {
           computedCorrect++;
         } else {
@@ -171,7 +203,7 @@ router.post("/:id/submit", protect, async (req, res) => {
     res.json({
       testId: test._id,
       title: test.title,
-      attempted,
+      attempted: computedAttempted,
       correct: computedCorrect,
       wrong: computedWrong,
       score: computedScore,
