@@ -18,7 +18,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Biotech from "./pages/biotech";
 import Chatbot from "./components/Chatbot";
 import ChatbotPage from "./pages/ChatbotPage";
-import BcaRoadmap from "./pages/roadmapbca";
+import BcaRoadmap from "./pages/BCARoadmap";
 import BBA from "./pages/bba";
 import BIO from "./pages/biotechsylla";
 import RoadMap from "./pages/bbaroadmap";
