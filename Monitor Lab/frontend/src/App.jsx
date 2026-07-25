@@ -23,6 +23,7 @@ import BBA from "./pages/bba";
 import BIO from "./pages/biotechsylla";
 import RoadMap from "./pages/bbaroadmap";
 import MockTest from "./pages/MockTest";
+import StudyNotes from "./pages/StudyNotes";
 
 
 
@@ -39,6 +40,7 @@ function App() {
           <Route path="/bba" element={<BBA />} />
           <Route path="/biotechsylla" element={<BIO />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/study-notes" element={<StudyNotes />} />
           <Route path="/recorded-lectures" element={<RecordedLectures />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/bbaroadmap" element={<RoadMap />} />

@@ -70,9 +70,9 @@ function Home() {
 
       <div className="card">
         <h3>
-            <Link to="/contact-us" className="card-link">Contact Us</Link>
+            <Link to="/study-notes" className="card-link">Study Notes</Link>
         </h3>
-        <p>Have questions? Get in touch with our team.</p>
+        <p>Access curated study materials for all courses.</p>
       </div>
 
       <div className="card">
