@@ -11,8 +11,8 @@ const BCARoadmap = () => {
           </header>
 
           <div className="bca-grid">
-            <div className="bca-card">
-              <span className="phase-tag">Phase 1: Foundation</span>
+            <div className="bca-card card-blue">
+              <span className="phase-tag">⌨️ Phase 1: Foundation</span>
               <p className="focus"><strong>Focus:</strong> Building core programming and mathematical foundations.</p>
               <ul className="subjects">
                 <li>Programming in C</li>
@@ -23,8 +23,8 @@ const BCARoadmap = () => {
               </ul>
             </div>
 
-            <div className="bca-card">
-              <span className="phase-tag">Phase 2: Core Subjects</span>
+            <div className="bca-card card-green">
+              <span className="phase-tag">🗄️ Phase 2: Core Subjects</span>
               <p className="focus"><strong>Focus:</strong> Exploring key computing concepts and data management.</p>
               <ul className="subjects">
                 <li>Data Structures & Algorithms</li>
@@ -35,8 +35,8 @@ const BCARoadmap = () => {
               </ul>
             </div>
 
-            <div className="bca-card">
-              <span className="phase-tag">Phase 3: Intermediate</span>
+            <div className="bca-card card-purple">
+              <span className="phase-tag">🌐 Phase 3: Web & Networks</span>
               <p className="focus"><strong>Focus:</strong> Developing advanced software and web development skills.</p>
               <ul className="subjects">
                 <li>Web Technologies (HTML, CSS, JavaScript)</li>
@@ -51,8 +51,8 @@ const BCARoadmap = () => {
           <div className="bca-divider"></div>
 
           <div className="bca-grid">
-            <div className="bca-card">
-              <span className="phase-tag">Phase 4: Specialization</span>
+            <div className="bca-card card-orange">
+              <span className="phase-tag">🧠 Phase 4: AI & Specialization</span>
               <p className="focus"><strong>Focus:</strong> Acquiring domain expertise through chosen electives.</p>
               <p className="elective-title">Electives:</p>
               <ul className="subjects">
@@ -65,8 +65,8 @@ const BCARoadmap = () => {
               </ul>
             </div>
 
-            <div className="bca-card">
-              <span className="phase-tag">Phase 5: Practical</span>
+            <div className="bca-card card-red">
+              <span className="phase-tag">🚀 Phase 5: Build & Deploy</span>
               <p className="focus"><strong>Focus:</strong> Gaining real-world industry exposure and practical experience.</p>
               <ul className="subjects">
                 <li>Internship & Projects</li>
@@ -77,8 +77,8 @@ const BCARoadmap = () => {
               </ul>
             </div>
 
-            <div className="bca-card">
-              <span className="phase-tag">Phase 6: Graduation & Success</span>
+            <div className="bca-card card-teal">
+              <span className="phase-tag">💼 Phase 6: Career & Placement</span>
               <p className="focus"><strong>Focus:</strong> Accelerating career readiness and placement.</p>
               <ul className="subjects">
                 <li>System Design & Architecture</li>
