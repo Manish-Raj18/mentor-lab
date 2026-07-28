@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import "../css_files/pyq.css";
+
+const API_BASE = "http://localhost:5000/api";
 
 const universities = [
   { id: "ranchi", name: "Ranchi University (Ranchi)" },
@@ -112,9 +115,66 @@ const subjectsData = {
 
 const PYQ = () => {
   const [selectedUni, setSelectedUni] = useState(null);
+  const [pyqData, setPyqData] = useState({});
+  const [uploading, setUploading] = useState({});
 
-  const handleDownload = (subject) => {
-    alert(`PDF for "${subject}" not uploaded yet.`);
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+  useEffect(() => {
+    if (selectedUni) {
+      fetchPYQs(selectedUni);
+    }
+  }, [selectedUni]);
+
+  const fetchPYQs = async (universityId) => {
+    try {
+      const res = await axios.get(`${API_BASE}/pyq?universityId=${universityId}`);
+      const map = {};
+      res.data.forEach((pyq) => {
+        const key = `${pyq.course}:${pyq.subject}`;
+        map[key] = pyq;
+      });
+      setPyqData(map);
+    } catch {
+      setPyqData({});
+    }
+  };
+
+  const handleDownload = (course, subject) => {
+    const key = `${course}:${subject}`;
+    const pyq = pyqData[key];
+    if (pyq) {
+      window.open(`${API_BASE.replace("/api", "")}/uploads/${pyq.pdfUrl}`, "_blank");
+    } else {
+      alert(`PDF for "${subject}" not uploaded yet.`);
+    }
+  };
+
+  const handleUpload = async (course, subject, file) => {
+    const uni = universities.find((u) => u.id === selectedUni);
+    const key = `${course}:${subject}`;
+    setUploading((prev) => ({ ...prev, [key]: true }));
+
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("pdf", file);
+      formData.append("universityId", selectedUni);
+      formData.append("universityName", uni.name);
+      formData.append("course", course);
+      formData.append("subject", subject);
+
+      const res = await axios.post(`${API_BASE}/pyq/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
+      });
+
+      setPyqData((prev) => ({ ...prev, [key]: res.data }));
+      alert(`PDF uploaded for "${subject}"`);
+    } catch (err) {
+      alert(err.response?.data?.message || "Upload failed");
+    } finally {
+      setUploading((prev) => ({ ...prev, [key]: false }));
+    }
   };
 
   if (selectedUni) {
@@ -136,17 +196,35 @@ const PYQ = () => {
                 {course.toUpperCase()}
               </div>
               <ul className="subject-list">
-                {subjects.map((subject) => (
-                  <li key={subject}>
-                    <span className="subject-name">{subject}</span>
-                    <button
-                      className="download-btn"
-                      onClick={() => handleDownload(subject)}
-                    >
-                      Download PYQ
-                    </button>
-                  </li>
-                ))}
+                {subjects.map((subject) => {
+                  const key = `${course}:${subject}`;
+                  const hasPdf = !!pyqData[key];
+                  return (
+                    <li key={subject}>
+                      <span className="subject-name">{subject}</span>
+                      <button
+                        className="download-btn"
+                        onClick={() => handleDownload(course, subject)}
+                      >
+                        {hasPdf ? "Download PYQ" : "Not Available"}
+                      </button>
+                      {isAdmin && (
+                        <label className="upload-label">
+                          {uploading[key] ? "..." : "Upload"}
+                          <input
+                            type="file"
+                            accept=".pdf"
+                            hidden
+                            onChange={(e) => {
+                              if (e.target.files[0]) handleUpload(course, subject, e.target.files[0]);
+                              e.target.value = "";
+                            }}
+                          />
+                        </label>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}
