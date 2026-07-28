@@ -7,7 +7,7 @@
 
 /* ===== Header ===== */
 .pyq-page .pyq-header {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  background: linear-gradient(135deg, #111, #222);
   color: #fff;
   text-align: center;
   padding: 40px 20px 30px;
@@ -16,16 +16,19 @@
 .pyq-page .pyq-header h1 {
   font-size: 2rem;
   margin-bottom: 8px;
+  color: #fff;
+  font-weight: 700;
 }
 
 .pyq-page .pyq-header p {
   font-size: 1rem;
-  opacity: 0.8;
+  color: #e3f2fd;
+  font-weight: 500;
 }
 
 .pyq-page .back-btn {
   display: inline-block;
-  color: #90caf9;
+  color: #bbdefb;
   text-decoration: none;
   font-size: 0.95rem;
   margin-bottom: 15px;
@@ -34,6 +37,7 @@
   border: none;
   cursor: pointer;
   font-family: inherit;
+  font-weight: 600;
 }
 
 .pyq-page .back-btn:hover {
@@ -95,6 +99,7 @@
   margin: 0 auto;
   width: 100%;
   flex: 1;
+  min-height: 0;
 }
 
 .pyq-page .course-column {
@@ -102,6 +107,14 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+}
+
+.pyq-page .course-column .subject-list {
+  overflow-y: auto;
+  flex: 1;
 }
 
 .pyq-page .course-header {
@@ -151,6 +164,8 @@
   font-size: 0.95rem;
   flex: 1;
   padding-right: 10px;
+  color: #111;
+  font-weight: 500;
 }
 
 .pyq-page .download-btn {
@@ -176,7 +191,7 @@
 /* ===== Footer ===== */
 .pyq-page .pyq-footer {
   background: #1a1a2e;
-  color: #aaa;
+  color: #ddd;
   text-align: center;
   padding: 18px;
   font-size: 0.85rem;
