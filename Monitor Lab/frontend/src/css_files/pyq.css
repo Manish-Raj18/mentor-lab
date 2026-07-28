@@ -93,7 +93,7 @@
 .pyq-page .courses-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
+  gap: 55px;
   padding: 40px;
   max-width: 1200px;
   margin: 0 auto;
@@ -196,6 +196,50 @@
   padding: 18px;
   font-size: 0.85rem;
   margin-top: auto;
+}
+
+/* ===== Dark Mode ===== */
+.dark-theme .pyq-page {
+  background: #1a1a2e;
+}
+
+.dark-theme .pyq-page .uni-card,
+.dark-theme .pyq-page .course-column {
+  background: #2a2a3e;
+  color: #e0e0e0;
+}
+
+.dark-theme .pyq-page .uni-card h2 {
+  color: #fff;
+}
+
+.dark-theme .pyq-page .uni-card p {
+  color: #90caf9;
+}
+
+.dark-theme .pyq-page .subject-name {
+  color: #e0e0e0;
+}
+
+.dark-theme .pyq-page .subject-list li {
+  border-bottom: 1px solid #333;
+}
+
+.dark-theme .pyq-page .subject-list li:hover {
+  background: #333350;
+}
+
+.dark-theme .pyq-page .download-btn {
+  background: #1565c0;
+}
+
+.dark-theme .pyq-page .download-btn:hover {
+  background: #1976d2;
+}
+
+.dark-theme .pyq-page .pyq-footer {
+  background: #0d0d1a;
+  color: #bbb;
 }
 
 /* ===== Responsive ===== */
