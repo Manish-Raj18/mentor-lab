@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
 import connectDB from "./db.js"; 
 import authroutes from "../routes/authRoutes.js";
 import adminRoutes from "../routes/adminRoutes.js";
@@ -9,6 +10,11 @@ import mockTestRoutes from "../routes/mockTestRoutes.js";
 import notesRoutes from "../routes/notesRoutes.js";
 import pyqRoutes from "../routes/pyqRoutes.js";
 import aiRoutes from "../routes/aiRoutes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, "..");
+
 dotenv.config();
 const app = express();
 
@@ -24,18 +30,19 @@ app.use("/api/notes", notesRoutes);
 app.use("/api/pyq", pyqRoutes);
 app.use("/api/ai", aiRoutes);
 
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads"), {
-    setHeaders: (res, path) => {
-        if (path.endsWith(".pdf")) {
+const uploadsDir = path.join(rootDir, "uploads");
+app.use("/uploads", express.static(uploadsDir, {
+    setHeaders: (res, p) => {
+        if (p.endsWith(".pdf")) {
             res.set("Content-Disposition", "inline");
         }
     }
 }));
 
-const frontendDist = path.join(process.cwd(), "..", "frontend", "dist");
+const frontendDist = path.resolve(rootDir, "..", "frontend", "dist");
 app.use(express.static(frontendDist));
 
-app.get("*", (req, res) => {
+app.get("/{*path}", (req, res) => {
     res.sendFile(path.join(frontendDist, "index.html"));
 });
 
