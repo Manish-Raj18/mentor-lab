@@ -11,6 +11,7 @@ const ChatbotPage = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [speakingIndex, setSpeakingIndex] = useState(null);
+  const [language, setLanguage] = useState('english');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -25,13 +26,13 @@ const ChatbotPage = () => {
     }
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text.replace(/\*\*(.*?)\*\*/g, '$1'));
-    utterance.lang = 'hi-IN';
-    utterance.rate = 1;
+    utterance.lang = language === 'hindi' ? 'hi-IN' : 'en-US';
+    utterance.rate = 0.9;
     utterance.onend = () => setSpeakingIndex(null);
     utterance.onerror = () => setSpeakingIndex(null);
     setSpeakingIndex(index);
     window.speechSynthesis.speak(utterance);
-  }, [speakingIndex]);
+  }, [speakingIndex, language]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -41,7 +42,7 @@ const ChatbotPage = () => {
     setIsTyping(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input });
+      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input, language });
       setMessages(prev => [...prev, { role: 'bot', content: response.data.reply }]);
     } catch (error) {
       setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting.' }]);
@@ -59,7 +60,10 @@ const ChatbotPage = () => {
             ← Back
           </button>
           <span className="header-title">Mentor Lab Assistant</span>
-          <div className="header-spacer" />
+          <select className="lang-select lang-select-header" value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <option value="english">English</option>
+            <option value="hindi">हिन्दी</option>
+          </select>
         </div>
         <div className="chatbot-page-messages">
           {messages.map((m, i) => (
@@ -94,7 +98,7 @@ const ChatbotPage = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Type a message..."
+            placeholder={language === 'hindi' ? 'अपना संदेश लिखें...' : 'Type a message...'}
           />
           <button className="send-btn" onClick={handleSend}>➤</button>
         </div>

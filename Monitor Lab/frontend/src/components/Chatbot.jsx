@@ -12,6 +12,7 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [speakingIndex, setSpeakingIndex] = useState(null);
+  const [language, setLanguage] = useState('english');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -26,13 +27,13 @@ const Chatbot = () => {
     }
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text.replace(/\*\*(.*?)\*\*/g, '$1'));
-    utterance.lang = 'hi-IN';
-    utterance.rate = 1;
+    utterance.lang = language === 'hindi' ? 'hi-IN' : 'en-US';
+    utterance.rate = 0.9;
     utterance.onend = () => setSpeakingIndex(null);
     utterance.onerror = () => setSpeakingIndex(null);
     setSpeakingIndex(index);
     window.speechSynthesis.speak(utterance);
-  }, [speakingIndex]);
+  }, [speakingIndex, language]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -42,7 +43,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input });
+      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input, language });
       setMessages(prev => [...prev, { role: 'bot', content: response.data.reply }]);
     } catch (error) {
       setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting.' }]);
@@ -61,8 +62,14 @@ const Chatbot = () => {
         <div className="chat-window">
           <div className="chat-header">
             <span>Mentor Lab Assistant</span>
-            <button className="chat-expand" onClick={openFullscreen} title="Open full screen">⛶</button>
-            <button className="chat-close" onClick={() => setIsOpen(false)}>&times;</button>
+            <div className="header-right">
+              <select className="lang-select" value={language} onChange={(e) => setLanguage(e.target.value)}>
+                <option value="english">English</option>
+                <option value="hindi">हिन्दी</option>
+              </select>
+              <button className="chat-expand" onClick={openFullscreen} title="Open full screen">⛶</button>
+              <button className="chat-close" onClick={() => setIsOpen(false)}>&times;</button>
+            </div>
           </div>
           <div className="messages">
             {messages.map((m, i) => (
@@ -89,7 +96,7 @@ const Chatbot = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Type a message..."
+              placeholder={language === 'hindi' ? 'अपना संदेश लिखें...' : 'Type a message...'}
             />
             <button className="send-btn" onClick={handleSend}>➤</button>
           </div>

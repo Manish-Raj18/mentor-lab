@@ -29,13 +29,13 @@ const callGroq = async (systemPrompt, userMessage) => {
 };
 
 export const chat = async (req, res) => {
-  const { message } = req.body;
+  const { message, language } = req.body;
+  const lang = language || "english";
+
+  const systemPrompt = `You are a helpful college guidance assistant for Mentor Lab. Help students with BCA, BBA, and Biotech courses, exams, and career advice. IMPORTANT: You MUST respond in ${lang} language only. If ${lang} is "hindi", write in Hindi script (Devanagari). If ${lang} is "english", write in English. Never mix languages.`;
 
   try {
-    const reply = await callGroq(
-      "You are a helpful college guidance assistant for Mentor Lab. Help students with BCA, BBA, and Biotech courses, exams, and career advice.",
-      message
-    );
+    const reply = await callGroq(systemPrompt, message);
     res.json({ reply });
   } catch (error) {
     console.error("Error communicating with Groq API:", error);
