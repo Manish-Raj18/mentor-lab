@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../css_files/style.css";
+import ReviewSection from "../components/ReviewSection";
 
 function ContactUs() {
   const [formData, setFormData] = useState({
@@ -92,6 +93,7 @@ function ContactUs() {
         </div>
       </section>
 
+      <ReviewSection targetType="contact" />
       <footer className="footer">
         <p>© 2026 MENTOR LAB. All Rights Reserved.</p>
       </footer>

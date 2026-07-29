@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css_files/chatbot.css';
+import ReviewSection from "../components/ReviewSection";
 
 const ChatbotPage = () => {
   const navigate = useNavigate();
@@ -71,6 +72,7 @@ const ChatbotPage = () => {
           <button className="send-btn" onClick={handleSend}>➤</button>
         </div>
       </div>
+      <ReviewSection targetType="chatbot" />
     </div>
   );
 };

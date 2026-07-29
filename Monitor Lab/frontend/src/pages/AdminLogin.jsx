@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../css_files/login.css";
+import ReviewSection from "../components/ReviewSection";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -84,6 +85,7 @@ function AdminLogin() {
           </a>
         </div>
       </div>
+      <ReviewSection targetType="admin-login" />
     </div>
   );
 }

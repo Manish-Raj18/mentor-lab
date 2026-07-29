@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import "../css_files/mock.css";
+import ReviewSection from "../components/ReviewSection";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -335,6 +336,7 @@ const MockTest = () => {
       </div>
 
       <footer className="test-footer">CBT Examination Module Hub &copy; 2026. All rights reserved.</footer>
+      <ReviewSection targetType="mock-test" />
     </div>
   );
 };

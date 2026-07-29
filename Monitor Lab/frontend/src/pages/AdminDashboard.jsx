@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../css_files/dashboard.css";
+import ReviewSection from "../components/ReviewSection";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -364,6 +365,7 @@ function AdminDashboard() {
           </table>
         </div>
       </div>
+      <ReviewSection targetType="admin" />
     </div>
   );
 }

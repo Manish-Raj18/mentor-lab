@@ -1,4 +1,5 @@
 import "../css_files/roadmapbca.css";
+import ReviewSection from "../components/ReviewSection";
 function BcaRoadmap(){
     return(
         <div className="main">
@@ -110,7 +111,8 @@ function BcaRoadmap(){
     </div>
     
 
-        </div>
-    )
+      <ReviewSection targetType="bca-roadmap" />
+    </div>
+     )
 }
 export default BcaRoadmap

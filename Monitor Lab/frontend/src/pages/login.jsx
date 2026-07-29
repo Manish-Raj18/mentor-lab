@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../css_files/login.css"
 import { Link } from "react-router-dom";
 import axios from "axios";
+import ReviewSection from "../components/ReviewSection";
 
 function Login() {
     // 1. Form state variables
@@ -100,6 +101,7 @@ if (password.length < 6) {
                     </Link>
                 </div>
             </div>
+      <ReviewSection targetType="login" />
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../css_files/profile.css";
+import ReviewSection from "../components/ReviewSection";
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -100,6 +101,7 @@ function Profile() {
           </div>
         </main>
       </div>
+      <ReviewSection targetType="profile" />
     </div>
   );
 }

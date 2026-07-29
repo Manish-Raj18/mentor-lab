@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import "../css_files/analytics.css";
+import ReviewSection from "../components/ReviewSection";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -445,6 +446,7 @@ const PerformanceAnalytics = () => {
         <Link to="/mock-test" className="btn-primary">Take a Mock Test</Link>
         <Link to="/profile" className="btn-secondary">View Profile</Link>
       </div>
+      <ReviewSection targetType="analytics" />
     </div>
   );
 };

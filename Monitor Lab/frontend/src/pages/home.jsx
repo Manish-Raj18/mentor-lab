@@ -1,5 +1,6 @@
 import {Link} from 'react-router-dom'
 import "../css_files/style.css";
+import ReviewSection from "../components/ReviewSection";
 function Home() { 
   return (
 <div className="home">
@@ -86,6 +87,7 @@ function Home() {
   </section>
 
 
+  <ReviewSection targetType="home" />
   <footer className="footer">
     <p>© 2026 MENTOR LAB. All Rights Reserved.</p>
   </footer>

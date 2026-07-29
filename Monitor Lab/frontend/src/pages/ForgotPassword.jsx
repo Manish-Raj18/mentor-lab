@@ -1,3 +1,4 @@
+import ReviewSection from "../components/ReviewSection";
 function ForgotPassword(){
 
   return(
@@ -17,6 +18,7 @@ function ForgotPassword(){
         Send OTP
       </button>
 
+      <ReviewSection targetType="forgot-password" />
     </div>
   );
 }
