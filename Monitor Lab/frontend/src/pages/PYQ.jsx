@@ -149,16 +149,6 @@ const PYQ = () => {
     }
   };
 
-  const handleDownload = (course, subject) => {
-    const key = `${course}:${subject}`;
-    const pyq = pyqData[key];
-    if (pyq) {
-      window.open(`/uploads/${encodeURIComponent(pyq.pdfUrl)}`, "_blank");
-    } else {
-      alert(`PDF for "${subject}" not uploaded yet.`);
-    }
-  };
-
   if (selectedUni) {
     const uni = universities.find((u) => u.id === selectedUni);
     return (
@@ -186,12 +176,16 @@ const PYQ = () => {
                   return (
                     <li key={subject}>
                       <span className="subject-name">{subject}</span>
-                      <button
-                        className="download-btn"
-                        onClick={() => handleDownload(course, subject)}
-                      >
-                        {hasPdf ? "Download PYQ" : "Not Available"}
-                      </button>
+                      {hasPdf ? (
+                        <a
+                          href={`/uploads/${encodeURIComponent(pyqData[key].pdfUrl)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="download-btn"
+                        >Download PYQ</a>
+                      ) : (
+                        <span className="download-btn disabled">Not Available</span>
+                      )}
 
                     </li>
                   );

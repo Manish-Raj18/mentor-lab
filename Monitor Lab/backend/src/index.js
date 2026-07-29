@@ -32,6 +32,13 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads"), {
     }
 }));
 
+const frontendDist = path.join(process.cwd(), "..", "frontend", "dist");
+app.use(express.static(frontendDist));
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendDist, "index.html"));
+});
+
 const port = process.env.PORT || 5000;
 
 // Connect to Database

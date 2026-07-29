@@ -277,6 +277,15 @@
   background: #2d2d52;
 }
 
+.pyq-page .download-btn.disabled {
+  background: #888;
+  cursor: default;
+}
+
+.pyq-page .download-btn.disabled:hover {
+  background: #888;
+}
+
 /* ===== Footer ===== */
 .pyq-page .pyq-footer {
   background: #1a1a2e;
