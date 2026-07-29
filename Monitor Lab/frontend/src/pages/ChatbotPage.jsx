@@ -27,6 +27,12 @@ const ChatbotPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
+  const getHindiVoice = () => {
+    const voices = window.speechSynthesis.getVoices();
+    return voices.find(v => v.lang.startsWith('hi') && v.lang.includes('IN'))
+      || voices.find(v => v.lang.startsWith('hi'));
+  };
+
   const speakText = useCallback((text, index) => {
     if (speakingIndex === index) {
       window.speechSynthesis.cancel();
@@ -34,20 +40,30 @@ const ChatbotPage = () => {
       return;
     }
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text.replace(/\*\*(.*?)\*\*/g, '$1'));
-    utterance.rate = 0.9;
+
+    const cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1');
+
     if (language === 'hindi') {
+      const hindiVoice = getHindiVoice();
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'hi-IN';
-      const voices = window.speechSynthesis.getVoices();
-      const hindiVoice = voices.find(v => v.lang.startsWith('hi'));
+      utterance.rate = 0.9;
+      utterance.volume = 1;
       if (hindiVoice) utterance.voice = hindiVoice;
+      utterance.onend = () => setSpeakingIndex(null);
+      utterance.onerror = () => setSpeakingIndex(null);
+      setSpeakingIndex(index);
+      window.speechSynthesis.speak(utterance);
     } else {
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      utterance.volume = 1;
+      utterance.onend = () => setSpeakingIndex(null);
+      utterance.onerror = () => setSpeakingIndex(null);
+      setSpeakingIndex(index);
+      window.speechSynthesis.speak(utterance);
     }
-    utterance.onend = () => setSpeakingIndex(null);
-    utterance.onerror = () => setSpeakingIndex(null);
-    setSpeakingIndex(index);
-    window.speechSynthesis.speak(utterance);
   }, [speakingIndex, language]);
 
   const handleSend = async () => {
