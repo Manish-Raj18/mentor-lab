@@ -101,7 +101,7 @@ const ChatbotPage = () => {
             <div key={i} className={`chat-bubble ${m.role}`}>
               {m.role === 'bot' && <span className="bot-avatar">🤖</span>}
               <div className="bubble-content">
-                <span>{m.content.replace(/\*\*/g, '')}</span>
+                <span className="bubble-text">{m.content.replace(/\*\*/g, '')}</span>
               </div>
               {m.role === 'bot' && (
                 <button
