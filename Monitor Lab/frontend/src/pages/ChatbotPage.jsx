@@ -17,21 +17,20 @@ const ChatbotPage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
-      const voices = window.speechSynthesis.getVoices();
-      if (voices.length) setVoicesLoaded(true);
-      window.speechSynthesis.onvoiceschanged = () => setVoicesLoaded(true);
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        setVoicesLoaded(true);
+        window.speechSynthesis.getVoices();
+      };
+      const prime = new SpeechSynthesisUtterance('');
+      prime.volume = 0;
+      window.speechSynthesis.speak(prime);
     }
   }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
-
-  const getHindiVoice = () => {
-    const voices = window.speechSynthesis.getVoices();
-    return voices.find(v => v.lang.startsWith('hi') && v.lang.includes('IN'))
-      || voices.find(v => v.lang.startsWith('hi'));
-  };
 
   const speakText = useCallback((text, index) => {
     if (speakingIndex === index) {
@@ -42,28 +41,17 @@ const ChatbotPage = () => {
     window.speechSynthesis.cancel();
 
     const cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = language === 'hindi' ? 'hi-IN' : 'en-US';
+    utterance.rate = 0.9;
+    utterance.volume = 1;
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => setSpeakingIndex(null);
 
-    if (language === 'hindi') {
-      const hindiVoice = getHindiVoice();
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'hi-IN';
-      utterance.rate = 0.9;
-      utterance.volume = 1;
-      if (hindiVoice) utterance.voice = hindiVoice;
-      utterance.onend = () => setSpeakingIndex(null);
-      utterance.onerror = () => setSpeakingIndex(null);
-      setSpeakingIndex(index);
+    setSpeakingIndex(index);
+    setTimeout(() => {
       window.speechSynthesis.speak(utterance);
-    } else {
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9;
-      utterance.volume = 1;
-      utterance.onend = () => setSpeakingIndex(null);
-      utterance.onerror = () => setSpeakingIndex(null);
-      setSpeakingIndex(index);
-      window.speechSynthesis.speak(utterance);
-    }
+    }, 50);
   }, [speakingIndex, language]);
 
   const handleSend = async () => {
