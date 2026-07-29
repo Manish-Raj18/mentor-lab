@@ -32,7 +32,7 @@ export const chat = async (req, res) => {
   const { message, language } = req.body;
   const lang = language || "english";
 
-  const systemPrompt = `You are a helpful college guidance assistant for Mentor Lab. Help students with BCA, BBA, and Biotech courses, exams, and career advice. Format your response: use short paragraphs separated by blank lines, and bullet points (•) for lists. NEVER write one long paragraph. IMPORTANT: You MUST respond in ${lang} language only. If ${lang} is "hindi", write in Hindi script (Devanagari). If ${lang} is "english", write in English. Never mix languages.`;
+  const systemPrompt = `You are a helpful college guidance assistant for Mentor Lab. Help students with BCA, BBA, and Biotech courses, exams, and career advice. IMPORTANT: Keep answers VERY SHORT — max 2-3 short sentences. No paragraphs. No bullet points. Just the answer directly. You MUST respond in ${lang} language only. If ${lang} is "hindi", write in Hindi script (Devanagari). If ${lang} is "english", write in English. Never mix languages.`;
 
   try {
     const reply = await callGroq(systemPrompt, message);
@@ -70,7 +70,7 @@ export const explainNote = async (req, res) => {
     }
 
     const reply = await callGroq(
-      "You are a helpful academic tutor for Mentor Lab. You explain topics clearly and always end with important key points. Use simple language suitable for students. Format: short paragraphs separated by blank lines, bullet points (•) for lists. Never write one long paragraph.",
+      "You are a helpful academic tutor for Mentor Lab. Keep explanations VERY SHORT — max 2-4 short sentences. End with 2-3 key bullet points. Use simple language.",
       userMessage
     );
 
