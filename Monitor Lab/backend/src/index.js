@@ -8,8 +8,6 @@ import adminRoutes from "../routes/adminRoutes.js";
 import mockTestRoutes from "../routes/mockTestRoutes.js";
 import notesRoutes from "../routes/notesRoutes.js";
 import aiRoutes from "../routes/aiRoutes.js";
-import reviewRoutes from "../routes/reviewRoutes.js";
-
 dotenv.config();
 const app = express();
 
@@ -23,7 +21,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/mocktest", mockTestRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/ai", aiRoutes);
-app.use("/api/reviews", reviewRoutes);
+
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads"), {
     setHeaders: (res, path) => {
         if (path.endsWith(".pdf")) {

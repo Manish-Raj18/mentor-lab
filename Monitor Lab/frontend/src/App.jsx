@@ -26,7 +26,6 @@ import MockTest from "./pages/MockTest";
 import StudyNotes from "./pages/StudyNotes";
 import PerformanceAnalytics from "./pages/PerformanceAnalytics";
 import PYQ from "./pages/PYQ";
-import ReviewSection from "./components/ReviewSection";
 
 
 function App() {
@@ -63,7 +62,6 @@ function App() {
           <Route path="/analytics" element={<ProtectedRoute><PerformanceAnalytics /></ProtectedRoute>} />
           <Route path="/pyq" element={<PYQ />} />
         </Routes>
-        <ReviewSection targetType="mentor-lab" />
         <Chatbot />
       </Router>
     </div>
