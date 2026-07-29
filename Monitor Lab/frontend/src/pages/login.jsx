@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import "../css_files/login.css"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
     // 1. Form state variables
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     // 2. Form submission handler marked as async
     const handleLogin = async (e) => {
@@ -50,8 +51,8 @@ if (password.length < 6) {
             localStorage.clear();
             
             localStorage.setItem("token", response.data.token);
-            // We no longer need to store the user object in localStorage
-            // as the Profile page now fetches it directly from the backend.
+
+            window.location.href = "/";
 
         } catch (error) {
             // Catch and display any errors from the backend

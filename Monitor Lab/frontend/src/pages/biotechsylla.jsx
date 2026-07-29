@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../css_files/biotech.css";
-import AIExplainModal from "../components/AIExplainModal";
 
 function BIO() {
   const [notes, setNotes] = useState([]);
-  const [explainSubject, setExplainSubject] = useState(null);
 
   useEffect(() => {
     axios
@@ -68,17 +66,12 @@ function BIO() {
               {section.items.map((item) => (
                 <li key={item} className="syllabus-item">
                   <a href={getPdfLink(item)} target="_blank" rel="noreferrer">{item}</a>
-                  <button className="ai-explain-btn-sm" onClick={() => setExplainSubject(item)}>AI Explain</button>
                 </li>
               ))}
             </ul>
           </section>
         ))}
       </div>
-
-      {explainSubject && (
-        <AIExplainModal subject={explainSubject} course="Biotechnology" onClose={() => setExplainSubject(null)} />
-      )}
     </div>
   );
 }

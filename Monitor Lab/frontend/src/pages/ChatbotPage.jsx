@@ -101,17 +101,9 @@ const ChatbotPage = () => {
             <div key={i} className={`chat-bubble ${m.role}`}>
               {m.role === 'bot' && <span className="bot-avatar">🤖</span>}
               <div className="bubble-content">
-                <span className="bubble-text">{m.content.replace(/\*\*/g, '')}</span>
+                <span className="bubble-text">{m.content.replace(/\*\*/g, '').replace(/[\r\n]+/g, ' ')}</span>
               </div>
-              {m.role === 'bot' && (
-                <button
-                  className={`speak-btn ${speakingIndex === i ? 'speaking' : ''}`}
-                  onClick={() => speakText(m.content, i)}
-                  title={speakingIndex === i ? 'Stop' : 'Listen'}
-                >
-                  {speakingIndex === i ? '⏹' : '🔊'}
-                </button>
-              )}
+
             </div>
           ))}
           {isTyping && (

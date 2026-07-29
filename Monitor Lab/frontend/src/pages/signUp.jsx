@@ -168,6 +168,7 @@ function Signup() {
           _id: data._id,
           isAdmin: data.isAdmin || false
         }));
+        window.location.href = "/";
       } else {
         alert(`Signup Failed: ${data.message || "Unknown backend error"}`);
       }

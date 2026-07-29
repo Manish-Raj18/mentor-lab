@@ -19,7 +19,7 @@ const Navbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("isAdmin");
-    navigate("/login");
+    window.location.href = "/";
     closeMenu();
   };
 

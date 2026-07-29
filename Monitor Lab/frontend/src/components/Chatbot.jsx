@@ -105,16 +105,8 @@ const Chatbot = () => {
           <div className="messages">
             {messages.map((m, i) => (
               <div key={i} className={`chat-bubble ${m.role}`}>
-                <span className="bubble-text">{m.content.replace(/\*\*/g, '')}</span>
-                {m.role === 'bot' && (
-                  <button
-                    className={`speak-btn ${speakingIndex === i ? 'speaking' : ''}`}
-                    onClick={() => speakText(m.content, i)}
-                    title={speakingIndex === i ? 'Stop' : 'Listen'}
-                  >
-                    {speakingIndex === i ? '⏹' : '🔊'}
-                  </button>
-                )}
+                <span className="bubble-text">{m.content.replace(/\*\*/g, '').replace(/[\r\n]+/g, ' ')}</span>
+
               </div>
             ))}
             {isTyping && (

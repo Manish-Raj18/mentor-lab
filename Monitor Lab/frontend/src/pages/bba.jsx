@@ -1,6 +1,4 @@
-import { useState } from "react";
 import "../css_files/bba.css";
-import AIExplainModal from "../components/AIExplainModal";
 
 const categories = [
   { title: "Management & Strategy", icon: "♟", cssClass: "card-mgmt", items: ["Principles of Management", "Organizational Behaviour", "Human Resource Management", "Strategic Management", "Business Ethics & Governance", "Entrepreneurship Development"] },
@@ -12,8 +10,6 @@ const categories = [
 ];
 
 function BBA() {
-  const [explainSubject, setExplainSubject] = useState(null);
-
   return (
     <div className="bba-container">
       <header className="bba-header">
@@ -32,17 +28,12 @@ function BBA() {
               {cat.items.map((item) => (
                 <li key={item} className="subject-item">
                   <a href="#">{item}</a>
-                  <button className="ai-explain-btn-sm" onClick={() => setExplainSubject(item)}>AI Explain</button>
                 </li>
               ))}
             </ul>
           </section>
         ))}
       </div>
-
-      {explainSubject && (
-        <AIExplainModal subject={explainSubject} course="BBA" onClose={() => setExplainSubject(null)} />
-      )}
     </div>
   );
 }

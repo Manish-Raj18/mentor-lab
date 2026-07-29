@@ -1,6 +1,4 @@
-import { useState } from "react";
 import "../css_files/bca.css";
-import AIExplainModal from "../components/AIExplainModal";
 
 const subjects = [
   { section: "Programming Languages", icon: "💻", items: ["C Programming", "C++ Programming", "Java Programming", "Python Programming", "HTML & Web Design", "JavaScript", "CSS Styling"] },
@@ -9,8 +7,6 @@ const subjects = [
 ];
 
 function BCA() {
-  const [explainSubject, setExplainSubject] = useState(null);
-
   return (
     <div className="bca-container">
       <header className="bca-header">
@@ -27,17 +23,12 @@ function BCA() {
               {section.items.map((item) => (
                 <li key={item} className="syllabus-item">
                   <a href="#">{item}</a>
-                  <button className="ai-explain-btn-sm" onClick={() => setExplainSubject(item)}>AI Explain</button>
                 </li>
               ))}
             </ul>
           </section>
         ))}
       </div>
-
-      {explainSubject && (
-        <AIExplainModal subject={explainSubject} course="BCA" onClose={() => setExplainSubject(null)} />
-      )}
     </div>
   );
 }
