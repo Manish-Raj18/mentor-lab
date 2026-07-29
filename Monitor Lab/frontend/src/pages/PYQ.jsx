@@ -153,7 +153,7 @@ const PYQ = () => {
     const key = `${course}:${subject}`;
     const pyq = pyqData[key];
     if (pyq) {
-      window.open(`${API_BASE.replace("/api", "")}/uploads/${pyq.pdfUrl}`, "_blank");
+      window.open(`${API_BASE.replace("/api", "")}/uploads/${pyq.pdfUrl.replace(/ /g, "%20")}`, "_blank");
     } else {
       alert(`PDF for "${subject}" not uploaded yet.`);
     }

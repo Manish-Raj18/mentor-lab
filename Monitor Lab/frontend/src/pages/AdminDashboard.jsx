@@ -630,7 +630,7 @@ function AdminDashboard() {
                             <td>{note.subject || "-"}</td>
                             <td className="cell-bold">{note.title}</td>
                             <td className="cell-center">
-                              <a href={`http://localhost:5000/uploads/${note.pdfUrl}`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
+                              <a href={`http://localhost:5000/uploads/${note.pdfUrl.replace(/ /g, "%20")}`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
                             </td>
                             <td className="cell-center">
                               <button onClick={() => handleDeleteNote(note._id)} className="btn-remove" style={{ padding: "4px 12px", fontSize: "0.8rem" }}>Delete</button>

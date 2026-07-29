@@ -13,7 +13,7 @@ function BIO() {
 
   const getPdfLink = (subjectName) => {
     const note = notes.find(n => n.subject === subjectName);
-    if (note) return `http://localhost:5000/uploads/${note.pdfUrl}`;
+    if (note) return `http://localhost:5000/uploads/${note.pdfUrl.replace(/ /g, "%20")}`;
 
     const localFiles = {
       "Biochemistry": "Biochemistry.pdf",

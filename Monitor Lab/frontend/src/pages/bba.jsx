@@ -22,7 +22,7 @@ function BBA() {
 
   const getPdfLink = (subjectName) => {
     const note = notes.find(n => n.subject === subjectName);
-    return note ? `http://localhost:5000/uploads/${note.pdfUrl}` : null;
+    return note ? `http://localhost:5000/uploads/${note.pdfUrl.replace(/ /g, "%20")}` : null;
   };
 
   return (
