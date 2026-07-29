@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "../css_files/bca.css";
 
 const subjects = [
@@ -7,6 +9,19 @@ const subjects = [
 ];
 
 function BCA() {
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/notes?course=BCA")
+      .then(res => setNotes(res.data))
+      .catch(err => console.log(err));
+  }, []);
+
+  const getPdfLink = (subjectName) => {
+    const note = notes.find(n => n.subject === subjectName);
+    return note ? `http://localhost:5000/uploads/${note.pdfUrl}` : null;
+  };
+
   return (
     <div className="bca-container">
       <header className="bca-header">
@@ -20,11 +35,18 @@ function BCA() {
             <span className="card-icon">{section.icon}</span>
             <h2>{section.section}</h2>
             <ul className="subject-list">
-              {section.items.map((item) => (
-                <li key={item} className="syllabus-item">
-                  <a href="#">{item}</a>
-                </li>
-              ))}
+              {section.items.map((item) => {
+                const pdfLink = getPdfLink(item);
+                return (
+                  <li key={item} className="syllabus-item">
+                    {pdfLink ? (
+                      <a href={pdfLink} target="_blank" rel="noreferrer">{item}</a>
+                    ) : (
+                      <span style={{ color: "var(--text-color)", opacity: 0.6 }}>{item}</span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </section>
         ))}

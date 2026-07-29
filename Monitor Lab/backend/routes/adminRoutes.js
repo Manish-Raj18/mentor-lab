@@ -58,6 +58,28 @@ router.get("/stats", async (req, res) => {
   }
 });
 
+router.get("/courses", async (req, res) => {
+  try {
+    const courses = await Course.find().select("title");
+    res.json(courses);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/courses", async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    if (!title) return res.status(400).json({ message: "Course title is required" });
+    const exists = await Course.findOne({ title });
+    if (exists) return res.status(400).json({ message: "Course already exists" });
+    const course = await Course.create({ title, description });
+    res.status(201).json(course);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.get("/students", async (req, res) => {
   try {
     const students = await User.find({ isAdmin: false }).select("name email studentId createdAt");

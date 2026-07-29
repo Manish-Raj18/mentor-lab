@@ -21,6 +21,8 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
     const note = new Notes({
       title: req.body.title,
       description: req.body.description,
+      course: req.body.course,
+      subject: req.body.subject,
       pdfUrl: req.file.filename,
     });
 
@@ -34,7 +36,10 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const notes = await Notes.find();
+    const filter = {};
+    if (req.query.course) filter.course = req.query.course;
+    if (req.query.subject) filter.subject = req.query.subject;
+    const notes = await Notes.find(filter);
 
     res.json(notes);
   } catch (error) {

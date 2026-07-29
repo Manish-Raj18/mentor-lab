@@ -6,20 +6,14 @@ function BIO() {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/notes")
-      .then((res) => setNotes(res.data))
-      .catch((err) => console.log(err));
+    axios.get("http://localhost:5000/api/notes?course=BIOTECH")
+      .then(res => setNotes(res.data))
+      .catch(err => console.log(err));
   }, []);
 
-  const getPdfLink = (title) => {
-    const note = notes.find(
-      (n) => n.title.toLowerCase() === title.toLowerCase()
-    );
-
-    if (note) {
-      return `http://localhost:5000/uploads/${note.pdfUrl}`;
-    }
+  const getPdfLink = (subjectName) => {
+    const note = notes.find(n => n.subject === subjectName);
+    if (note) return `http://localhost:5000/uploads/${note.pdfUrl}`;
 
     const localFiles = {
       "Biochemistry": "Biochemistry.pdf",
@@ -28,11 +22,11 @@ function BIO() {
       "Molecular Biology": "Molecular_Biology.pdf",
     };
 
-    if (localFiles[title]) {
-      return `http://localhost:5000/uploads/${localFiles[title]}`;
+    if (localFiles[subjectName]) {
+      return `http://localhost:5000/uploads/${localFiles[subjectName]}`;
     }
 
-    return "#";
+    return null;
   };
 
   const sections = [
@@ -63,11 +57,18 @@ function BIO() {
             <span className="card-icon">{section.icon}</span>
             <h2>{section.title}</h2>
             <ul className="syllabus-list">
-              {section.items.map((item) => (
-                <li key={item} className="syllabus-item">
-                  <a href={getPdfLink(item)} target="_blank" rel="noreferrer">{item}</a>
-                </li>
-              ))}
+              {section.items.map((item) => {
+                const pdfLink = getPdfLink(item);
+                return (
+                  <li key={item} className="syllabus-item">
+                    {pdfLink ? (
+                      <a href={pdfLink} target="_blank" rel="noreferrer">{item}</a>
+                    ) : (
+                      <span style={{ color: "var(--text-color)", opacity: 0.6 }}>{item}</span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </section>
         ))}

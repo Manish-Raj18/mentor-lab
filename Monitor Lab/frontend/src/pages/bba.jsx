@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "../css_files/bba.css";
 
 const categories = [
@@ -10,6 +12,19 @@ const categories = [
 ];
 
 function BBA() {
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/notes?course=BBA")
+      .then(res => setNotes(res.data))
+      .catch(err => console.log(err));
+  }, []);
+
+  const getPdfLink = (subjectName) => {
+    const note = notes.find(n => n.subject === subjectName);
+    return note ? `http://localhost:5000/uploads/${note.pdfUrl}` : null;
+  };
+
   return (
     <div className="bba-container">
       <header className="bba-header">
@@ -25,11 +40,18 @@ function BBA() {
               <h2 className="category-title">{cat.title}</h2>
             </div>
             <ul className="subject-list">
-              {cat.items.map((item) => (
-                <li key={item} className="subject-item">
-                  <a href="#">{item}</a>
-                </li>
-              ))}
+              {cat.items.map((item) => {
+                const pdfLink = getPdfLink(item);
+                return (
+                  <li key={item} className="subject-item">
+                    {pdfLink ? (
+                      <a href={pdfLink} target="_blank" rel="noreferrer">{item}</a>
+                    ) : (
+                      <span style={{ color: "var(--text-color)", opacity: 0.6 }}>{item}</span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </section>
         ))}

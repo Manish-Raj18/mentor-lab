@@ -15,7 +15,14 @@ const navItems = [
   { key: "overview", label: "Overview", icon: "📊" },
   { key: "mocktests", label: "Mock Tests", icon: "📝" },
   { key: "students", label: "Students", icon: "👥" },
+  { key: "uploadnotes", label: "Upload Notes", icon: "📄" },
 ];
+
+const coursesData = {
+  BCA: ["C Programming", "C++ Programming", "Java Programming", "Python Programming", "HTML & Web Design", "JavaScript", "CSS Styling", "Database Management System", "Data Structures & Algorithms", "Operating Systems", "System Analysis & Design", "Computer Architecture", "Design & Analysis of Algorithms", "Computer Networks", "Differential Calculus", "Integral Calculus", "Differential Equations", "Abstract Algebra", "Linear Algebra", "Matrix Algebra", "Analytical Geometry (3D)", "Probability Theory", "Probability Distributions", "Statistics & Central Tendency", "Measures of Variation", "Correlation Analysis", "Regression Analysis", "Sampling Distribution"],
+  BBA: ["Principles of Management", "Organizational Behaviour", "Human Resource Management", "Strategic Management", "Business Ethics & Governance", "Entrepreneurship Development", "Financial Accounting", "Cost Accounting", "Corporate Accounting", "Management Accounting", "Financial Management", "Income Tax Law & Practice", "Business Mathematics", "Business Statistics", "Research Methodology", "Operations Research", "Computer Applications & IT", "Management Information Systems", "Principles of Marketing", "Marketing Management", "Consumer Behavior Analysis", "E-Commerce & Digital Business", "International Business & EXIM", "Microeconomics", "Macroeconomics", "Business Environment", "Business Law / Legal Aspects", "Environmental Studies & CSR", "Production & Operations Mgmt", "Logistics & Supply Chain", "Business Communication", "Corporate Summer Internship", "Final Capstone Project & Viva"],
+  BIOTECH: ["Cell Biology", "Genetics", "Molecular Biology", "Biochemistry", "Microbiology", "Physiology", "Developmental Biology", "Biomolecules", "Biostatistics", "Genetic Engineering", "Recombinant DNA Technology", "Bioprocess Engineering", "Enzyme Technology", "Industrial Biotechnology", "Plant Biotechnology", "Animal Biotechnology", "Medical Biotechnology", "Agricultural Biotechnology", "Environmental Biotechnology", "Bioinformatics", "Computational Biology", "Immunology", "Virology", "Genomics", "Biosafety & Bioethics", "Research Methodology", "Project Work & Internship"]
+};
 
 function AdminDashboard() {
   const [activeSection, setActiveSection] = useState("overview");
@@ -29,6 +36,44 @@ function AdminDashboard() {
   const [pdfFile, setPdfFile] = useState(null);
   const [manualQuestions, setManualQuestions] = useState([{ question: "", options: ["", "", "", ""], correctAnswer: "" }]);
   const [uploading, setUploading] = useState(false);
+
+  const [notesCourse, setNotesCourse] = useState("");
+  const [notesSubject, setNotesSubject] = useState("");
+  const [notesTitle, setNotesTitle] = useState("");
+  const [notesDesc, setNotesDesc] = useState("");
+  const [notesPdf, setNotesPdf] = useState(null);
+
+  const handleNotesUpload = async (e) => {
+    e.preventDefault();
+    if (!notesPdf || !notesTitle || !notesCourse || !notesSubject) {
+      alert("Please fill all required fields");
+      return;
+    }
+    setUploading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const fd = new FormData();
+      fd.append("pdf", notesPdf);
+      fd.append("title", notesTitle);
+      fd.append("description", notesDesc);
+      fd.append("course", notesCourse);
+      fd.append("subject", notesSubject);
+      await axios.post(`${API_BASE}/notes/upload`, fd, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
+      });
+      alert("Notes uploaded successfully!");
+      setNotesCourse("");
+      setNotesSubject("");
+      setNotesTitle("");
+      setNotesDesc("");
+      setNotesPdf(null);
+      getStats();
+    } catch (err) {
+      alert(err.response?.data?.message || "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
     getStats();
@@ -446,6 +491,52 @@ function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {activeSection === "uploadnotes" && (
+            <div>
+              <div className="section-header">
+                <h2>Upload Study Notes</h2>
+              </div>
+              <div className="form-card">
+                <form onSubmit={handleNotesUpload}>
+                  <div className="form-field">
+                    <label>Course *</label>
+                    <select value={notesCourse} onChange={e => { setNotesCourse(e.target.value); setNotesSubject(""); }}>
+                      <option value="">Select Course</option>
+                      <option value="BCA">BCA</option>
+                      <option value="BBA">BBA</option>
+                      <option value="BIOTECH">BIOTECH</option>
+                    </select>
+                  </div>
+                  <div className="form-field">
+                    <label>Subject *</label>
+                    <select value={notesSubject} onChange={e => setNotesSubject(e.target.value)} disabled={!notesCourse}>
+                      <option value="">Select Subject</option>
+                      {notesCourse && coursesData[notesCourse]?.map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-field">
+                    <label>Title *</label>
+                    <input value={notesTitle} onChange={e => setNotesTitle(e.target.value)} placeholder="e.g. Chapter 1 Notes" />
+                  </div>
+                  <div className="form-field">
+                    <label>Description</label>
+                    <input value={notesDesc} onChange={e => setNotesDesc(e.target.value)} placeholder="Brief description" />
+                  </div>
+                  <div className="form-field">
+                    <label>Select PDF File *</label>
+                    <input type="file" accept=".pdf" onChange={e => setNotesPdf(e.target.files[0])} />
+                  </div>
+                  <button type="submit" disabled={uploading} className="btn-primary">
+                    {uploading ? "Uploading..." : "Upload Notes"}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
         </div>
       </main>
     </div>
