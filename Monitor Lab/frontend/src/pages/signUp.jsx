@@ -73,16 +73,20 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
 
+  const famousDomains = [
+    "gmail.com", "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "outlook.com",
+    "hotmail.com", "live.com", "rediffmail.com", "protonmail.com", "proton.me",
+    "icloud.com", "me.com", "aol.com", "mail.com", "zoho.com", "yandex.com",
+    "fastmail.com", "gmx.com", "tutanota.com", "gmx.net", "ymail.com",
+    "rocketmail.com", "inbox.com", "mail.ru"
+  ];
+
   const validateEmail = (email) => {
     const re = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    if (!re.test(email)) return false;
-    const parts = email.split("@");
-    if (parts.length !== 2) return false;
-    const domain = parts[1];
-    if (!domain.includes(".")) return false;
-    const tld = domain.split(".").pop();
-    if (tld.length < 2) return false;
-    return true;
+    if (!re.test(email)) return { valid: false, msg: "Please enter a valid email address" };
+    const domain = email.split("@")[1].toLowerCase();
+    if (!famousDomains.includes(domain)) return { valid: false, msg: "Please use a well-known email provider (Gmail, Yahoo, Outlook, etc.)" };
+    return { valid: true };
   };
 
   const validatePassword = (pwd) => {
@@ -107,8 +111,9 @@ function Signup() {
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!validateEmail(email)) {
-      newErrors.email = "Please enter a valid email address";
+    } else {
+      const emailCheck = validateEmail(email);
+      if (!emailCheck.valid) newErrors.email = emailCheck.msg;
     }
 
     if (!phone.trim()) {

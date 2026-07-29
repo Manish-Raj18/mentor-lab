@@ -2,10 +2,23 @@ import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 
+const famousDomains = [
+    "gmail.com", "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "outlook.com",
+    "hotmail.com", "live.com", "rediffmail.com", "protonmail.com", "proton.me",
+    "icloud.com", "me.com", "aol.com", "mail.com", "zoho.com", "yandex.com",
+    "fastmail.com", "gmx.com", "tutanota.com", "gmx.net", "ymail.com",
+    "rocketmail.com", "inbox.com", "mail.ru"
+];
+
 // 1. REGISTER NEW USER
 export const register = async (req, res) => {
     try {
         const { firstName, middleName, lastName, email, password, phone } = req.body;
+
+        const domain = email?.split("@")[1]?.toLowerCase();
+        if (!domain || !famousDomains.includes(domain)) {
+            return res.status(400).json({ message: "Please use a well-known email provider (Gmail, Yahoo, Outlook, etc.)" });
+        }
 
         const userExists = await User.findOne({ email });
         if (userExists) {

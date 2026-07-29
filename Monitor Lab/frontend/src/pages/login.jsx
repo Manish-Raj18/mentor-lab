@@ -23,10 +23,22 @@ if (email.trim() === "" || password.trim() === "") {
     return;
 }
 
-// 1. Email Format Validation (Regex)
+// 1. Email Format & Domain Validation
+const famousDomains = [
+    "gmail.com", "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "outlook.com",
+    "hotmail.com", "live.com", "rediffmail.com", "protonmail.com", "proton.me",
+    "icloud.com", "me.com", "aol.com", "mail.com", "zoho.com", "yandex.com",
+    "fastmail.com", "gmx.com", "tutanota.com", "gmx.net", "ymail.com",
+    "rocketmail.com", "inbox.com", "mail.ru"
+];
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 if (!emailRegex.test(email)) {
     alert("Please enter a valid email address.");
+    return;
+}
+const domain = email.split("@")[1].toLowerCase();
+if (!famousDomains.includes(domain)) {
+    alert("Please use a well-known email provider (Gmail, Yahoo, Outlook, etc.)");
     return;
 }
 
