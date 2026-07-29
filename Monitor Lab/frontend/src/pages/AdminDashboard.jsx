@@ -32,6 +32,7 @@ function AdminDashboard() {
   const [students, setStudents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [uploadMode, setUploadMode] = useState("pdf");
+  const [notes, setNotes] = useState([]);
   const [formData, setFormData] = useState({ title: "", subject: "", topic: "", duration: 60 });
   const [pdfFile, setPdfFile] = useState(null);
   const [manualQuestions, setManualQuestions] = useState([{ question: "", options: ["", "", "", ""], correctAnswer: "" }]);
@@ -67,6 +68,7 @@ function AdminDashboard() {
       setNotesTitle("");
       setNotesDesc("");
       setNotesPdf(null);
+      fetchNotes();
       getStats();
     } catch (err) {
       alert(err.response?.data?.message || "Upload failed");
@@ -75,10 +77,25 @@ function AdminDashboard() {
     }
   };
 
+  const handleDeleteNote = async (id) => {
+    if (!confirm("Delete this note?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE}/notes/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchNotes();
+      getStats();
+    } catch (err) {
+      alert(err.response?.data?.message || "Delete failed");
+    }
+  };
+
   useEffect(() => {
     getStats();
     fetchTests();
     fetchStudents();
+    fetchNotes();
   }, []);
 
   const getStats = async () => {
@@ -106,6 +123,15 @@ function AdminDashboard() {
     try {
       const res = await axios.get(`${API_BASE}/admin/students`);
       setStudents(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchNotes = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/notes`);
+      setNotes(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -534,9 +560,44 @@ function AdminDashboard() {
                   </button>
                 </form>
               </div>
+
+              <div className="section-header" style={{ marginTop: "2rem" }}>
+                <h2>All Notes</h2>
+              </div>
+              <div className="table-card">
+                <div className="table-scroll">
+                  <table className="dashboard-table">
+                    <thead>
+                      <tr>
+                        <th>Course</th><th>Subject</th><th>Title</th>
+                        <th style={{ textAlign: "center" }}>PDF</th>
+                        <th style={{ textAlign: "center" }}>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {notes.length === 0 ? (
+                        <tr><td colSpan="5" className="table-empty">No notes uploaded yet.</td></tr>
+                      ) : (
+                        notes.map((note) => (
+                          <tr key={note._id}>
+                            <td>{note.course || "-"}</td>
+                            <td>{note.subject || "-"}</td>
+                            <td className="cell-bold">{note.title}</td>
+                            <td className="cell-center">
+                              <a href={`http://localhost:5000/uploads/${note.pdfUrl}`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
+                            </td>
+                            <td className="cell-center">
+                              <button onClick={() => handleDeleteNote(note._id)} className="btn-remove" style={{ padding: "4px 12px", fontSize: "0.8rem" }}>Delete</button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           )}
-
         </div>
       </main>
     </div>
