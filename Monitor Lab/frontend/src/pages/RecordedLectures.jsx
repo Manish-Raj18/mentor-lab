@@ -1,5 +1,4 @@
 import "../css_files/recorded.css";
-import ReviewSection from "../components/ReviewSection";
 function RecordedLectures(){
     return(
         <div className="abc">
@@ -90,7 +89,6 @@ function RecordedLectures(){
     © 2026 Drona Gyan Platform | All Rights Reserved
   </footer>
 
-      <ReviewSection targetType="lectures" />
         </div>
     )
 

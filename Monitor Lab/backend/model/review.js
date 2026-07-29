@@ -13,7 +13,7 @@ const reviewSchema = new mongoose.Schema({
   targetType: {
     type: String,
     required: true,
-    enum: ["bca", "bba", "biotech", "notes", "lectures", "pyq"],
+    enum: ["mentor-lab", "bca", "bba", "biotech", "notes", "lectures", "pyq", "home", "about", "contact", "bca-roadmap", "bba-roadmap", "mock-test", "analytics", "chatbot", "login", "signup", "forgot-password", "admin-login", "admin", "profile"],
   },
   rating: {
     type: Number,

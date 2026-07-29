@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../css_files/about.css';
-import ReviewSection from "../components/ReviewSection";
 
 function AboutUs() {
   return (
@@ -49,7 +48,6 @@ function AboutUs() {
         <p>Join thousands of students already learning on Mentor Lab</p>
         <Link to="/" className="cta-button">Get Started</Link>
       </section>
-      <ReviewSection targetType="about" />
     </div>
   );
 }

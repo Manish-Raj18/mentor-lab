@@ -1,5 +1,4 @@
 import "../css_files/bca.css";
-import ReviewSection from "../components/ReviewSection";
 function BCA() {
   return (
     <div className="bca-container">
@@ -58,7 +57,6 @@ function BCA() {
           </ul>
         </section>
       </div>
-      <ReviewSection targetType="bca" />
     </div>
   );
 }

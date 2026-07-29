@@ -1,5 +1,4 @@
 import "../css_files/bio.css";
-import ReviewSection from "../components/ReviewSection";
 function BiotechSyllabus(){
   return (
    <>
@@ -142,7 +141,6 @@ function BiotechSyllabus(){
 
 </div>
 
-   <ReviewSection targetType="biotech" />
    </>
   );
 }

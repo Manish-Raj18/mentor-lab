@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css_files/login.css";
-import ReviewSection from "../components/ReviewSection";
 
 const countryCodes = [
   { code: "+1", country: "US", label: "United States (+1)" },
@@ -297,7 +296,6 @@ function Signup() {
         <div className="link">
           Already have account? <Link to="/">Login</Link>
         </div>
-      <ReviewSection targetType="signup" />
       </div>
     </div>
   );

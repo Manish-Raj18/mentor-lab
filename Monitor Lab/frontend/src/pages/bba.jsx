@@ -1,5 +1,4 @@
 import "../css_files/bba.css";
-import ReviewSection from "../components/ReviewSection";
 
 function BBA() {
   return (
@@ -97,7 +96,6 @@ function BBA() {
           </ul>
         </section>
       </div>
-      <ReviewSection targetType="bba" />
     </div>
   );
 }

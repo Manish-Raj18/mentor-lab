@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "../css_files/pyq.css";
-import ReviewSection from "../components/ReviewSection";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -234,7 +233,6 @@ const PYQ = () => {
         <footer className="pyq-footer">
           <p>&copy; 2026 PYQ Portal</p>
         </footer>
-        <ReviewSection targetType="pyq" />
       </div>
     );
   }
@@ -262,7 +260,6 @@ const PYQ = () => {
       <footer className="pyq-footer">
         <p>&copy; 2026 PYQ Portal</p>
       </footer>
-      <ReviewSection targetType="pyq" />
     </div>
   );
 };

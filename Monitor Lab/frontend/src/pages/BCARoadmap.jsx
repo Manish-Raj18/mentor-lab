@@ -1,5 +1,4 @@
 import "../css_files/roadmapbca.css";
-import ReviewSection from "../components/ReviewSection";
 
 const BCARoadmap = () => {
   return (
@@ -96,7 +95,6 @@ const BCARoadmap = () => {
           </div>
         </div>
       </div>
-      <ReviewSection targetType="bca-roadmap" />
     </div>
   );
 };

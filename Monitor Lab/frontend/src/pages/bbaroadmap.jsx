@@ -1,5 +1,4 @@
 import "../css_files/roadmapbb.css";
-import ReviewSection from "../components/ReviewSection";
 function RoadMAp(){
     return(
         <div className="main">
@@ -113,7 +112,6 @@ function RoadMAp(){
     </div>
     
 
-      <ReviewSection targetType="bba-roadmap" />
         </div>
     )
 }

@@ -50,7 +50,8 @@ function ReviewSection({ targetType }) {
 
   return (
     <div className="review-section">
-      <h2 className="review-heading">Reviews & Ratings</h2>
+      <h2 className="review-heading">What Students Say About Mentor Lab</h2>
+      <p className="review-subheading">Share your experience and help others learn better</p>
 
       {!isLoggedIn && (
         <p className="review-login-msg">
