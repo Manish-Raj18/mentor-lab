@@ -7,9 +7,11 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+const uploadDir = path.join(process.cwd(), "uploads");
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const safeName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, "_");

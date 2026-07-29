@@ -43,7 +43,7 @@ const ChatbotPage = () => {
 
     if (language === 'hindi') {
       try {
-        const res = await axios.post('http://localhost:5000/api/ai/tts', { text: cleanText, lang: 'hindi' }, { responseType: 'blob' });
+        const res = await axios.post('/api/ai/tts', { text: cleanText, lang: 'hindi' }, { responseType: 'blob' });
         const url = URL.createObjectURL(res.data);
         const audio = new Audio(url);
         audioRef.current = audio;
@@ -73,7 +73,7 @@ const ChatbotPage = () => {
     setIsTyping(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input, language });
+      const response = await axios.post('/api/ai/chat', { message: input, language });
       setMessages(prev => [...prev, { role: 'bot', content: response.data.reply }]);
     } catch (error) {
       setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting.' }]);

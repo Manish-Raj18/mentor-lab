@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../css_files/pyq.css";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "/api";
 
 const universities = [
   { id: "ranchi", name: "Ranchi University (Ranchi)" },
@@ -153,7 +153,7 @@ const PYQ = () => {
     const key = `${course}:${subject}`;
     const pyq = pyqData[key];
     if (pyq) {
-      window.open(`${API_BASE.replace("/api", "")}/uploads/${pyq.pdfUrl.replace(/ /g, "%20")}`, "_blank");
+      window.open(`/uploads/${encodeURIComponent(pyq.pdfUrl)}`, "_blank");
     } else {
       alert(`PDF for "${subject}" not uploaded yet.`);
     }

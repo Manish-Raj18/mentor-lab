@@ -6,14 +6,14 @@ function BIO() {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/notes?course=BIOTECH")
+    axios.get("/api/notes?course=BIOTECH")
       .then(res => setNotes(res.data))
       .catch(err => console.log(err));
   }, []);
 
   const getPdfLink = (subjectName) => {
     const note = notes.find(n => n.subject === subjectName);
-    if (note) return `http://localhost:5000/uploads/${note.pdfUrl.replace(/ /g, "%20")}`;
+    if (note) return `/uploads/${encodeURIComponent(note.pdfUrl)}`;
 
     const localFiles = {
       "Biochemistry": "Biochemistry.pdf",
@@ -23,7 +23,7 @@ function BIO() {
     };
 
     if (localFiles[subjectName]) {
-      return `http://localhost:5000/uploads/${localFiles[subjectName]}`;
+      return `/uploads/${localFiles[subjectName]}`;
     }
 
     return null;

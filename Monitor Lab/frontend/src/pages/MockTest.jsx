@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import "../css_files/mock.css";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "/api";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");

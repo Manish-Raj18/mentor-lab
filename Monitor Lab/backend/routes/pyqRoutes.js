@@ -1,15 +1,20 @@
 import express from "express";
 import multer from "multer";
+import path from "path";
+import fs from "fs";
 import PYQ from "../model/pyq.js";
 
 const router = express.Router();
 
+const uploadDir = path.join(process.cwd(), "uploads");
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, "_");
+    cb(null, Date.now() + "-" + safeName);
   },
 });
 
@@ -26,6 +31,23 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
     });
     await pyq.save();
     res.status(201).json(pyq);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const pyq = await PYQ.findById(req.params.id);
+    if (!pyq) {
+      return res.status(404).json({ message: "PYQ not found" });
+    }
+    const filePath = path.join(uploadDir, pyq.pdfUrl);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+    await PYQ.findByIdAndDelete(req.params.id);
+    res.json({ message: "PYQ deleted" });
   } catch (error) {
     res.status(500).json(error);
   }

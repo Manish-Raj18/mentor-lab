@@ -50,7 +50,7 @@ if (password.length < 6) {
 
         try {
             // Send the POST request to your Node.js backend port 5000
-            const response = await axios.post("http://localhost:5000/api/auth/login", {
+            const response = await axios.post("/api/auth/login", {
                 email: email,
                 password: password,
             });

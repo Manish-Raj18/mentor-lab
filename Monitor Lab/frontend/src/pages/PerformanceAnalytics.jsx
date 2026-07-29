@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import "../css_files/analytics.css";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "/api";
 
 const PerformanceAnalytics = () => {
   const [user, setUser] = useState(null);

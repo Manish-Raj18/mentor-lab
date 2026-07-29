@@ -7,7 +7,7 @@ import {
 } from "recharts";
 import "../css_files/dashboard.css";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "/api";
 
 const COLORS = ["#3498db", "#2ecc71", "#f39c12", "#9b59b6", "#e74c3c", "#1abc9c"];
 
@@ -38,6 +38,8 @@ function AdminDashboard() {
   const [pdfFile, setPdfFile] = useState(null);
   const [manualQuestions, setManualQuestions] = useState([{ question: "", options: ["", "", "", ""], correctAnswer: "" }]);
   const [uploading, setUploading] = useState(false);
+
+  const [pyqs, setPyqs] = useState([]);
 
   const [notesCourse, setNotesCourse] = useState("");
   const [notesSubject, setNotesSubject] = useState("");
@@ -114,12 +116,26 @@ function AdminDashboard() {
       setNotesTitle("");
       setNotesDesc("");
       setNotesPdf(null);
-      fetchNotes();
+      fetchPyqs();
       getStats();
     } catch (err) {
       alert(err.response?.data?.message || "Upload failed");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleDeletePyq = async (id) => {
+    if (!confirm("Delete this PYQ?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE}/pyq/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchPyqs();
+      getStats();
+    } catch (err) {
+      alert(err.response?.data?.message || "Delete failed");
     }
   };
 
@@ -142,6 +158,7 @@ function AdminDashboard() {
     fetchTests();
     fetchStudents();
     fetchNotes();
+    fetchPyqs();
   }, []);
 
   const getStats = async () => {
@@ -178,6 +195,15 @@ function AdminDashboard() {
     try {
       const res = await axios.get(`${API_BASE}/notes`);
       setNotes(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchPyqs = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/pyq`);
+      setPyqs(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -630,7 +656,7 @@ function AdminDashboard() {
                             <td>{note.subject || "-"}</td>
                             <td className="cell-bold">{note.title}</td>
                             <td className="cell-center">
-                              <a href={`http://localhost:5000/uploads/${note.pdfUrl.replace(/ /g, "%20")}`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
+                              <a href={`/uploads/${encodeURIComponent(note.pdfUrl)}`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
                             </td>
                             <td className="cell-center">
                               <button onClick={() => handleDeleteNote(note._id)} className="btn-remove" style={{ padding: "4px 12px", fontSize: "0.8rem" }}>Delete</button>
@@ -687,6 +713,42 @@ function AdminDashboard() {
                     {uploading ? "Uploading..." : "Upload PYQ"}
                   </button>
                 </form>
+              </div>
+
+              <div className="section-header" style={{ marginTop: "2rem" }}>
+                <h2>All PYQ Papers</h2>
+              </div>
+              <div className="table-card">
+                <div className="table-scroll">
+                  <table className="dashboard-table">
+                    <thead>
+                      <tr>
+                        <th>University</th><th>Course</th><th>Subject</th>
+                        <th style={{ textAlign: "center" }}>PDF</th>
+                        <th style={{ textAlign: "center" }}>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pyqs.length === 0 ? (
+                        <tr><td colSpan="5" className="table-empty">No PYQ papers uploaded yet.</td></tr>
+                      ) : (
+                        pyqs.map((pyq) => (
+                          <tr key={pyq._id}>
+                            <td>{pyq.universityName || "-"}</td>
+                            <td>{pyq.course?.toUpperCase() || "-"}</td>
+                            <td>{pyq.subject || "-"}</td>
+                            <td className="cell-center">
+                              <a href={`/uploads/${pyq.pdfUrl}`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
+                            </td>
+                            <td className="cell-center">
+                              <button onClick={() => handleDeletePyq(pyq._id)} className="btn-remove" style={{ padding: "4px 12px", fontSize: "0.8rem" }}>Delete</button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
