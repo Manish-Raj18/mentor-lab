@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom"
 import "../css_files/notes.css";
+import ReviewSection from "../components/ReviewSection";
 function StudyNotes(){
     return(
         <div className="Show">
@@ -44,6 +45,7 @@ function StudyNotes(){
 
   </div>
 
+      <ReviewSection targetType="notes" />
         </div>
     )
 }

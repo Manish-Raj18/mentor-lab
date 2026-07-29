@@ -1,4 +1,5 @@
 import "../css_files/biotech.css";
+import ReviewSection from "../components/ReviewSection";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -92,6 +93,7 @@ function BIO() {
           </ul>
         </section>
       </div>
+      <ReviewSection targetType="biotech" />
     </div>
   );
 }
