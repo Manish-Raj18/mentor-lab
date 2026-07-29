@@ -182,10 +182,12 @@ const PYQ = () => {
     return (
       <div className="pyq-page">
         <header className="pyq-header">
-          <button className="back-btn" onClick={() => setSelectedUni(null)}>
-            &larr; Back to Universities
-          </button>
-          <h1>{uni.name}</h1>
+          <div className="pyq-header-top">
+            <button className="back-btn" onClick={() => setSelectedUni(null)}>
+              &larr; Back
+            </button>
+            <h1>{uni.name}</h1>
+          </div>
           <p>Select a course and download PYQ papers</p>
         </header>
 

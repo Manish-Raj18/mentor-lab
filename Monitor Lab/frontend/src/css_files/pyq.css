@@ -7,6 +7,7 @@
 
 /* ===== Header ===== */
 .pyq-page .pyq-header {
+  position: relative;
   background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
   color: #fff;
   text-align: center;
@@ -26,21 +27,29 @@
   font-weight: 500;
 }
 
+.pyq-page .pyq-header-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
 .pyq-page .back-btn {
-  display: inline-block;
-  color: #bbdefb;
-  text-decoration: none;
-  font-size: 0.95rem;
-  margin-bottom: 15px;
-  transition: color 0.2s;
-  background: none;
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  background: #1a73e8;
   border: none;
   cursor: pointer;
   font-family: inherit;
   font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 6px;
 }
 
 .pyq-page .back-btn:hover {
+  background: #1557b0;
   color: #fff;
 }
 
