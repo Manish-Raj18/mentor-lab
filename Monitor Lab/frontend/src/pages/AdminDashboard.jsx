@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, AreaChart, Area,
+  Legend
+} from "recharts";
 import "../css_files/dashboard.css";
 
 const API_BASE = "http://localhost:5000/api";
+
+const COLORS = ["#3498db", "#2ecc71", "#f39c12", "#9b59b6", "#e74c3c", "#1abc9c"];
+const STAT_ICONS = ["👥", "📚", "📄", "🎬", "📝", "❓"];
 
 function AdminDashboard() {
   const [stats, setStats] = useState({});
@@ -145,31 +153,127 @@ function AdminDashboard() {
     setManualQuestions(prev => prev.filter((_, i) => i !== qIdx));
   };
 
+  const overviewData = [
+    { name: "Students", value: stats.totalStudents || 0 },
+    { name: "Courses", value: stats.totalCourses || 0 },
+    { name: "Notes", value: stats.totalNotes || 0 },
+    { name: "Lectures", value: stats.totalLectures || 0 },
+    { name: "Tests", value: stats.totalTests || 0 },
+    { name: "Questions", value: stats.totalQuestions || 0 },
+  ];
+
+  const statCards = [
+    { label: "Students", value: stats.totalStudents || 0, icon: "👥", color: "#3498db" },
+    { label: "Courses", value: stats.totalCourses || 0, icon: "📚", color: "#2ecc71" },
+    { label: "Notes", value: stats.totalNotes || 0, icon: "📄", color: "#9b59b6" },
+    { label: "Lectures", value: stats.totalLectures || 0, icon: "🎬", color: "#e74c3c" },
+    { label: "Tests", value: stats.totalTests || 0, icon: "📝", color: "#f39c12" },
+    { label: "Questions", value: stats.totalQuestions || 0, icon: "❓", color: "#1abc9c" },
+  ];
+
   return (
     <div className="admin-dashboard">
       <h1>Admin Dashboard</h1>
 
       <div className="stats-container">
-        <div className="stat-card students">
-          <h2>Student Logins</h2>
-          <p>{stats.totalStudents || 0}</p>
+        {statCards.map((card, i) => (
+          <div key={card.label} className="stat-card" style={{ borderTopColor: card.color }}>
+            <span className="stat-icon">{card.icon}</span>
+            <p className="stat-value">{card.value.toLocaleString()}</p>
+            <h2 className="stat-label">{card.label}</h2>
+          </div>
+        ))}
+      </div>
+
+      <div className="charts-grid">
+        <div className="chart-card">
+          <h3>Platform Overview</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={overviewData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+              <XAxis dataKey="name" tick={{ fill: "var(--text-color)", fontSize: 12 }} />
+              <YAxis tick={{ fill: "var(--text-color)", fontSize: 12 }} />
+              <Tooltip
+                contentStyle={{ background: "var(--card-bg)", border: "1px solid var(--border-color)", borderRadius: "8px", color: "var(--text-color)" }}
+              />
+              <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                {overviewData.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
-        <div className="stat-card courses">
-          <h2>Total Courses</h2>
-          <p>{stats.totalCourses || 0}</p>
+
+        <div className="chart-card">
+          <h3>Content Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={overviewData}
+                cx="50%"
+                cy="50%"
+                innerRadius={70}
+                outerRadius={110}
+                dataKey="value"
+                nameKey="name"
+                paddingAngle={3}
+              >
+                {overviewData.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="transparent" />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{ background: "var(--card-bg)", border: "1px solid var(--border-color)", borderRadius: "8px", color: "var(--text-color)" }}
+              />
+              <Legend wrapperStyle={{ fontSize: 12, color: "var(--text-color)" }} />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
-        <div className="stat-card notes">
-          <h2>Total Notes</h2>
-          <p>{stats.totalNotes || 0}</p>
-        </div>
-        <div className="stat-card lectures">
-          <h2>Total Lectures</h2>
-          <p>{stats.totalLectures || 0}</p>
-        </div>
-        <div className="stat-card tests">
-          <h2>Total Mock Tests</h2>
-          <p>{stats.totalTests || 0}</p>
-        </div>
+      </div>
+
+      <div className="charts-grid">
+        {(stats.registrationTrend && stats.registrationTrend.length > 0) ? (
+          <div className="chart-card full-width">
+            <h3>Student Registration Trend (Last 6 Months)</h3>
+            <ResponsiveContainer width="100%" height={280}>
+              <AreaChart data={stats.registrationTrend}>
+                <defs>
+                  <linearGradient id="regGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3498db" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#3498db" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                <XAxis dataKey="month" tick={{ fill: "var(--text-color)", fontSize: 12 }} />
+                <YAxis tick={{ fill: "var(--text-color)", fontSize: 12 }} allowDecimals={false} />
+                <Tooltip
+                  contentStyle={{ background: "var(--card-bg)", border: "1px solid var(--border-color)", borderRadius: "8px", color: "var(--text-color)" }}
+                />
+                <Area type="monotone" dataKey="students" stroke="#3498db" fill="url(#regGrad)" strokeWidth={2} dot={{ fill: "#3498db", r: 4 }} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        ) : null}
+
+        {(stats.subjectBreakdown && stats.subjectBreakdown.length > 0) ? (
+          <div className="chart-card full-width">
+            <h3>Tests & Questions by Subject</h3>
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={stats.subjectBreakdown}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                <XAxis dataKey="name" tick={{ fill: "var(--text-color)", fontSize: 12 }} />
+                <YAxis tick={{ fill: "var(--text-color)", fontSize: 12 }} allowDecimals={false} />
+                <Tooltip
+                  contentStyle={{ background: "var(--card-bg)", border: "1px solid var(--border-color)", borderRadius: "8px", color: "var(--text-color)" }}
+                />
+                <Legend wrapperStyle={{ fontSize: 12, color: "var(--text-color)" }} />
+                <Bar dataKey="tests" name="Tests" fill="#f39c12" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="questions" name="Questions" fill="#3498db" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        ) : null}
       </div>
 
       <div style={{ marginTop: "40px" }}>
