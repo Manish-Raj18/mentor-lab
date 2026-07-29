@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css_files/chatbot.css';
@@ -11,11 +11,28 @@ const Chatbot = () => {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
+
+  const speakText = useCallback((text, index) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text.replace(/\*\*(.*?)\*\*/g, '$1'));
+    utterance.lang = 'hi-IN';
+    utterance.rate = 1;
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => setSpeakingIndex(null);
+    setSpeakingIndex(index);
+    window.speechSynthesis.speak(utterance);
+  }, [speakingIndex]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -50,7 +67,16 @@ const Chatbot = () => {
           <div className="messages">
             {messages.map((m, i) => (
               <div key={i} className={`chat-bubble ${m.role}`}>
-                {m.content}
+                <span className="bubble-text">{m.content}</span>
+                {m.role === 'bot' && (
+                  <button
+                    className={`speak-btn ${speakingIndex === i ? 'speaking' : ''}`}
+                    onClick={() => speakText(m.content, i)}
+                    title={speakingIndex === i ? 'Stop' : 'Listen'}
+                  >
+                    {speakingIndex === i ? '⏹' : '🔊'}
+                  </button>
+                )}
               </div>
             ))}
             {isTyping && (
