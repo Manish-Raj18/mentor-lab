@@ -13,46 +13,52 @@ const Chatbot = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [speakingIndex, setSpeakingIndex] = useState(null);
   const [language, setLanguage] = useState('english');
-  const [voicesLoaded, setVoicesLoaded] = useState(false);
+  const audioRef = useRef(null);
   const messagesEndRef = useRef(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => {
-        setVoicesLoaded(true);
-        window.speechSynthesis.getVoices();
-      };
-      const prime = new SpeechSynthesisUtterance('');
-      prime.volume = 0;
-      window.speechSynthesis.speak(prime);
-    }
-  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
   const speakText = useCallback((text, index) => {
+    const cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1');
+
     if (speakingIndex === index) {
-      window.speechSynthesis.cancel();
+      if (language === 'hindi' && audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      } else {
+        window.speechSynthesis.cancel();
+      }
       setSpeakingIndex(null);
       return;
     }
-    window.speechSynthesis.cancel();
 
-    const cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1');
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = language === 'hindi' ? 'hi-IN' : 'en-US';
-    utterance.rate = 0.9;
-    utterance.volume = 1;
-    utterance.onend = () => setSpeakingIndex(null);
-    utterance.onerror = () => setSpeakingIndex(null);
+    window.speechSynthesis.cancel();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
 
     setSpeakingIndex(index);
-    setTimeout(() => {
-      window.speechSynthesis.speak(utterance);
-    }, 50);
+
+    if (language === 'hindi') {
+      const audio = new Audio();
+      audioRef.current = audio;
+      audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=hi&client=tw-ob`;
+      audio.onended = () => { setSpeakingIndex(null); audioRef.current = null; };
+      audio.onerror = () => { setSpeakingIndex(null); audioRef.current = null; };
+      audio.play().catch(() => setSpeakingIndex(null));
+    } else {
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      utterance.onend = () => setSpeakingIndex(null);
+      utterance.onerror = () => setSpeakingIndex(null);
+      setTimeout(() => {
+        window.speechSynthesis.speak(utterance);
+      }, 50);
+    }
   }, [speakingIndex, language]);
 
   const handleSend = async () => {
