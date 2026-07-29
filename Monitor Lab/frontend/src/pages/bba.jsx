@@ -1,6 +1,19 @@
+import { useState } from "react";
 import "../css_files/bba.css";
+import AIExplainModal from "../components/AIExplainModal";
+
+const categories = [
+  { title: "Management & Strategy", icon: "♟", cssClass: "card-mgmt", items: ["Principles of Management", "Organizational Behaviour", "Human Resource Management", "Strategic Management", "Business Ethics & Governance", "Entrepreneurship Development"] },
+  { title: "Finance & Accounts", icon: "📊", cssClass: "card-fin", items: ["Financial Accounting", "Cost Accounting", "Corporate Accounting", "Management Accounting", "Financial Management", "Income Tax Law & Practice"] },
+  { title: "Analytics & Tech", icon: "🔢", cssClass: "card-analytics", items: ["Business Mathematics", "Business Statistics", "Research Methodology", "Operations Research", "Computer Applications & IT", "Management Information Systems"] },
+  { title: "Marketing Dynamics", icon: "📣", cssClass: "card-mktg", items: ["Principles of Marketing", "Marketing Management", "Consumer Behavior Analysis", "E-Commerce & Digital Business", "International Business & EXIM"] },
+  { title: "Environment & Law", icon: "⚖️", cssClass: "card-eco", items: ["Microeconomics", "Macroeconomics", "Business Environment", "Business Law / Legal Aspects", "Environmental Studies & CSR"] },
+  { title: "Operations & Practice", icon: "⚙️", cssClass: "card-ops", items: ["Production & Operations Mgmt", "Logistics & Supply Chain", "Business Communication", "Corporate Summer Internship", "Final Capstone Project & Viva"] },
+];
 
 function BBA() {
+  const [explainSubject, setExplainSubject] = useState(null);
+
   return (
     <div className="bba-container">
       <header className="bba-header">
@@ -9,93 +22,27 @@ function BBA() {
       </header>
 
       <div className="syllabus-grid">
-        <section className="category-card card-mgmt">
-          <div className="category-header">
-            <span className="category-icon">♟</span>
-            <h2 className="category-title">Management & Strategy</h2>
-          </div>
-          <ul className="subject-list">
-            <li className="subject-item"><a href="#">Principles of Management</a></li>
-            <li className="subject-item"><a href="#">Organizational Behaviour</a></li>
-            <li className="subject-item"><a href="#">Human Resource Management</a></li>
-            <li className="subject-item"><a href="#">Strategic Management</a></li>
-            <li className="subject-item"><a href="#">Business Ethics & Governance</a></li>
-            <li className="subject-item"><a href="#">Entrepreneurship Development</a></li>
-          </ul>
-        </section>
-
-        <section className="category-card card-fin">
-          <div className="category-header">
-            <span className="category-icon">📊</span>
-            <h2 className="category-title">Finance & Accounts</h2>
-          </div>
-          <ul className="subject-list">
-            <li className="subject-item"><a href="#">Financial Accounting</a></li>
-            <li className="subject-item"><a href="#">Cost Accounting</a></li>
-            <li className="subject-item"><a href="#">Corporate Accounting</a></li>
-            <li className="subject-item"><a href="#">Management Accounting</a></li>
-            <li className="subject-item"><a href="#">Financial Management</a></li>
-            <li className="subject-item"><a href="#">Income Tax Law & Practice</a></li>
-          </ul>
-        </section>
-
-        <section className="category-card card-analytics">
-          <div className="category-header">
-            <span className="category-icon">🔢</span>
-            <h2 className="category-title">Analytics & Tech</h2>
-          </div>
-          <ul className="subject-list">
-            <li className="subject-item"><a href="#">Business Mathematics</a></li>
-            <li className="subject-item"><a href="#">Business Statistics</a></li>
-            <li className="subject-item"><a href="#">Research Methodology</a></li>
-            <li className="subject-item"><a href="#">Operations Research</a></li>
-            <li className="subject-item"><a href="#">Computer Applications & IT</a></li>
-            <li className="subject-item"><a href="#">Management Information Systems</a></li>
-          </ul>
-        </section>
-
-        <section className="category-card card-mktg">
-          <div className="category-header">
-            <span className="category-icon">📣</span>
-            <h2 className="category-title">Marketing Dynamics</h2>
-          </div>
-          <ul className="subject-list">
-            <li className="subject-item"><a href="#">Principles of Marketing</a></li>
-            <li className="subject-item"><a href="#">Marketing Management</a></li>
-            <li className="subject-item"><a href="#">Consumer Behavior Analysis</a></li>
-            <li className="subject-item"><a href="#">E-Commerce & Digital Business</a></li>
-            <li className="subject-item"><a href="#">International Business & EXIM</a></li>
-          </ul>
-        </section>
-
-        <section className="category-card card-eco">
-          <div className="category-header">
-            <span className="category-icon">⚖️</span>
-            <h2 className="category-title">Environment & Law</h2>
-          </div>
-          <ul className="subject-list">
-            <li className="subject-item"><a href="#">Microeconomics</a></li>
-            <li className="subject-item"><a href="#">Macroeconomics</a></li>
-            <li className="subject-item"><a href="#">Business Environment</a></li>
-            <li className="subject-item"><a href="#">Business Law / Legal Aspects</a></li>
-            <li className="subject-item"><a href="#">Environmental Studies & CSR</a></li>
-          </ul>
-        </section>
-
-        <section className="category-card card-ops">
-          <div className="category-header">
-            <span className="category-icon">⚙️</span>
-            <h2 className="category-title">Operations & Practice</h2>
-          </div>
-          <ul className="subject-list">
-            <li className="subject-item"><a href="#">Production & Operations Mgmt</a></li>
-            <li className="subject-item"><a href="#">Logistics & Supply Chain</a></li>
-            <li className="subject-item"><a href="#">Business Communication</a></li>
-            <li className="subject-item"><a href="#">Corporate Summer Internship</a></li>
-            <li className="subject-item"><a href="#">Final Capstone Project & Viva</a></li>
-          </ul>
-        </section>
+        {categories.map((cat) => (
+          <section key={cat.title} className={`category-card ${cat.cssClass}`}>
+            <div className="category-header">
+              <span className="category-icon">{cat.icon}</span>
+              <h2 className="category-title">{cat.title}</h2>
+            </div>
+            <ul className="subject-list">
+              {cat.items.map((item) => (
+                <li key={item} className="subject-item">
+                  <a href="#">{item}</a>
+                  <button className="ai-explain-btn-sm" onClick={() => setExplainSubject(item)}>AI Explain</button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
+
+      {explainSubject && (
+        <AIExplainModal subject={explainSubject} course="BBA" onClose={() => setExplainSubject(null)} />
+      )}
     </div>
   );
 }

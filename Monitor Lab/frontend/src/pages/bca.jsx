@@ -1,5 +1,16 @@
+import { useState } from "react";
 import "../css_files/bca.css";
+import AIExplainModal from "../components/AIExplainModal";
+
+const subjects = [
+  { section: "Programming Languages", icon: "💻", items: ["C Programming", "C++ Programming", "Java Programming", "Python Programming", "HTML & Web Design", "JavaScript", "CSS Styling"] },
+  { section: "Logical Subjects", icon: "🧠", items: ["Database Management System", "Data Structures & Algorithms", "Operating Systems", "System Analysis & Design", "Computer Architecture", "Design & Analysis of Algorithms", "Computer Networks"] },
+  { section: "Mathematics Subjects", icon: "📊", items: ["Differential Calculus", "Integral Calculus", "Differential Equations", "Abstract Algebra", "Linear Algebra", "Matrix Algebra", "Analytical Geometry (3D)", "Probability Theory", "Probability Distributions", "Statistics & Central Tendency", "Measures of Variation", "Correlation Analysis", "Regression Analysis", "Sampling Distribution"], mathCard: true },
+];
+
 function BCA() {
+  const [explainSubject, setExplainSubject] = useState(null);
+
   return (
     <div className="bca-container">
       <header className="bca-header">
@@ -8,55 +19,25 @@ function BCA() {
       </header>
 
       <div className="subjects-grid">
-        <section className="subject-card programming-card">
-          <span className="card-icon">💻</span>
-          <h2>Programming Languages</h2>
-          <ul className="subject-list">
-            <li><a href="#">C Programming</a></li>
-            <li><a href="#">C++ Programming</a></li>
-            <li><a href="#">Java Programming</a></li>
-            <li><a href="#">Python Programming</a></li>
-            <li><a href="#">HTML & Web Design</a></li>
-            <li><a href="#">JavaScript</a></li>
-            <li><a href="#">CSS Styling</a></li>
-          </ul>
-        </section>
-
-        <section className="subject-card logical-card">
-          <span className="card-icon">🧠</span>
-          <h2>Logical Subjects</h2>
-          <ul className="subject-list">
-            <li><a href="#">Database Management System</a></li>
-            <li><a href="#">Data Structures & Algorithms</a></li>
-            <li><a href="#">Operating Systems</a></li>
-            <li><a href="#">System Analysis & Design</a></li>
-            <li><a href="#">Computer Architecture</a></li>
-            <li><a href="#">Design & Analysis of Algorithms</a></li>
-            <li><a href="#">Computer Networks</a></li>
-          </ul>
-        </section>
-
-        <section className="subject-card math-card">
-          <span className="card-icon">📊</span>
-          <h2>Mathematics Subjects</h2>
-          <ul className="subject-list">
-            <li><a href="#">Differential Calculus</a></li>
-            <li><a href="#">Integral Calculus</a></li>
-            <li><a href="#">Differential Equations</a></li>
-            <li><a href="#">Abstract Algebra</a></li>
-            <li><a href="#">Linear Algebra</a></li>
-            <li><a href="#">Matrix Algebra</a></li>
-            <li><a href="#">Analytical Geometry (3D)</a></li>
-            <li><a href="#">Probability Theory</a></li>
-            <li><a href="#">Probability Distributions</a></li>
-            <li><a href="#">Statistics & Central Tendency</a></li>
-            <li><a href="#">Measures of Variation</a></li>
-            <li><a href="#">Correlation Analysis</a></li>
-            <li><a href="#">Regression Analysis</a></li>
-            <li><a href="#">Sampling Distribution</a></li>
-          </ul>
-        </section>
+        {subjects.map((section) => (
+          <section key={section.section} className={`subject-card ${section.mathCard ? "math-card" : ""}`}>
+            <span className="card-icon">{section.icon}</span>
+            <h2>{section.section}</h2>
+            <ul className="subject-list">
+              {section.items.map((item) => (
+                <li key={item} className="syllabus-item">
+                  <a href="#">{item}</a>
+                  <button className="ai-explain-btn-sm" onClick={() => setExplainSubject(item)}>AI Explain</button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
+
+      {explainSubject && (
+        <AIExplainModal subject={explainSubject} course="BCA" onClose={() => setExplainSubject(null)} />
+      )}
     </div>
   );
 }
