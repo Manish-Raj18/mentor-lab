@@ -12,7 +12,16 @@ const ChatbotPage = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [speakingIndex, setSpeakingIndex] = useState(null);
   const [language, setLanguage] = useState('english');
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length) setVoicesLoaded(true);
+      window.speechSynthesis.onvoiceschanged = () => setVoicesLoaded(true);
+    }
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -26,8 +35,15 @@ const ChatbotPage = () => {
     }
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text.replace(/\*\*(.*?)\*\*/g, '$1'));
-    utterance.lang = language === 'hindi' ? 'hi-IN' : 'en-US';
     utterance.rate = 0.9;
+    if (language === 'hindi') {
+      utterance.lang = 'hi-IN';
+      const voices = window.speechSynthesis.getVoices();
+      const hindiVoice = voices.find(v => v.lang.startsWith('hi'));
+      if (hindiVoice) utterance.voice = hindiVoice;
+    } else {
+      utterance.lang = 'en-US';
+    }
     utterance.onend = () => setSpeakingIndex(null);
     utterance.onerror = () => setSpeakingIndex(null);
     setSpeakingIndex(index);
