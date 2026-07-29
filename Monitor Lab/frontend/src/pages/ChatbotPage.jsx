@@ -19,11 +19,11 @@ const ChatbotPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  const speakText = useCallback((text, index) => {
+  const speakText = useCallback(async (text, index) => {
     const cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1');
 
     if (speakingIndex === index) {
-      if (language === 'hindi' && audioRef.current) {
+      if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
       } else {
@@ -42,12 +42,17 @@ const ChatbotPage = () => {
     setSpeakingIndex(index);
 
     if (language === 'hindi') {
-      const audio = new Audio();
-      audioRef.current = audio;
-      audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=hi&client=tw-ob`;
-      audio.onended = () => { setSpeakingIndex(null); audioRef.current = null; };
-      audio.onerror = () => { setSpeakingIndex(null); audioRef.current = null; };
-      audio.play().catch(() => setSpeakingIndex(null));
+      try {
+        const res = await axios.post('http://localhost:5000/api/ai/tts', { text: cleanText, lang: 'hindi' }, { responseType: 'blob' });
+        const url = URL.createObjectURL(res.data);
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        audio.onended = () => { setSpeakingIndex(null); URL.revokeObjectURL(url); audioRef.current = null; };
+        audio.onerror = () => { setSpeakingIndex(null); URL.revokeObjectURL(url); audioRef.current = null; };
+        audio.play().catch(() => setSpeakingIndex(null));
+      } catch {
+        setSpeakingIndex(null);
+      }
     } else {
       const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'en-US';
