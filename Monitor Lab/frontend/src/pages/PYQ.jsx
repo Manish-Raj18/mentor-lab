@@ -10,7 +10,7 @@ const universities = [
   { id: "dspmu", name: "Dr. Shyama Prasad Mukherjee University (DSPMU, Ranchi)" },
   { id: "bbmku", name: "Binod Bihari Mahto Koyalanchal University (BBMKU, Dhanbad)" },
   { id: "bit", name: "BIT Mesra (Ranchi)" },
-  { id: "skmu", name: "Sido Kanhu Murmu University (Dumka)" },
+  { id: "skmu", name: "Sidhu Kanhu Murmu University (Dumka)" },
 ];
 
 const subjectsData = {

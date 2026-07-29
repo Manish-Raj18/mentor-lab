@@ -1,11 +1,3 @@
-/* Reset Default Styles */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial, sans-serif;
-}
-
 /* Body Styling */
 .Show{
   background-image: url("https://images.unsplash.com/photo-1517842645767-c639042777db?w=1600&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bm90ZXN8ZW58MHx8MHx8fDA%3D");

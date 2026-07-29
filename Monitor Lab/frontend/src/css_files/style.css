@@ -45,6 +45,7 @@
 html, body, #root {
   width: 100%;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 body, .home, .light-theme, .dark-theme {
@@ -155,7 +156,7 @@ body, .home, .light-theme, .dark-theme {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 120px 4%;
+  padding: 60px 4%;
   gap: 30px;
   min-height: 100vh;
 }
