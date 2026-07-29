@@ -116,11 +116,7 @@ const subjectsData = {
 const PYQ = () => {
   const [selectedUni, setSelectedUni] = useState(null);
   const [pyqData, setPyqData] = useState({});
-  const [uploading, setUploading] = useState({});
-  const [carouselIndex, setCarouselIndex] = useState(0);
   const gridRef = useRef(null);
-
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   useEffect(() => {
     if (selectedUni) {
@@ -163,33 +159,6 @@ const PYQ = () => {
     }
   };
 
-  const handleUpload = async (course, subject, file) => {
-    const uni = universities.find((u) => u.id === selectedUni);
-    const key = `${course}:${subject}`;
-    setUploading((prev) => ({ ...prev, [key]: true }));
-
-    try {
-      const token = localStorage.getItem("token");
-      const formData = new FormData();
-      formData.append("pdf", file);
-      formData.append("universityId", selectedUni);
-      formData.append("universityName", uni.name);
-      formData.append("course", course);
-      formData.append("subject", subject);
-
-      const res = await axios.post(`${API_BASE}/pyq/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
-      });
-
-      setPyqData((prev) => ({ ...prev, [key]: res.data }));
-      alert(`PDF uploaded for "${subject}"`);
-    } catch (err) {
-      alert(err.response?.data?.message || "Upload failed");
-    } finally {
-      setUploading((prev) => ({ ...prev, [key]: false }));
-    }
-  };
-
   if (selectedUni) {
     const uni = universities.find((u) => u.id === selectedUni);
     return (
@@ -223,20 +192,7 @@ const PYQ = () => {
                       >
                         {hasPdf ? "Download PYQ" : "Not Available"}
                       </button>
-                      {isAdmin && (
-                        <label className="upload-label">
-                          {uploading[key] ? "..." : "Upload"}
-                          <input
-                            type="file"
-                            accept=".pdf"
-                            hidden
-                            onChange={(e) => {
-                              if (e.target.files[0]) handleUpload(course, subject, e.target.files[0]);
-                              e.target.value = "";
-                            }}
-                          />
-                        </label>
-                      )}
+
                     </li>
                   );
                 })}

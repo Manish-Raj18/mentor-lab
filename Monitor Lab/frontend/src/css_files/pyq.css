@@ -277,34 +277,6 @@
   background: #2d2d52;
 }
 
-.pyq-page .upload-label {
-  margin-left: 6px;
-  background: #e65100;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
-  display: inline-block;
-  width: 60px;
-  text-align: center;
-}
-
-.pyq-page .upload-label:hover {
-  background: #bf360c;
-}
-
-.dark-theme .pyq-page .upload-label {
-  background: #f57c00;
-}
-
-.dark-theme .pyq-page .upload-label:hover {
-  background: #e65100;
-}
-
 /* ===== Footer ===== */
 .pyq-page .pyq-footer {
   background: #1a1a2e;
