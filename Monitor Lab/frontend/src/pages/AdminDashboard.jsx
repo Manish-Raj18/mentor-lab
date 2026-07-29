@@ -16,6 +16,7 @@ const navItems = [
   { key: "mocktests", label: "Mock Tests", icon: "📝" },
   { key: "students", label: "Students", icon: "👥" },
   { key: "uploadnotes", label: "Upload Notes", icon: "📄" },
+  { key: "uploadpyq", label: "Upload PYQ", icon: "📋" },
 ];
 
 const coursesData = {
@@ -43,6 +44,51 @@ function AdminDashboard() {
   const [notesTitle, setNotesTitle] = useState("");
   const [notesDesc, setNotesDesc] = useState("");
   const [notesPdf, setNotesPdf] = useState(null);
+
+  const [pyqUniversity, setPyqUniversity] = useState("");
+  const [pyqCourse, setPyqCourse] = useState("");
+  const [pyqSubject, setPyqSubject] = useState("");
+  const [pyqPdf, setPyqPdf] = useState(null);
+  const [pyqUniversities] = useState([
+    { id: "ranchi", name: "Ranchi University (Ranchi)" },
+    { id: "vbu", name: "Vinoba Bhave University (VBU, Hazaribagh)" },
+    { id: "dspmu", name: "Dr. Shyama Prasad Mukherjee University (DSPMU, Ranchi)" },
+    { id: "bbmku", name: "Binod Bihari Mahto Koyalanchal University (BBMKU, Dhanbad)" },
+    { id: "bit", name: "BIT Mesra (Ranchi)" },
+    { id: "skmu", name: "Sido Kanhu Murmu University (Dumka)" },
+  ]);
+
+  const handlePyqUpload = async (e) => {
+    e.preventDefault();
+    if (!pyqPdf || !pyqUniversity || !pyqCourse || !pyqSubject) {
+      alert("Please fill all required fields");
+      return;
+    }
+    setUploading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const uni = pyqUniversities.find(u => u.id === pyqUniversity);
+      const fd = new FormData();
+      fd.append("pdf", pyqPdf);
+      fd.append("universityId", pyqUniversity);
+      fd.append("universityName", uni.name);
+      fd.append("course", pyqCourse);
+      fd.append("subject", pyqSubject);
+      await axios.post(`${API_BASE}/pyq/upload`, fd, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
+      });
+      alert("PYQ uploaded successfully!");
+      setPyqUniversity("");
+      setPyqCourse("");
+      setPyqSubject("");
+      setPyqPdf(null);
+      getStats();
+    } catch (err) {
+      alert(err.response?.data?.message || "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleNotesUpload = async (e) => {
     e.preventDefault();
@@ -598,6 +644,53 @@ function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {activeSection === "uploadpyq" && (
+            <div>
+              <div className="section-header">
+                <h2>Upload PYQ Papers</h2>
+              </div>
+              <div className="form-card">
+                <form onSubmit={handlePyqUpload}>
+                  <div className="form-field">
+                    <label>University *</label>
+                    <select value={pyqUniversity} onChange={e => setPyqUniversity(e.target.value)}>
+                      <option value="">Select University</option>
+                      {pyqUniversities.map(u => (
+                        <option key={u.id} value={u.id}>{u.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-field">
+                    <label>Course *</label>
+                    <select value={pyqCourse} onChange={e => { setPyqCourse(e.target.value); setPyqSubject(""); }}>
+                      <option value="">Select Course</option>
+                      <option value="bba">BBA</option>
+                      <option value="bca">BCA</option>
+                      <option value="biotech">BIOTECH</option>
+                    </select>
+                  </div>
+                  <div className="form-field">
+                    <label>Subject *</label>
+                    <select value={pyqSubject} onChange={e => setPyqSubject(e.target.value)} disabled={!pyqCourse}>
+                      <option value="">Select Subject</option>
+                      {pyqCourse && coursesData[pyqCourse.toUpperCase()]?.map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-field">
+                    <label>Select PDF File *</label>
+                    <input type="file" accept=".pdf" onChange={e => setPyqPdf(e.target.files[0])} />
+                  </div>
+                  <button type="submit" disabled={uploading} className="btn-primary">
+                    {uploading ? "Uploading..." : "Upload PYQ"}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
         </div>
       </main>
     </div>
