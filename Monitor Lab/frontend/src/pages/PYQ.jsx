@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../css_files/pyq.css";
 
@@ -117,6 +117,8 @@ const PYQ = () => {
   const [selectedUni, setSelectedUni] = useState(null);
   const [pyqData, setPyqData] = useState({});
   const [uploading, setUploading] = useState({});
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const gridRef = useRef(null);
 
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
@@ -125,6 +127,17 @@ const PYQ = () => {
       fetchPYQs(selectedUni);
     }
   }, [selectedUni]);
+
+  const slide = (dir) => {
+    const el = gridRef.current;
+    if (!el) return;
+    const cardWidth = el.querySelector(".uni-card")?.offsetWidth || 280;
+    const gap = 20;
+    const step = cardWidth + gap;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const newScroll = Math.max(0, Math.min(el.scrollLeft + dir * step, maxScroll));
+    el.scrollTo({ left: newScroll, behavior: "smooth" });
+  };
 
   const fetchPYQs = async (universityId) => {
     try {
@@ -246,18 +259,22 @@ const PYQ = () => {
         <p>Select your university to browse question papers</p>
       </header>
 
-      <main className="university-grid">
-        {universities.map((uni) => (
-          <button
-            key={uni.id}
-            className="uni-card"
-            onClick={() => setSelectedUni(uni.id)}
-          >
-            <h2>{uni.name}</h2>
-            <p>View PYQ &rarr;</p>
-          </button>
-        ))}
-      </main>
+      <div className="carousel-wrapper">
+        <main className="university-grid" ref={gridRef}>
+          {universities.map((uni) => (
+            <button
+              key={uni.id}
+              className="uni-card"
+              onClick={() => setSelectedUni(uni.id)}
+            >
+              <h2>{uni.name}</h2>
+              <p>View PYQ &rarr;</p>
+            </button>
+          ))}
+        </main>
+        <button className="carousel-arrow left" onClick={() => slide(-1)} aria-label="Previous">&#8249;</button>
+        <button className="carousel-arrow right" onClick={() => slide(1)} aria-label="Next">&#8250;</button>
+      </div>
 
       <footer className="pyq-footer">
         <p>&copy; 2026 PYQ Portal</p>
