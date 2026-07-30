@@ -1,4 +1,4 @@
-.bca-roadmap .main {
+.bca-roadmap {
     --accent-color: #1a2a6c;
     --card-bg: #ffffff;
     --bg-color: #f0f4f8;
@@ -9,31 +9,24 @@
 
     background-color: var(--bg-color);
     display: flex;
-    place-items: center;
-    width: 100vw;
-    min-height: 100vh;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
+    width: 100vw;
+    min-height: 100vh;
     color: var(--text-color);
-}
-
-.bca-roadmap .container {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .bca-roadmap .header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 4px;
 }
 
 .bca-roadmap .header h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: var(--text-color);
-    margin-bottom: 10px;
+    margin-bottom: 4px;
     text-transform: uppercase;
     text-decoration: underline;
 }
@@ -41,30 +34,54 @@
 .bca-roadmap .header p {
     color: var(--text-color);
     opacity: 0.9;
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     text-decoration-line: underline;
+}
+
+.bca-roadmap .middle-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
 }
 
 .bca-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    gap: 20px;
+    width: 100%;
+    max-width: 920px;
+}
+
+.row-divider {
+    width: 70%;
+    height: 3px;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+    opacity: 0.5;
 }
 
 .bca-card {
     background-color: var(--card-bg);
-    border-radius: 10px;
-    padding: 25px 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    border-top: 5px solid var(--accent-color);
-    border-left: 5px solid var(--accent-color);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-top: 3px solid var(--accent-color);
+    border-left: 3px solid var(--accent-color);
     color: var(--text-color);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 1 / 1;
+    width: 100%;
 }
 
 .bca-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card-blue { --card-accent: #1a2a6c; }
@@ -98,50 +115,53 @@
 .bca-card.card-teal .phase-tag { background: #40b0c0; }
 .bca-card.card-teal .subjects li::before { color: #40b0c0; }
 
-.bca-divider {
-    width: 80%;
-    height: 3px;
-    background-color: var(--accent-color);
-    margin: 40px auto;
-    border-radius: 2px;
-}
-
 .bca-roadmap .phase-tag {
     background: var(--accent-color);
     color: var(--hero-text);
     padding: 4px 12px;
-    font-size: 0.90rem;
+    font-size: 0.9rem;
     font-weight: 700;
     border-radius: 20px;
-    display: inline-block;
-    margin-bottom: 15px;
+    display: inline;
+    margin-bottom: 8px;
 }
 
 .bca-roadmap .focus {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: var(--text-color);
     opacity: 0.9;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
+    line-height: 1.4;
 }
 
 .bca-roadmap .elective-title {
-    margin-bottom: 12px;
-    font-size: large;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
     color: var(--text-color);
+}
+
+.card-icon {
+    font-size: 1.1rem;
+    margin-right: 4px;
+    display: inline;
+    vertical-align: middle;
 }
 
 .bca-roadmap .subjects {
     list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
 }
 
 .bca-roadmap .subjects li {
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     color: var(--text-color);
-    opacity: 0.8;
-    margin-bottom: 12px;
+    opacity: 0.9;
+    margin-bottom: 5px;
     position: relative;
-    padding-left: 15px;
-    line-height: 1.5;
+    padding-left: 16px;
+    line-height: 1.4;
 }
 
 .bca-roadmap .subjects li::before {
@@ -150,28 +170,23 @@
     font-weight: bold;
     position: absolute;
     left: 0;
+    opacity: 0.8;
 }
 
 .bca-roadmap .note-container {
     background-color: var(--secondary-bg);
     width: 100%;
-    border-radius: 10px;
+    max-width: 920px;
+    border-radius: 8px;
     color: var(--text-color);
-    margin-top: 40px;
-    font-size: larger;
-    line-height: 200%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    line-height: 1.4;
     border: 1px solid var(--border-color);
 }
 
 .bca-roadmap .note-container p {
-    margin-left: 7%;
-    margin-right: 2%;
-}
-
-.bca-roadmap .note-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    margin: 4px 3%;
 }
 
 @media screen and (max-width: 768px) {

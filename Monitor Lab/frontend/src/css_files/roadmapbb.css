@@ -1,40 +1,32 @@
-.bba-roadmap .main {
-    --accent-color: #1a2a6c;
+.bba-roadmap {
+    --accent-color: #8b1a1a;
     --card-bg: #ffffff;
-    --bg-color: #f0f4f8;
-    --text-color: #1a2a6c;
-    --secondary-bg: #e8eef5;
+    --bg-color: #fdf2f2;
+    --text-color: #8b1a1a;
+    --secondary-bg: #fce4e4;
     --hero-text: #ffffff;
-    --border-color: #c5d0e6;
+    --border-color: #f5c6c6;
 
     background-color: var(--bg-color);
     display: flex;
-    place-items: center;
-    width: 100vw;
-    min-height: 100vh;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
+    width: 100vw;
+    min-height: 100vh;
     color: var(--text-color);
-}
-
-.bba-roadmap .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    box-sizing: border-box;
+    padding: 1rem;
 }
 
 .bba-roadmap .header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 4px;
 }
 
 .bba-roadmap .header h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: var(--text-color);
-    margin-bottom: 10px;
+    margin-bottom: 4px;
     text-transform: uppercase;
     text-decoration: underline;
 }
@@ -42,31 +34,54 @@
 .bba-roadmap .header p {
     color: var(--text-color);
     opacity: 0.9;
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     text-decoration-line: underline;
+}
+
+.bba-roadmap .middle-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
 }
 
 .bba-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    gap: 20px;
     width: 100%;
+    max-width: 920px;
+}
+
+.row-divider {
+    width: 70%;
+    height: 3px;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+    opacity: 0.5;
 }
 
 .bba-card {
     background-color: var(--card-bg);
-    border-radius: 14px;
-    padding: 28px 25px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    border-top: 5px solid var(--accent-color);
-    border-left: 5px solid var(--accent-color);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-top: 3px solid var(--accent-color);
+    border-left: 3px solid var(--accent-color);
     color: var(--text-color);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 1 / 1;
+    width: 100%;
 }
 
 .bba-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card-blue { --card-accent: #1a2a6c; }
@@ -100,52 +115,53 @@
 .bba-card.card-teal .phase-tag { background: #40b0c0; }
 .bba-card.card-teal .subjects li::before { color: #40b0c0; }
 
-.bba-divider {
-    width: 80%;
-    height: 3px;
-    background-color: var(--accent-color);
-    margin: 40px auto;
-    border-radius: 2px;
-}
-
 .bba-roadmap .phase-tag {
     background: var(--accent-color);
     color: var(--hero-text);
-    padding: 6px 16px;
-    font-size: 0.95rem;
+    padding: 4px 12px;
+    font-size: 0.9rem;
     font-weight: 700;
     border-radius: 20px;
-    display: inline-block;
-    margin-bottom: 16px;
+    display: inline;
+    margin-bottom: 8px;
 }
 
 .bba-roadmap .focus {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: var(--text-color);
     opacity: 0.9;
-    margin-bottom: 16px;
-    line-height: 1.5;
+    margin-bottom: 8px;
+    line-height: 1.4;
 }
 
 .bba-roadmap .elective-title {
-    margin-bottom: 12px;
-    font-size: 1rem;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
     color: var(--text-color);
-    font-weight: 600;
+}
+
+.card-icon {
+    font-size: 1.1rem;
+    margin-right: 4px;
+    display: inline;
+    vertical-align: middle;
 }
 
 .bba-roadmap .subjects {
     list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
 }
 
 .bba-roadmap .subjects li {
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     color: var(--text-color);
-    opacity: 0.85;
-    margin-bottom: 12px;
+    opacity: 0.9;
+    margin-bottom: 5px;
     position: relative;
     padding-left: 16px;
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
 .bba-roadmap .subjects li::before {
@@ -154,28 +170,23 @@
     font-weight: bold;
     position: absolute;
     left: 0;
+    opacity: 0.8;
 }
 
 .bba-roadmap .note-container {
     background-color: var(--secondary-bg);
     width: 100%;
-    border-radius: 10px;
+    max-width: 920px;
+    border-radius: 8px;
     color: var(--text-color);
-    margin-top: 40px;
-    font-size: larger;
-    line-height: 200%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    line-height: 1.4;
     border: 1px solid var(--border-color);
 }
 
 .bba-roadmap .note-container p {
-    margin-left: 7%;
-    margin-right: 2%;
-}
-
-.bba-roadmap .note-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    margin: 8px 4%;
 }
 
 @media screen and (max-width: 768px) {

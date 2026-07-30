@@ -1,192 +1,202 @@
-body {
-    background-color: #f8fafc;
-    color: #1e293b;
-    line-height: 1.7;
+.bio-roadmap {
+    --accent-color: #1a6b3c;
+    --card-bg: #ffffff;
+    --bg-color: #f0faf4;
+    --text-color: #1a6b3c;
+    --secondary-bg: #d4edda;
+    --hero-text: #ffffff;
+    --border-color: #b8dfc6;
+
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100vw;
+    min-height: 100vh;
+    color: var(--text-color);
+    padding: 1rem;
 }
 
-header {
+.bio-roadmap .header {
     text-align: center;
-    max-width: 800px;
-    margin: 0 auto 60px auto;
-    padding: 30px 20px;
+    margin-bottom: 4px;
 }
 
-.header-badge {
-    display: inline-block;
-    background-color: #e0f2fe;
-    color: #0369a1;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 20px;
+.bio-roadmap .header h1 {
+    font-size: 2rem;
+    color: var(--text-color);
+    margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 12px;
+    text-decoration: underline;
 }
 
-header h1 {
-    font-size: 2.8rem;
-    color: #0f172a;
-    font-weight: 800;
-    margin-bottom: 12px;
-    letter-spacing: -0.02em;
+.bio-roadmap .header p {
+    color: var(--text-color);
+    opacity: 0.9;
+    font-size: 1.15rem;
+    text-decoration-line: underline;
 }
 
-header p {
-    font-size: 1.1rem;
-    color: #64748b;
+.bio-roadmap .middle-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
 }
 
-.roadmap-container {
-    position: relative;
-    max-width: 850px;
-    margin: 0 auto;
-    padding: 20px 0;
+.bio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 920px;
 }
 
-/* Central Timeline Line */
-.roadmap-container::after {
-    content: '';
-    position: absolute;
-    width: 4px;
-    background: linear-gradient(to bottom, #0ea5e9, #2563eb);
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    margin-left: -2px;
-    border-radius: 4px;
+.row-divider {
+    width: 70%;
+    height: 3px;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+    opacity: 0.5;
 }
 
-.milestone {
-    padding: 15px 50px;
-    position: relative;
-    background-color: inherit;
-    width: 50%;
-}
-
-/* Decorative timeline dots */
-.milestone::after {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    right: -8px;
-    background-color: #fff;
-    border: 4px solid #0ea5e9;
-    top: 28px;
-    border-radius: 50%;
-    z-index: 1;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
-}
-
-.left {
-    left: 0;
-}
-
-.right {
-    left: 50%;
-}
-
-.right::after {
-    left: -8px;
-}
-
-/* Main Box Design */
-.content {
-    padding: 24px;
-    background-color: #ffffff;
-    position: relative;
+.bio-card {
+    background-color: var(--card-bg);
     border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    border: 1px solid #e2e8f0;
+    padding: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-top: 3px solid var(--accent-color);
+    border-left: 3px solid var(--accent-color);
+    color: var(--text-color);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 1 / 1;
+    width: 100%;
 }
 
-/* Phase Number Badge */
-.phase-number {
-    position: absolute;
-    top: 20px;
-    right: 24px;
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #f1f5f9;
-    line-height: 1;
-    transition: color 0.3s ease;
+.bio-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.content h3 {
-    color: #0f172a;
-    margin-bottom: 16px;
-    font-size: 1.25rem;
+.card-blue { --card-accent: #1a2a6c; }
+.card-green { --card-accent: #0d7c3e; }
+.card-purple { --card-accent: #7b2d8e; }
+.card-orange { --card-accent: #e8751a; }
+.card-red { --card-accent: #c0392b; }
+.card-teal { --card-accent: #00838f; }
+
+.bio-card.card-teal { border-top-color: #4a6fa5; border-left-color: #4a6fa5; }
+.bio-card.card-teal .phase-tag { background: #4a6fa5; }
+.bio-card.card-teal .subjects li { color: #4a6fa5; }
+.bio-card.card-teal .subjects li::before { color: #4a6fa5; }
+
+.bio-card.card-purple { border-top-color: #2e8b57; border-left-color: #2e8b57; }
+.bio-card.card-purple .phase-tag { background: #2e8b57; }
+.bio-card.card-purple .subjects li { color: #2e8b57; }
+.bio-card.card-purple .subjects li::before { color: #2e8b57; }
+
+.bio-card.card-blue { border-top-color: #9b59b6; border-left-color: #9b59b6; }
+.bio-card.card-blue .phase-tag { background: #9b59b6; }
+.bio-card.card-blue .subjects li { color: #9b59b6; }
+.bio-card.card-blue .subjects li::before { color: #9b59b6; }
+
+.bio-card.card-green { border-top-color: #0d9488; border-left-color: #0d9488; }
+.bio-card.card-green .phase-tag { background: #0d9488; }
+.bio-card.card-green .subjects li { color: #0d9488; }
+.bio-card.card-green .subjects li::before { color: #0d9488; }
+
+.bio-card.card-orange { border-top-color: #f0a050; border-left-color: #f0a050; }
+.bio-card.card-orange .phase-tag { background: #f0a050; }
+.bio-card.card-orange .subjects li { color: #f0a050; }
+.bio-card.card-orange .subjects li::before { color: #f0a050; }
+
+.bio-card.card-red { border-top-color: #e07060; border-left-color: #e07060; }
+.bio-card.card-red .phase-tag { background: #e07060; }
+.bio-card.card-red .subjects li { color: #e07060; }
+.bio-card.card-red .subjects li::before { color: #e07060; }
+
+.bio-roadmap .phase-tag {
+    background: var(--accent-color);
+    color: var(--hero-text);
+    padding: 4px 12px;
+    font-size: 0.9rem;
     font-weight: 700;
+    border-radius: 20px;
+    display: inline;
+    margin-bottom: 8px;
+}
+
+.bio-roadmap .focus {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.9;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.bio-roadmap .elective-title {
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.card-icon {
+    font-size: 1.1rem;
+    margin-right: 4px;
+    display: inline;
+    vertical-align: middle;
+}
+
+.bio-roadmap .subjects {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+}
+
+.bio-roadmap .subjects li {
+    font-size: 0.82rem;
+    color: var(--text-color);
+    opacity: 0.9;
+    margin-bottom: 5px;
     position: relative;
-    padding-right: 40px;
+    padding-left: 16px;
+    line-height: 1.4;
 }
 
-.content ul {
-    list-style-type: none;
-}
-
-.content li {
-    margin-bottom: 12px;
-    position: relative;
-    padding-left: 24px;
-    font-size: 0.95rem;
-    color: #475569;
-}
-
-.content li:last-child {
-    margin-bottom: 0;
-}
-
-/* Custom Bullet Point (DNA Emoji / Icon placeholder) */
-.content li::before {
-    content: "🧬";
+.bio-roadmap .subjects li::before {
+    content: '→';
+    color: var(--accent-color);
+    font-weight: bold;
     position: absolute;
     left: 0;
-    top: 1px;
-    font-size: 0.9rem;
+    opacity: 0.8;
 }
 
-/* Hover Effects */
-.milestone:hover .content {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    border-color: #cbd5e1;
+.bio-roadmap .note-container {
+    background-color: var(--secondary-bg);
+    width: 100%;
+    max-width: 920px;
+    border-radius: 8px;
+    color: var(--text-color);
+    margin-top: 10px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    border: 1px solid var(--border-color);
 }
 
-.milestone:hover::after {
-    background-color: #0ea5e9;
-    scale: 1.2;
+.bio-roadmap .note-container p {
+    margin: 8px 4%;
 }
 
-.milestone:hover .phase-number {
-    color: #e2e8f0;
-}
-
-/* Responsive Design for Tablets and Mobiles */
 @media screen and (max-width: 768px) {
-    .roadmap-container::after {
-        left: 20px;
-    }
-
-    .milestone {
-        width: 100%;
-        padding-left: 45px;
-        padding-right: 10px;
-    }
-
-    .milestone::after {
-        left: 12px;
-    }
-
-    .right {
-        left: 0%;
-    }
-    
-    .phase-number {
-        top: 20px;
-        right: 20px;
+    .bio-grid {
+        grid-template-columns: 1fr;
     }
 }
