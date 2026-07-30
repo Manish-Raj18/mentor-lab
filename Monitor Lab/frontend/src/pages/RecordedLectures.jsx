@@ -18,7 +18,7 @@ function RecordedLectures(){
     
     <div className="video-section">
 
-      <video controls poster="C:\xampp\htdocs\xampp\900*500">
+      <video controls poster="C:/xampp/htdocs/xampp/900*500">
         <source src="/intro 2.mp4" type="video/mp4"/>
         Your browser does not support video.
       </video>

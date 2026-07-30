@@ -1,15 +1,6 @@
-/* Universal Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    padding: 2rem 0;
 }
 
 .roadmap-wrapper {

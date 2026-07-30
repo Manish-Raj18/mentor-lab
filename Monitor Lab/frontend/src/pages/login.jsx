@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import "../css_files/login.css"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
     // 1. Form state variables
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     // 2. Form submission handler marked as async
     const handleLogin = async (e) => {
@@ -22,10 +23,22 @@ if (email.trim() === "" || password.trim() === "") {
     return;
 }
 
-// 1. Email Format Validation (Regex)
+// 1. Email Format & Domain Validation
+const famousDomains = [
+    "gmail.com", "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "outlook.com",
+    "hotmail.com", "live.com", "rediffmail.com", "protonmail.com", "proton.me",
+    "icloud.com", "me.com", "aol.com", "mail.com", "zoho.com", "yandex.com",
+    "fastmail.com", "gmx.com", "tutanota.com", "gmx.net", "ymail.com",
+    "rocketmail.com", "inbox.com", "mail.ru"
+];
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 if (!emailRegex.test(email)) {
     alert("Please enter a valid email address.");
+    return;
+}
+const domain = email.split("@")[1].toLowerCase();
+if (!famousDomains.includes(domain)) {
+    alert("Please use a well-known email provider (Gmail, Yahoo, Outlook, etc.)");
     return;
 }
 
@@ -37,7 +50,7 @@ if (password.length < 6) {
 
         try {
             // Send the POST request to your Node.js backend port 5000
-            const response = await axios.post("http://localhost:5000/api/auth/login", {
+            const response = await axios.post("/api/auth/login", {
                 email: email,
                 password: password,
             });
@@ -50,8 +63,8 @@ if (password.length < 6) {
             localStorage.clear();
             
             localStorage.setItem("token", response.data.token);
-            // We no longer need to store the user object in localStorage
-            // as the Profile page now fetches it directly from the backend.
+
+            window.location.href = "/";
 
         } catch (error) {
             // Catch and display any errors from the backend

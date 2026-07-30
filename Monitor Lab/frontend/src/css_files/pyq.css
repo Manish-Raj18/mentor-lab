@@ -7,6 +7,7 @@
 
 /* ===== Header ===== */
 .pyq-page .pyq-header {
+  position: relative;
   background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
   color: #fff;
   text-align: center;
@@ -26,67 +27,153 @@
   font-weight: 500;
 }
 
+.pyq-page .pyq-header-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
 .pyq-page .back-btn {
-  display: inline-block;
-  color: #bbdefb;
-  text-decoration: none;
-  font-size: 0.95rem;
-  margin-bottom: 15px;
-  transition: color 0.2s;
-  background: none;
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  background: #1a73e8;
   border: none;
   cursor: pointer;
   font-family: inherit;
   font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 6px;
 }
 
 .pyq-page .back-btn:hover {
+  background: #1557b0;
   color: #fff;
+}
+
+/* ===== University Carousel ===== */
+.pyq-page .carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  padding: 40px 0;
+}
+
+.pyq-page .carousel-arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #1a1a2e;
+  color: #fff;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.pyq-page .carousel-arrow.left {
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  position: absolute;
+}
+
+.pyq-page .carousel-arrow.right {
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+  position: absolute;
+  left: auto;
+}
+
+.pyq-page .carousel-arrow:hover {
+  background: #333366;
 }
 
 /* ===== University Grid ===== */
 .pyq-page .university-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
+  display: flex;
+  gap: 0;
   width: 100%;
-  flex: 1;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.pyq-page .university-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.pyq-page .university-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.pyq-page .university-grid::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.pyq-page .university-grid::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .pyq-page .uni-card {
+  flex-shrink: 0;
+  width: 100%;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   background: #fff;
-  border-radius: 12px;
-  padding: 30px 25px;
+  border-radius: 20px;
+  padding: 60px 40px;
   text-decoration: none;
   color: #333;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
   text-align: center;
-  border-left: 5px solid #1a1a2e;
+  border-left: 6px solid #1a1a2e;
   cursor: pointer;
   border-top: none;
   border-right: none;
   border-bottom: none;
   font-family: inherit;
+  scroll-snap-align: start;
 }
 
 .pyq-page .uni-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
 .pyq-page .uni-card h2 {
-  font-size: 1.3rem;
-  margin-bottom: 10px;
+  font-size: 1.8rem;
+  margin: 0;
 }
 
 .pyq-page .uni-card p {
   color: #1a1a2e;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
+  margin: 0;
 }
 
 /* ===== Courses Page ===== */
@@ -190,32 +277,13 @@
   background: #2d2d52;
 }
 
-.pyq-page .upload-label {
-  margin-left: 6px;
-  background: #e65100;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
-  display: inline-block;
-  width: 60px;
-  text-align: center;
+.pyq-page .download-btn.disabled {
+  background: #888;
+  cursor: default;
 }
 
-.pyq-page .upload-label:hover {
-  background: #bf360c;
-}
-
-.dark-theme .pyq-page .upload-label {
-  background: #f57c00;
-}
-
-.dark-theme .pyq-page .upload-label:hover {
-  background: #e65100;
+.pyq-page .download-btn.disabled:hover {
+  background: #888;
 }
 
 /* ===== Footer ===== */

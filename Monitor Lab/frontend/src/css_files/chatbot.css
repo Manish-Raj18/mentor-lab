@@ -193,7 +193,7 @@
   line-height: 1.5;
   overflow-wrap: break-word;
   word-break: break-word;
-  white-space: pre-wrap;
+  white-space: normal;
   min-width: 0;
   box-sizing: border-box;
 }
@@ -202,7 +202,7 @@
   display: block;
   overflow-wrap: break-word;
   word-break: break-word;
-  white-space: pre-wrap;
+  white-space: normal;
   width: 100%;
 }
 
@@ -440,7 +440,7 @@
   flex: 1;
   overflow-wrap: break-word;
   word-break: break-word;
-  white-space: pre-wrap;
+  white-space: normal;
   min-width: 0;
 }
 

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../css_files/pyq.css";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "/api";
 
 const universities = [
   { id: "ranchi", name: "Ranchi University (Ranchi)" },
@@ -10,7 +10,7 @@ const universities = [
   { id: "dspmu", name: "Dr. Shyama Prasad Mukherjee University (DSPMU, Ranchi)" },
   { id: "bbmku", name: "Binod Bihari Mahto Koyalanchal University (BBMKU, Dhanbad)" },
   { id: "bit", name: "BIT Mesra (Ranchi)" },
-  { id: "skmu", name: "Sido Kanhu Murmu University (Dumka)" },
+  { id: "skmu", name: "Sidhu Kanhu Murmu University (Dumka)" },
 ];
 
 const subjectsData = {
@@ -116,15 +116,24 @@ const subjectsData = {
 const PYQ = () => {
   const [selectedUni, setSelectedUni] = useState(null);
   const [pyqData, setPyqData] = useState({});
-  const [uploading, setUploading] = useState({});
-
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const gridRef = useRef(null);
 
   useEffect(() => {
     if (selectedUni) {
       fetchPYQs(selectedUni);
     }
   }, [selectedUni]);
+
+  const slide = (dir) => {
+    const el = gridRef.current;
+    if (!el) return;
+    const cardWidth = el.querySelector(".uni-card")?.offsetWidth || 280;
+    const gap = 20;
+    const step = cardWidth + gap;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const newScroll = Math.max(0, Math.min(el.scrollLeft + dir * step, maxScroll));
+    el.scrollTo({ left: newScroll, behavior: "smooth" });
+  };
 
   const fetchPYQs = async (universityId) => {
     try {
@@ -140,52 +149,17 @@ const PYQ = () => {
     }
   };
 
-  const handleDownload = (course, subject) => {
-    const key = `${course}:${subject}`;
-    const pyq = pyqData[key];
-    if (pyq) {
-      window.open(`${API_BASE.replace("/api", "")}/uploads/${pyq.pdfUrl}`, "_blank");
-    } else {
-      alert(`PDF for "${subject}" not uploaded yet.`);
-    }
-  };
-
-  const handleUpload = async (course, subject, file) => {
-    const uni = universities.find((u) => u.id === selectedUni);
-    const key = `${course}:${subject}`;
-    setUploading((prev) => ({ ...prev, [key]: true }));
-
-    try {
-      const token = localStorage.getItem("token");
-      const formData = new FormData();
-      formData.append("pdf", file);
-      formData.append("universityId", selectedUni);
-      formData.append("universityName", uni.name);
-      formData.append("course", course);
-      formData.append("subject", subject);
-
-      const res = await axios.post(`${API_BASE}/pyq/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
-      });
-
-      setPyqData((prev) => ({ ...prev, [key]: res.data }));
-      alert(`PDF uploaded for "${subject}"`);
-    } catch (err) {
-      alert(err.response?.data?.message || "Upload failed");
-    } finally {
-      setUploading((prev) => ({ ...prev, [key]: false }));
-    }
-  };
-
   if (selectedUni) {
     const uni = universities.find((u) => u.id === selectedUni);
     return (
       <div className="pyq-page">
         <header className="pyq-header">
-          <button className="back-btn" onClick={() => setSelectedUni(null)}>
-            &larr; Back to Universities
-          </button>
-          <h1>{uni.name}</h1>
+          <div className="pyq-header-top">
+            <button className="back-btn" onClick={() => setSelectedUni(null)}>
+              &larr; Back
+            </button>
+            <h1>{uni.name}</h1>
+          </div>
           <p>Select a course and download PYQ papers</p>
         </header>
 
@@ -202,26 +176,17 @@ const PYQ = () => {
                   return (
                     <li key={subject}>
                       <span className="subject-name">{subject}</span>
-                      <button
-                        className="download-btn"
-                        onClick={() => handleDownload(course, subject)}
-                      >
-                        {hasPdf ? "Download PYQ" : "Not Available"}
-                      </button>
-                      {isAdmin && (
-                        <label className="upload-label">
-                          {uploading[key] ? "..." : "Upload"}
-                          <input
-                            type="file"
-                            accept=".pdf"
-                            hidden
-                            onChange={(e) => {
-                              if (e.target.files[0]) handleUpload(course, subject, e.target.files[0]);
-                              e.target.value = "";
-                            }}
-                          />
-                        </label>
+                      {hasPdf ? (
+                        <a
+                          href={`/uploads/${encodeURIComponent(pyqData[key].pdfUrl)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="download-btn"
+                        >Download PYQ</a>
+                      ) : (
+                        <span className="download-btn disabled">Not Available</span>
                       )}
+
                     </li>
                   );
                 })}
@@ -244,18 +209,22 @@ const PYQ = () => {
         <p>Select your university to browse question papers</p>
       </header>
 
-      <main className="university-grid">
-        {universities.map((uni) => (
-          <button
-            key={uni.id}
-            className="uni-card"
-            onClick={() => setSelectedUni(uni.id)}
-          >
-            <h2>{uni.name}</h2>
-            <p>View PYQ &rarr;</p>
-          </button>
-        ))}
-      </main>
+      <div className="carousel-wrapper">
+        <main className="university-grid" ref={gridRef}>
+          {universities.map((uni) => (
+            <button
+              key={uni.id}
+              className="uni-card"
+              onClick={() => setSelectedUni(uni.id)}
+            >
+              <h2>{uni.name}</h2>
+              <p>View PYQ &rarr;</p>
+            </button>
+          ))}
+        </main>
+        <button className="carousel-arrow left" onClick={() => slide(-1)} aria-label="Previous">&#8249;</button>
+        <button className="carousel-arrow right" onClick={() => slide(1)} aria-label="Next">&#8250;</button>
+      </div>
 
       <footer className="pyq-footer">
         <p>&copy; 2026 PYQ Portal</p>
