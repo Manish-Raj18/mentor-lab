@@ -32,11 +32,28 @@ export const chat = async (req, res) => {
   const { message, language } = req.body;
   const lang = language || "english";
 
-  const systemPrompt = `You are a helpful college guidance assistant for Mentor Lab. Help students with BCA, BBA, and Biotech courses, exams, and career advice. IMPORTANT: You MUST respond in ${lang} language only. If ${lang} is "hindi", write in Hindi script (Devanagari). If ${lang} is "english", write in English. Never mix languages.`;
+  const langInstr = lang === "hindi" ? "Your response MUST be entirely in Hindi (Devanagari script) only. Never use English." : "Respond in English.";
+  const systemPrompt = `You are a helpful college guidance assistant for Mentor Lab. Help students with BCA, BBA, and Biotech courses, exams, and career advice. ${langInstr}
+
+RESPONSE FORMAT RULES (strictly follow):
+1. Write in FULL, DETAILED paragraphs. Never give one-word or one-line answers.
+2. Do NOT put each sentence on a new line. Keep sentences flowing in the same paragraph.
+3. Use blank lines ONLY between different paragraphs or sections.
+4. Each paragraph should be at least 2-3 sentences long.`;
 
   try {
-    const reply = await callGroq(systemPrompt, message);
-    res.json({ reply });
+    const userMsg = `${message}\n\nIMPORTANT: ${langInstr}`;
+    const reply = await callGroq(systemPrompt, userMsg);
+    console.log("RAW GROQ REPLY:", JSON.stringify(reply));
+    const formattedReply = reply
+      .replace(/\r\n/g, '\n')
+      .split(/\n\s*\n/)
+      .map(para => para.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim())
+      .filter(Boolean)
+      .join('\n\n')
+      .trim();
+    console.log("FORMATTED REPLY:", JSON.stringify(formattedReply));
+    res.json({ reply: formattedReply });
   } catch (error) {
     console.error("Error communicating with Groq API:", error);
     res.status(500).json({ error: "Failed to get AI response", details: error.message });
@@ -44,7 +61,8 @@ export const chat = async (req, res) => {
 };
 
 export const explainNote = async (req, res) => {
-  const { subject, course } = req.body;
+  const { subject, course, language } = req.body;
+  const lang = language || "english";
 
   if (!subject) {
     return res.status(400).json({ error: "Subject name is required" });
@@ -62,19 +80,27 @@ export const explainNote = async (req, res) => {
       pdfText = parsed.text.substring(0, 8000);
     }
 
+    const langInstr = lang === "hindi" ? "IMPORTANT: Write your entire response in Hindi (Devanagari script) only. Do NOT write in English." : "Write in English.";
+
     let userMessage;
     if (pdfText) {
-      userMessage = `Here is the content of the note on "${subject}" (${course || "N/A"}):\n\n${pdfText}\n\nPlease explain this topic in simple words and at the end list the most important points to remember.`;
+      userMessage = `Here is the content of the note on "${subject}" (${course || "N/A"}):\n\n${pdfText}\n\nPlease explain this topic in simple words and at the end list the most important points to remember.\n\n${langInstr}`;
     } else {
-      userMessage = `Explain the topic "${subject}" for ${course || "college"} students. Explain it in simple language and at the end list the most important key points to remember.`;
+      userMessage = `Explain the topic "${subject}" for ${course || "college"} students. Explain it in simple language and at the end list the most important key points to remember.\n\n${langInstr}`;
     }
 
-    const reply = await callGroq(
-      "You are a helpful academic tutor for Mentor Lab. You explain topics clearly and always end with important key points. Use simple language suitable for students.",
-      userMessage
-    );
+    const systemPrompt = `You are a helpful academic tutor for Mentor Lab. You explain topics clearly and always end with important key points. Use simple language suitable for students. Always respond in proper paragraphs with complete sentences. Do not put each sentence on a new line. Use blank lines between paragraphs only. Your response MUST be entirely in ${lang === "hindi" ? "Hindi (Devanagari script)" : "English"}. Never use any other language.`;
 
-    res.json({ reply, hasPdf: !!pdfText });
+    const reply = await callGroq(systemPrompt, userMessage);
+    const formattedReply = reply
+      .replace(/\r\n/g, '\n')
+      .split(/\n\s*\n/)
+      .map(para => para.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim())
+      .filter(Boolean)
+      .join('\n\n')
+      .trim();
+
+    res.json({ reply: formattedReply, hasPdf: !!pdfText });
   } catch (error) {
     console.error("Error explaining note:", error);
     res.status(500).json({ error: "Failed to explain", details: error.message });

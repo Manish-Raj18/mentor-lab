@@ -1,42 +1,47 @@
-.biotech-container {
+.study-container {
   min-height: 100vh;
   padding: 40px 5%;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(https://i.pinimg.com/736x/42/8c/db/428cdb05d5bede77393c32e3cff5c11b.jpg);
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-.dark-theme .biotech-container {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://i.pinimg.com/736x/42/8c/db/428cdb05d5bede77393c32e3cff5c11b.jpg);
-}
-
-.biotech-header {
+.study-header {
   text-align: center;
   margin-bottom: 40px;
 }
 
-.biotech-header h1 {
+.study-header h1 {
   font-size: 3rem;
   color: var(--hero-title);
   margin-bottom: 15px;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.biotech-header p {
+.study-header p {
   font-size: 1.2rem;
   color: var(--hero-text);
   max-width: 700px;
   margin: 0 auto;
-  font-weight: bold;
+}
+
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  flex: 1;
+}
+
+.study-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
 }
 
 .ai-compact {
   width: 200px;
   flex-shrink: 0;
-  background: rgba(255,255,255,0.9);
+  background: var(--card-bg);
   border-radius: 14px;
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -49,123 +54,29 @@
   gap: 10px;
 }
 
-.dark-theme .ai-compact {
-  background: rgba(30,30,30,0.9);
-}
-
-.ai-compact-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-.ai-compact-header span:first-child {
-  font-size: 1.2rem;
-}
-
-.ai-compact-input {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  background: var(--secondary-bg);
-  color: var(--text-color);
-  font-size: 0.8rem;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.ai-compact-input::placeholder {
-  color: var(--text-color);
-  opacity: 0.4;
-}
-
-.ai-compact-actions {
-  display: flex;
-  gap: 6px;
-}
-
-.ai-compact-ask {
-  flex: 1;
-  padding: 6px 0;
-  background: var(--accent-color);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.ai-compact-ask:hover {
-  opacity: 0.85;
-}
-
-.ai-compact-upload {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--secondary-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.2s;
-}
-
-.ai-compact-upload:hover {
-  background: var(--card-bg);
-}
-
-.ai-compact-upload input {
-  display: none;
-}
-
-.biotech-layout {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-}
-
-.biotech-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 30px;
-  flex: 1;
-}
-
-.biotech-card {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url(https://i.pinimg.com/1200x/f2/78/d1/f278d1a0813cc190ab6450faa7c73a87.jpg);
-  background-size: cover;
+.subject-card {
+  background-color: var(--card-bg);
   border-radius: 20px;
   padding: 35px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
 }
 
-.dark-theme .biotech-card {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://i.pinimg.com/1200x/f2/78/d1/f278d1a0813cc190ab6450faa7c73a87.jpg);
-}
-
-.biotech-card:hover {
+.subject-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-.biotech-card .card-icon {
+.card-icon {
   font-size: 2.5rem;
   margin-bottom: 20px;
+  display: block;
 }
 
-.biotech-card h2 {
+.subject-card h2 {
   font-size: 1.8rem;
   color: var(--text-color);
   margin-bottom: 25px;
@@ -175,7 +86,7 @@
   padding-bottom: 5px;
 }
 
-.syllabus-list {
+.subject-list {
   list-style: none;
   padding: 0;
 }
@@ -230,7 +141,7 @@
 .ai-sidebar {
   width: 340px;
   flex-shrink: 0;
-  background: rgba(255,255,255,0.92);
+  background: var(--card-bg);
   border-radius: 16px;
   border: 1px solid var(--border-color);
   box-shadow: 0 8px 30px rgba(0,0,0,0.12);
@@ -240,10 +151,6 @@
   top: 0;
   max-height: calc(100vh - 100px);
   overflow: hidden;
-}
-
-.dark-theme .ai-sidebar {
-  background: rgba(30,30,30,0.92);
 }
 
 .ai-sidebar-header {
@@ -339,14 +246,24 @@
   to { transform: rotate(360deg); }
 }
 
+.bba-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .bba-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
-  .biotech-header h1 {
+  .study-header h1 {
     font-size: 2.2rem;
   }
-  .biotech-container {
+  .study-container {
     padding: 30px 5%;
   }
-  .biotech-layout {
+  .study-layout {
     flex-direction: column;
   }
   .ai-sidebar {

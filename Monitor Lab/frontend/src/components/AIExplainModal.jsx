@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "../css_files/ai_explain.css";
 
 function AIExplainModal({ subject, course, onClose }) {
   const [explanation, setExplanation] = useState("");
   const [loading, setLoading] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [language, setLanguage] = useState("english");
+  const utteranceRef = useRef(null);
 
   const handleExplain = async () => {
     setLoading(true);
@@ -13,6 +16,7 @@ function AIExplainModal({ subject, course, onClose }) {
       const res = await axios.post("http://localhost:5000/api/ai/explain", {
         subject,
         course,
+        language,
       });
       setExplanation(res.data.reply);
     } catch (err) {
@@ -20,6 +24,27 @@ function AIExplainModal({ subject, course, onClose }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    handleExplain();
+  }, [language]);
+
+  const toggleSpeak = () => {
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+    const cleanText = explanation.replace(/\*\*(.*?)\*\*/g, "$1").replace(/<[^>]*>/g, "");
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = language === "hindi" ? "hi-IN" : "en-US";
+    utterance.rate = 0.9;
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    utteranceRef.current = utterance;
+    setSpeaking(true);
+    window.speechSynthesis.speak(utterance);
   };
 
   const formatText = (text) => {
@@ -33,17 +58,15 @@ function AIExplainModal({ subject, course, onClose }) {
       <div className="ai-modal" onClick={(e) => e.stopPropagation()}>
         <div className="ai-modal-header">
           <h2>AI Explain: {subject}</h2>
-          <button className="ai-modal-close" onClick={onClose}>&times;</button>
+          <div className="ai-modal-header-right">
+            <select className="ai-lang-select" value={language} onChange={(e) => setLanguage(e.target.value)}>
+              <option value="english">English</option>
+              <option value="hindi">हिन्दी</option>
+            </select>
+            <button className="ai-modal-close" onClick={onClose}>&times;</button>
+          </div>
         </div>
         <div className="ai-modal-body">
-          {!explanation && !loading && (
-            <div className="ai-modal-start">
-              <p>Click below to get AI explanation with important points.</p>
-              <button className="ai-explain-btn" onClick={handleExplain}>
-                Explain Now
-              </button>
-            </div>
-          )}
           {loading && (
             <div className="ai-loading">
               <div className="ai-spinner"></div>
@@ -51,10 +74,15 @@ function AIExplainModal({ subject, course, onClose }) {
             </div>
           )}
           {explanation && (
-            <div
-              className="ai-explanation"
-              dangerouslySetInnerHTML={{ __html: formatText(explanation) }}
-            />
+            <>
+              <div
+                className="ai-explanation"
+                dangerouslySetInnerHTML={{ __html: formatText(explanation) }}
+              />
+              <button className="ai-speak-btn" onClick={toggleSpeak}>
+                {speaking ? "⏹ Stop" : "🔊 Listen"}
+              </button>
+            </>
           )}
         </div>
       </div>

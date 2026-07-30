@@ -20,51 +20,59 @@ const Chatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  const speakText = useCallback(async (text, index) => {
-    const cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1');
-
-    if (speakingIndex === index) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      } else {
-        window.speechSynthesis.cancel();
-      }
-      setSpeakingIndex(null);
-      return;
+  const speakBrowser = useCallback((text, lang, done) => {
+    const trySpeak = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang; u.rate = 0.9;
+      const v = voices.find(x => x.lang.startsWith(lang.split('-')[0]));
+      if (v) u.voice = v;
+      u.onend = done; u.onerror = done;
+      setTimeout(() => window.speechSynthesis.speak(u), 100);
+    };
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.onvoiceschanged = null; setTimeout(trySpeak, 200); };
+    } else {
+      trySpeak();
     }
+  }, []);
 
+  const playTtsChunks = useCallback(async (text, done) => {
+    const chunks = [];
+    for (let i = 0; i < text.length; i += 180) {
+      let end = Math.min(i + 180, text.length);
+      if (end < text.length) { const b = text.lastIndexOf(' ', end); if (b > i) end = b; }
+      chunks.push(text.substring(i, end).trim());
+    }
+    const play = async (idx) => {
+      if (idx >= chunks.length) { done(); return; }
+      try {
+        const r = await axios.post('http://localhost:5000/api/ai/tts', { text: chunks[idx], lang: 'hindi' }, { responseType: 'blob' });
+        const a = new Audio(URL.createObjectURL(r.data));
+        audioRef.current = a;
+        a.onended = () => { URL.revokeObjectURL(a.src); audioRef.current = null; play(idx + 1); };
+        a.onerror = () => { URL.revokeObjectURL(a.src); audioRef.current = null; play(idx + 1); };
+        a.play().catch(done);
+      } catch { done(); }
+    };
+    play(0);
+  }, []);
+
+  const speakText = useCallback((text, index) => {
+    const cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, '').trim();
+    if (!cleanText) return;
+
+    if (speakingIndex === index) { window.speechSynthesis.cancel(); setSpeakingIndex(null); return; }
     window.speechSynthesis.cancel();
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-
     setSpeakingIndex(index);
 
-    if (language === 'hindi') {
-      try {
-        const res = await axios.post('http://localhost:5000/api/ai/tts', { text: cleanText, lang: 'hindi' }, { responseType: 'blob' });
-        const url = URL.createObjectURL(res.data);
-        const audio = new Audio(url);
-        audioRef.current = audio;
-        audio.onended = () => { setSpeakingIndex(null); URL.revokeObjectURL(url); audioRef.current = null; };
-        audio.onerror = () => { setSpeakingIndex(null); URL.revokeObjectURL(url); audioRef.current = null; };
-        audio.play().catch(() => setSpeakingIndex(null));
-      } catch {
-        setSpeakingIndex(null);
-      }
+    if (language === 'english') {
+      speakBrowser(cleanText, 'en-US', () => setSpeakingIndex(null));
     } else {
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9;
-      utterance.onend = () => setSpeakingIndex(null);
-      utterance.onerror = () => setSpeakingIndex(null);
-      setTimeout(() => {
-        window.speechSynthesis.speak(utterance);
-      }, 50);
+      playTtsChunks(cleanText, () => speakBrowser(cleanText, 'hi-IN', () => setSpeakingIndex(null)));
     }
-  }, [speakingIndex, language]);
+  }, [speakingIndex, language, speakBrowser, playTtsChunks]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -75,7 +83,13 @@ const Chatbot = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input, language });
-      setMessages(prev => [...prev, { role: 'bot', content: response.data.reply }]);
+      const cleanReply = response.data.reply
+        .replace(/\r\n/g, '\n')
+        .split(/\n\s*\n/)
+        .map(p => p.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim())
+        .filter(Boolean)
+        .join('\n\n');
+      setMessages(prev => [...prev, { role: 'bot', content: cleanReply }]);
     } catch (error) {
       setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting.' }]);
     } finally {
@@ -104,8 +118,10 @@ const Chatbot = () => {
           </div>
           <div className="messages">
             {messages.map((m, i) => (
-              <div key={i} className={`chat-bubble ${m.role}`}>
-                <span className="bubble-text">{m.content.replace(/\*\*/g, '')}</span>
+              <div key={i} className={`message-row ${m.role}`}>
+                <div className={`chat-bubble ${m.role}`}>
+                  <span className="bubble-text">{m.content.replace(/\*\*/g, '')}</span>
+                </div>
                 {m.role === 'bot' && (
                   <button
                     className={`speak-btn ${speakingIndex === i ? 'speaking' : ''}`}

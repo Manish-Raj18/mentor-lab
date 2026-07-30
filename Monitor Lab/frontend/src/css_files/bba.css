@@ -108,6 +108,7 @@
   border-radius: 10px;
   transition: var(--transition);
   border-left: 4px solid transparent;
+
 }
 
 .subject-item a {
