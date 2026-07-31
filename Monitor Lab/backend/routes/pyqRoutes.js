@@ -60,9 +60,10 @@ router.delete("/:id", protect, async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const filter = {};
-    if (req.query.universityId) filter.universityId = req.query.universityId;
-    if (req.query.course) filter.course = req.query.course;
-    if (req.query.subject) filter.subject = req.query.subject;
+    const caseInsensitive = (v) => ({ $regex: new RegExp(`^${v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").trim()}$`, "i") });
+    if (req.query.universityId) filter.universityId = caseInsensitive(req.query.universityId);
+    if (req.query.course) filter.course = caseInsensitive(req.query.course);
+    if (req.query.subject) filter.subject = caseInsensitive(req.query.subject);
     const pyqs = await PYQ.find(filter);
     res.json(pyqs);
   } catch (error) {

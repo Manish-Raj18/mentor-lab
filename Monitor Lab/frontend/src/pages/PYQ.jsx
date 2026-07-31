@@ -135,22 +135,25 @@ const PYQ = () => {
     el.scrollTo({ left: newScroll, behavior: "smooth" });
   };
 
+  const normalizeKey = (str) => str.toLowerCase().replace(/\s+/g, " ").trim();
+
   const fetchPYQs = async (universityId) => {
     try {
       const res = await axios.get(`${API_BASE}/pyq?universityId=${universityId}`);
       const map = {};
       res.data.forEach((pyq) => {
-        const key = `${pyq.course}:${pyq.subject}`;
+        const key = `${normalizeKey(pyq.course)}:${normalizeKey(pyq.subject)}`;
         map[key] = pyq;
       });
       setPyqData(map);
-    } catch {
+    } catch (error) {
+      console.error("Failed to load PYQ papers:", error);
       setPyqData({});
     }
   };
 
   const getPdfLink = (course, subject) => {
-    const key = `${course}:${subject}`;
+    const key = `${normalizeKey(course)}:${normalizeKey(subject)}`;
     const pyq = pyqData[key];
     return pyq ? `${API_BASE.replace("/api", "")}/uploads/${pyq.pdfUrl}` : null;
   };
