@@ -3,11 +3,11 @@ import '../css_files/about.css';
 
 const team = [
   { name: 'Manish Raj', role: 'Founder & Lead Developer', photo: 'team/MANISH PHOTO.jpg' },
-  { name: 'Rashmi Rani', role: 'UI/UX Designer', photo: 'team/rashmi.jpeg' },
+  { name: 'Rashmi Rani', role: 'UI/UX Designer', photo: 'team/rashmi1.jpeg' },
   { name: 'Samerjit Kumar Sinha', role: 'Backend Developer', photo: 'team/samerjit.jpeg' },
   { name: 'Abhishek Ranjan', role: 'Content Manager', photo: 'team/abhishek.jpeg' },
-  { name: 'Komal Kumari Mahato', role: 'Frontend Developer', photo: 'team/arjun-mehta.svg' },
-  { name: 'Babulal Kumar Mahato', role: 'Test Engineer', photo: 'team/sneha-gupta.svg' },
+  { name: 'Komal Kumari Mahato', role: 'Frontend Developer', photo: 'team/komal.jpeg' },
+  { name: 'Babulal Kumar Mahato', role: 'Test Engineer', photo: 'team/gds-photo-30kb.jpg' },
 ];
 
 function AboutUs() {
