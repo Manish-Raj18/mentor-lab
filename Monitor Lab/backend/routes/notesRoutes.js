@@ -62,7 +62,7 @@ router.delete("/:id", protect, async (req, res) => {
       return res.status(404).json({ message: "Note not found" });
     }
 
-    const filePath = path.join(process.cwd(), "uploads", note.pdfUrl);
+    const filePath = path.join(uploadDir, note.pdfUrl);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
