@@ -38,6 +38,9 @@ app.use("/uploads", express.static(uploadsDir, {
         }
     }
 }));
+app.use("/uploads", (req, res) => {
+    res.status(404).json({ message: "File not found" });
+});
 
 const frontendDist = path.resolve(rootDir, "..", "frontend", "dist");
 app.use(express.static(frontendDist));

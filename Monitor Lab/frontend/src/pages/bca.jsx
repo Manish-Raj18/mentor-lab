@@ -12,14 +12,15 @@ function BCA() {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/notes?course=BCA")
+    axios.get("/api/notes?course=BCA")
       .then(res => setNotes(res.data))
       .catch(err => console.log(err));
   }, []);
 
   const getPdfLink = (subjectName) => {
-    const note = notes.find(n => n.subject === subjectName);
-    return note ? `http://localhost:5000/uploads/${note.pdfUrl}` : null;
+    const normalized = subjectName.toLowerCase();
+    const note = notes.find(n => n.subject && n.subject.toLowerCase() === normalized);
+    return note ? `/uploads/${encodeURIComponent(note.pdfUrl)}` : null;
   };
 
   return (
