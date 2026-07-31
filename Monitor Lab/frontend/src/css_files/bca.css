@@ -2,12 +2,19 @@
   min-height: 100vh;
   padding: 40px 8%;
   background-color: var(--bg-color);
+  background-image: url("/bsc-computer-science-ai-data-science-course.webp");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: var(--text-color);
 }
 
 .bca-header {
   text-align: center;
   margin-bottom: 60px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
 }
 
 .bca-header h1 {
@@ -32,7 +39,7 @@
 }
 
 .subject-card {
-  background-color: var(--card-bg);
+  background-color: rgba(255, 255, 255, 0.88);
   border-radius: 20px;
   padding: 35px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
