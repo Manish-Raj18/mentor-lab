@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import PYQ from "../model/pyq.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +24,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/upload", upload.single("pdf"), async (req, res) => {
+router.post("/upload", protect, upload.single("pdf"), async (req, res) => {
   try {
     const pyq = new PYQ({
       universityId: req.body.universityId,
@@ -39,7 +40,7 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", protect, async (req, res) => {
   try {
     const pyq = await PYQ.findById(req.params.id);
     if (!pyq) {

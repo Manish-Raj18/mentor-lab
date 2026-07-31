@@ -149,6 +149,12 @@ const PYQ = () => {
     }
   };
 
+  const getPdfLink = (course, subject) => {
+    const key = `${course}:${subject}`;
+    const pyq = pyqData[key];
+    return pyq ? `${API_BASE.replace("/api", "")}/uploads/${pyq.pdfUrl}` : null;
+  };
+
   if (selectedUni) {
     const uni = universities.find((u) => u.id === selectedUni);
     return (
@@ -171,22 +177,15 @@ const PYQ = () => {
               </div>
               <ul className="subject-list">
                 {subjects.map((subject) => {
-                  const key = `${course}:${subject}`;
-                  const hasPdf = !!pyqData[key];
+                  const pdfLink = getPdfLink(course, subject);
                   return (
                     <li key={subject}>
                       <span className="subject-name">{subject}</span>
-                      {hasPdf ? (
-                        <a
-                          href={`/uploads/${encodeURIComponent(pyqData[key].pdfUrl)}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="download-btn"
-                        >Download PYQ</a>
+                      {pdfLink ? (
+                        <a href={pdfLink} target="_blank" rel="noreferrer" className="download-btn">Download PYQ</a>
                       ) : (
-                        <span className="download-btn disabled">Not Available</span>
+                        <span className="download-btn" style={{ opacity: 0.5, cursor: "default" }}>Not Available</span>
                       )}
-
                     </li>
                   );
                 })}

@@ -34,12 +34,11 @@ function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
   const [uploadMode, setUploadMode] = useState("pdf");
   const [notes, setNotes] = useState([]);
+  const [pyqs, setPyqs] = useState([]);
   const [formData, setFormData] = useState({ title: "", subject: "", topic: "", duration: 60 });
   const [pdfFile, setPdfFile] = useState(null);
   const [manualQuestions, setManualQuestions] = useState([{ question: "", options: ["", "", "", ""], correctAnswer: "" }]);
   const [uploading, setUploading] = useState(false);
-
-  const [pyqs, setPyqs] = useState([]);
 
   const [notesCourse, setNotesCourse] = useState("");
   const [notesSubject, setNotesSubject] = useState("");
@@ -84,6 +83,7 @@ function AdminDashboard() {
       setPyqCourse("");
       setPyqSubject("");
       setPyqPdf(null);
+      fetchPyqs();
       getStats();
     } catch (err) {
       alert(err.response?.data?.message || "Upload failed");
@@ -116,7 +116,7 @@ function AdminDashboard() {
       setNotesTitle("");
       setNotesDesc("");
       setNotesPdf(null);
-      fetchPyqs();
+      fetchNotes();
       getStats();
     } catch (err) {
       alert(err.response?.data?.message || "Upload failed");
