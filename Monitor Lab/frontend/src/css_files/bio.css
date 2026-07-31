@@ -1,21 +1,24 @@
 .bio-roadmap {
-    --accent-color: #1a6b3c;
+    --accent-color: #0e7490;
     --card-bg: #ffffff;
-    --bg-color: #f0faf4;
-    --text-color: #1a6b3c;
-    --secondary-bg: #d4edda;
+    --bg-color: #f0f9ff;
+    --text-color: #0c4a6e;
+    --secondary-bg: #dbeafe;
     --hero-text: #ffffff;
-    --border-color: #b8dfc6;
+    --border-color: #bae6fd;
 
     background-color: var(--bg-color);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
     min-height: 100vh;
     color: var(--text-color);
     padding: 1rem;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .bio-roadmap .header {
@@ -53,7 +56,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     width: 100%;
-    max-width: 920px;
+    max-width: 1050px;
 }
 
 .row-divider {
@@ -75,8 +78,8 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
-    aspect-ratio: 1 / 1;
     width: 100%;
+    min-height: 240px;
 }
 
 .bio-card:hover {
@@ -84,12 +87,12 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.card-blue { --card-accent: #1a2a6c; }
-.card-green { --card-accent: #0d7c3e; }
-.card-purple { --card-accent: #7b2d8e; }
-.card-orange { --card-accent: #e8751a; }
-.card-red { --card-accent: #c0392b; }
-.card-teal { --card-accent: #00838f; }
+.card-blue { --card-accent: #9b59b6; }
+.card-green { --card-accent: #0d9488; }
+.card-purple { --card-accent: #2e8b57; }
+.card-orange { --card-accent: #f0a050; }
+.card-red { --card-accent: #e07060; }
+.card-teal { --card-accent: #4a6fa5; }
 
 .bio-card.card-teal { border-top-color: #4a6fa5; border-left-color: #4a6fa5; }
 .bio-card.card-teal .phase-tag { background: #4a6fa5; }
@@ -124,30 +127,31 @@
 .bio-roadmap .phase-tag {
     background: var(--accent-color);
     color: var(--hero-text);
-    padding: 4px 12px;
-    font-size: 0.9rem;
+    padding: 5px 14px;
+    font-size: 0.95rem;
     font-weight: 700;
     border-radius: 20px;
     display: inline;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .bio-roadmap .focus {
-    font-size: 0.85rem;
+    font-size: 0.92rem;
     color: var(--text-color);
     opacity: 0.9;
-    margin-bottom: 8px;
-    line-height: 1.4;
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 
 .bio-roadmap .elective-title {
-    margin-bottom: 5px;
-    font-size: 0.85rem;
+    margin-bottom: 6px;
+    font-size: 0.92rem;
     color: var(--text-color);
+    font-weight: 600;
 }
 
 .card-icon {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     margin-right: 4px;
     display: inline;
     vertical-align: middle;
@@ -161,13 +165,13 @@
 }
 
 .bio-roadmap .subjects li {
-    font-size: 0.82rem;
+    font-size: 0.92rem;
     color: var(--text-color);
     opacity: 0.9;
-    margin-bottom: 5px;
+    margin-bottom: 7px;
     position: relative;
     padding-left: 16px;
-    line-height: 1.4;
+    line-height: 1.45;
 }
 
 .bio-roadmap .subjects li::before {
@@ -182,17 +186,23 @@
 .bio-roadmap .note-container {
     background-color: var(--secondary-bg);
     width: 100%;
-    max-width: 920px;
+    max-width: 1050px;
     border-radius: 8px;
     color: var(--text-color);
     margin-top: 10px;
-    font-size: 0.8rem;
-    line-height: 1.4;
+    font-size: 0.85rem;
+    line-height: 1.5;
     border: 1px solid var(--border-color);
 }
 
 .bio-roadmap .note-container p {
     margin: 8px 4%;
+}
+
+@media screen and (max-width: 900px) {
+    .bio-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media screen and (max-width: 768px) {
