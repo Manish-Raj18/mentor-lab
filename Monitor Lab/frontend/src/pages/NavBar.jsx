@@ -76,7 +76,6 @@ const Navbar = () => {
             <ul className={`dropdown-menu ${isCoursesOpen ? 'show' : ''}`}>
               <li><Link to="/bca" onClick={closeMenu}>BCA (Computer)</Link></li>
               <li><Link to="/bba" onClick={closeMenu}>BBA (Management)</Link></li>
-              <li><Link to="/biotech" onClick={closeMenu}>Biotech (Main)</Link></li>
               <li><Link to="/biotechsylla" onClick={closeMenu}>Biotech Syllabus</Link></li>
             </ul>
           </li>
