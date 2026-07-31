@@ -20,7 +20,7 @@ function BCA() {
   const getPdfLink = (subjectName) => {
     const normalized = subjectName.toLowerCase();
     const note = notes.find(n => n.subject && n.subject.toLowerCase() === normalized);
-    return note ? `/uploads/${encodeURIComponent(note.pdfUrl)}` : null;
+    return note ? `/api/notes/${note._id}/pdf` : null;
   };
 
   return (

@@ -5,6 +5,7 @@ const notesSchema = new mongoose.Schema({
   description: String,
   course: String,
   subject: String,
+  fileId: mongoose.Schema.Types.ObjectId,
   pdfUrl: String,
 });
 

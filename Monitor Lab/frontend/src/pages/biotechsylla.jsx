@@ -14,7 +14,7 @@ function BIO() {
   const getPdfLink = (subjectName) => {
     const normalized = subjectName.toLowerCase();
     const note = notes.find(n => n.subject && n.subject.toLowerCase() === normalized);
-    if (note) return `/uploads/${encodeURIComponent(note.pdfUrl)}`;
+    if (note) return `/api/notes/${note._id}/pdf`;
 
     const localFiles = {
       "Biochemistry": "Biochemistry.pdf",
