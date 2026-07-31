@@ -738,7 +738,7 @@ function AdminDashboard() {
                             <td>{pyq.course?.toUpperCase() || "-"}</td>
                             <td>{pyq.subject || "-"}</td>
                             <td className="cell-center">
-                              <a href={`/uploads/${pyq.pdfUrl}`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
+                              <a href={`/api/pyq/${pyq._id}/pdf`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
                             </td>
                             <td className="cell-center">
                               <button onClick={() => handleDeletePyq(pyq._id)} className="btn-remove" style={{ padding: "4px 12px", fontSize: "0.8rem" }}>Delete</button>

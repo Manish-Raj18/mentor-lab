@@ -5,6 +5,7 @@ const pyqSchema = new mongoose.Schema({
   universityName: String,
   course: String,
   subject: String,
+  fileId: mongoose.Schema.Types.ObjectId,
   pdfUrl: String,
 });
 

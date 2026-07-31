@@ -155,7 +155,7 @@ const PYQ = () => {
   const getPdfLink = (course, subject) => {
     const key = `${normalizeKey(course)}:${normalizeKey(subject)}`;
     const pyq = pyqData[key];
-    return pyq ? `${API_BASE.replace("/api", "")}/uploads/${pyq.pdfUrl}` : null;
+    return pyq ? `${API_BASE}/pyq/${pyq._id}/pdf` : null;
   };
 
   if (selectedUni) {
