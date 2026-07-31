@@ -5,7 +5,7 @@ import "../css_files/pyq.css";
 const API_BASE = "/api";
 
 const universities = [
-  { id: "ranchi", name: "Ranchi University (Ranchi)" },
+  { id: "ranchi", name: "Ranchi University (Ranchi)", image: "ranchi-university.jpg" },
   { id: "vbu", name: "Vinoba Bhave University (VBU, Hazaribagh)" },
   { id: "dspmu", name: "Dr. Shyama Prasad Mukherjee University (DSPMU, Ranchi)" },
   { id: "bbmku", name: "Binod Bihari Mahto Koyalanchal University (BBMKU, Dhanbad)" },
@@ -219,8 +219,11 @@ const PYQ = () => {
               className="uni-card"
               onClick={() => setSelectedUni(uni.id)}
             >
-              <h2>{uni.name}</h2>
-              <p>View PYQ &rarr;</p>
+              {uni.image && <img src={uni.image} alt={uni.name} className="uni-card-img" />}
+              <div className="uni-card-content">
+                <h2>{uni.name}</h2>
+                <p>View PYQ &rarr;</p>
+              </div>
             </button>
           ))}
         </main>
