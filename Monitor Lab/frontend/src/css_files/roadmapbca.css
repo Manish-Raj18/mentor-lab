@@ -8,6 +8,9 @@
     --border-color: #c5d0e6;
 
     background-color: var(--bg-color);
+    background-image: url('/tianyi-ma-WiONHd_zYI4-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,14 +31,14 @@
 
 .bca-roadmap .header h1 {
     font-size: 2rem;
-    color: var(--text-color);
+    color: #ffffff;
     margin-bottom: 4px;
     text-transform: uppercase;
     text-decoration: underline;
 }
 
 .bca-roadmap .header p {
-    color: var(--text-color);
+    color: #ffffff;
     opacity: 0.9;
     font-size: 1.15rem;
     text-decoration-line: underline;
@@ -68,7 +71,7 @@
 }
 
 .bca-card {
-    background-color: var(--card-bg);
+    background-color: rgba(255, 255, 255, 0.85);
     border-radius: 12px;
     padding: 18px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -178,7 +181,7 @@
 }
 
 .bca-roadmap .note-container {
-    background-color: var(--secondary-bg);
+    background-color: rgba(232, 238, 245, 0.85);
     width: 100%;
     max-width: 1050px;
     border-radius: 8px;
