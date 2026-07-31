@@ -28,14 +28,14 @@
 
 .bba-roadmap .header h1 {
     font-size: 2rem;
-    color: var(--text-color);
+    color: #ffffff;
     margin-bottom: 4px;
     text-transform: uppercase;
     text-decoration: underline;
 }
 
 .bba-roadmap .header p {
-    color: var(--text-color);
+    color: #ffffff;
     opacity: 0.9;
     font-size: 1.15rem;
     text-decoration-line: underline;
@@ -68,7 +68,7 @@
 }
 
 .bba-card {
-    background-color: var(--card-bg);
+    background-color: rgba(255, 255, 255, 0.85);
     border-radius: 12px;
     padding: 18px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -178,7 +178,7 @@
 }
 
 .bba-roadmap .note-container {
-    background-color: var(--secondary-bg);
+    background-color: rgba(252, 228, 228, 0.85);
     width: 100%;
     max-width: 1050px;
     border-radius: 8px;

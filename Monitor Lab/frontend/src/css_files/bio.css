@@ -40,7 +40,7 @@
 }
 
 .bio-roadmap .header p {
-    color: var(--text-color);
+    color: #ffffff;
     opacity: 0.9;
     font-size: 1.15rem;
     text-decoration-line: underline;
