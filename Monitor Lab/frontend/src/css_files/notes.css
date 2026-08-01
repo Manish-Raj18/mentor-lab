@@ -1,16 +1,18 @@
 /* Body Styling */
 .Show{
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/midnight-study-session-stockcake.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/study notes picture.jpg");
   background-size: cover;
   background-position: center;
   display:flex;
   flex-direction: column;
   justify-content:flex-start;
   align-items:center;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   padding:40px 20px;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 
@@ -18,11 +20,13 @@
 .card-container{
    
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns:repeat(3, 1fr);
   gap:20px;
   width:100%;
   max-width:1100px;
-  margin-top: 20px;
+  margin: 20px auto 0;
+  justify-content:center;
+  align-items:stretch;
 }
 .heading h1{
     font-size: 8vh;
@@ -68,6 +72,10 @@
 /* Card Content */
 .card-content{
   padding:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
 }
 
 /* Card Title */
@@ -75,6 +83,7 @@
   font-size:22px;
   margin-bottom:10px;
   color: var(--text-color);
+  text-transform: uppercase;
 }
 
 /* Card Text */
@@ -100,4 +109,10 @@
 /* Button Hover */
 .card-btn:hover{
   opacity: 0.9;
+}
+
+@media screen and (max-width: 768px) {
+  .card-container{
+    grid-template-columns: 1fr;
+  }
 }
