@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../css_files/roadmapbb.css";
 
 const BBARoadmap = () => {
@@ -90,7 +91,13 @@ const BBARoadmap = () => {
       </div>
 
       <div className="note-container">
-        <p>Note: If you want to learn more about BBA, feel free to visit our study notes for detailed and easy-to-understand content.</p>
+        <div className="roadmap-cta">
+          <p>Note: If you want to learn more about BBA, feel free to visit our study notes for detailed and easy-to-understand content.</p>
+          <Link to="/bba" className="roadmap-note-btn">
+            Explore BBA Study Notes
+            <span className="btn-arrow">→</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

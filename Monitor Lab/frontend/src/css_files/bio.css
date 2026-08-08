@@ -199,10 +199,88 @@
     font-size: 0.85rem;
     line-height: 1.5;
     border: 1px solid var(--border-color);
+    padding: 12px 0;
 }
 
 .bio-roadmap .note-container p {
-    margin: 8px 4%;
+    margin: 0;
+}
+
+.bio-roadmap .roadmap-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+    padding: 4px 4%;
+}
+
+.bio-roadmap .roadmap-note-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 13px 30px;
+    border: none;
+    border-radius: 999px;
+
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #ffffff;
+    text-decoration: none;
+
+    background: linear-gradient(135deg, #0e7490, #155e75);
+    box-shadow: 0 8px 22px rgba(14, 116, 144, 0.35);
+
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: ctaPulseBio 2.2s infinite;
+}
+
+.bio-roadmap .roadmap-note-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(14, 116, 144, 0.45);
+}
+
+.bio-roadmap .roadmap-note-btn:active {
+    transform: translateY(-1px);
+}
+
+.bio-roadmap .roadmap-note-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    transform: skewX(-20deg);
+
+    animation: ctaShineBio 2.8s infinite;
+}
+
+.bio-roadmap .roadmap-note-btn .btn-arrow {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.bio-roadmap .roadmap-note-btn:hover .btn-arrow {
+    transform: translateX(6px);
+}
+
+@keyframes ctaPulseBio {
+    0%, 100% { box-shadow: 0 8px 22px rgba(14, 116, 144, 0.35); }
+    50% { box-shadow: 0 8px 30px rgba(14, 116, 144, 0.6), 0 0 0 8px rgba(14, 116, 144, 0.15); }
+}
+
+@keyframes ctaShineBio {
+    0% { left: -75%; }
+    55%, 100% { left: 125%; }
 }
 
 @media screen and (max-width: 900px) {

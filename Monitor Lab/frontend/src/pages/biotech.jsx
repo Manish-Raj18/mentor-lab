@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../css_files/bio.css";
 
 function BiotechSyllabus() {
@@ -88,7 +89,13 @@ function BiotechSyllabus() {
       </div>
 
       <div className="note-container">
-        <p>Note: If you want to learn more about Biotechnology, feel free to visit our study notes for detailed and easy-to-understand content.</p>
+        <div className="roadmap-cta">
+          <p>Note: If you want to learn more about Biotechnology, feel free to visit our study notes for detailed and easy-to-understand content.</p>
+          <Link to="/biotechsylla" className="roadmap-note-btn">
+            Explore Biotechnology Study Notes
+            <span className="btn-arrow">→</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

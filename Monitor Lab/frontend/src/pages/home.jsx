@@ -49,39 +49,54 @@ function Home() {
   </section>
 
 
-  <section className="features">
-    <h2><u>Why Choose Us?</u></h2>
-
-    <div className="feature-cards">
-
-      <div className="card">
-        <h3>
-         <Link to="/mock-test" className="card-link">Mock Test</Link> 
-        </h3>
-        <p>Practice with our comprehensive mock test engine.</p>
+  <section className="why-section">
+    <div className="why-container">
+      <div className="why-head">
+        <h2>
+          Why Choose <span className="why-gradient">Us?</span>
+        </h2>
+        <p>Built for serious exam preparation — simple, powerful, and made for you.</p>
       </div>
 
-      <div className="card">
-        <h3>
-            <Link to="/recorded-lectures" className="card-link">Recorded Lectures</Link>
-        </h3>
-        <p>Learn from top educators.</p>
-      </div>
+      <div className="why-grid">
 
-      <div className="card">
-        <h3>
-            <Link to="/study-notes" className="card-link">Study Notes</Link>
-        </h3>
-        <p>Access curated study materials for all courses.</p>
-      </div>
+        <Link to="/mock-test" className="why-card" style={{ "--why-accent": "#00f2fe", "--why-soft": "rgba(0,242,254,0.1)", "--why-line": "rgba(0,242,254,0.3)", "--why-glow": "rgba(0,242,254,0.25)" }}>
+          <span className="why-card-glow" />
+          <span className="why-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </span>
+          <h3>Mock Test</h3>
+          <p>Practice with our comprehensive mock test engine.</p>
+        </Link>
 
-      <div className="card">
-        <h3>
-            <Link to="/analytics" className="card-link">Performance Analytics</Link>
-        </h3>
-        <p>Track your preparation with smart analysis tools.</p>
-      </div>
+        <Link to="/recorded-lectures" className="why-card" style={{ "--why-accent": "#8a2be2", "--why-soft": "rgba(138,43,226,0.1)", "--why-line": "rgba(138,43,226,0.3)", "--why-glow": "rgba(138,43,226,0.25)" }}>
+          <span className="why-card-glow" />
+          <span className="why-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3z"/></svg>
+          </span>
+          <h3>Recorded Lectures</h3>
+          <p>Learn from top educators, anytime.</p>
+        </Link>
 
+        <Link to="/study-notes" className="why-card" style={{ "--why-accent": "#10b981", "--why-soft": "rgba(16,185,129,0.1)", "--why-line": "rgba(16,185,129,0.3)", "--why-glow": "rgba(16,185,129,0.25)" }}>
+          <span className="why-card-glow" />
+          <span className="why-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </span>
+          <h3>Study Notes</h3>
+          <p>Access curated study materials for all courses.</p>
+        </Link>
+
+        <Link to="/analytics" className="why-card" style={{ "--why-accent": "#fbbf24", "--why-soft": "rgba(251,191,36,0.1)", "--why-line": "rgba(251,191,36,0.3)", "--why-glow": "rgba(251,191,36,0.25)" }}>
+          <span className="why-card-glow" />
+          <span className="why-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M7 13l4-4 3 3 5-6"/></svg>
+          </span>
+          <h3>Performance Analytics</h3>
+          <p>Track your preparation with smart analysis tools.</p>
+        </Link>
+
+      </div>
     </div>
   </section>
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "../css_files/pyq.css";
 
@@ -116,7 +116,11 @@ const subjectsData = {
 const PYQ = () => {
   const [selectedUni, setSelectedUni] = useState(null);
   const [pyqData, setPyqData] = useState({});
-  const gridRef = useRef(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [navCount, setNavCount] = useState(0);
+
+  const totalSlides = universities.length;
 
   useEffect(() => {
     if (selectedUni) {
@@ -124,15 +128,17 @@ const PYQ = () => {
     }
   }, [selectedUni]);
 
-  const slide = (dir) => {
-    const el = gridRef.current;
-    if (!el) return;
-    const cardWidth = el.querySelector(".uni-card")?.offsetWidth || 280;
-    const gap = 20;
-    const step = cardWidth + gap;
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    const newScroll = Math.max(0, Math.min(el.scrollLeft + dir * step, maxScroll));
-    el.scrollTo({ left: newScroll, behavior: "smooth" });
+  useEffect(() => {
+    if (paused || selectedUni) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [paused, selectedUni, totalSlides, navCount]);
+
+  const goToSlide = (index) => {
+    setCurrentSlide(((index % totalSlides) + totalSlides) % totalSlides);
+    setNavCount((c) => c + 1);
   };
 
   const normalizeKey = (str) => str.toLowerCase().replace(/\s+/g, " ").trim();
@@ -211,24 +217,45 @@ const PYQ = () => {
         <p>Select your university to browse question papers</p>
       </header>
 
-      <div className="carousel-wrapper">
-        <main className="university-grid" ref={gridRef}>
-          {universities.map((uni) => (
+      <div
+        className="slider-wrapper"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <div className="slider-viewport">
+          <div
+            className="slider-track"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {universities.map((uni) => (
+              <button
+                key={uni.id}
+                className="uni-card"
+                onClick={() => setSelectedUni(uni.id)}
+              >
+                {uni.image && <img src={uni.image} alt={uni.name} className="uni-card-img" />}
+                <div className="uni-card-content">
+                  <h2>{uni.name}</h2>
+                  <p>View PYQ &rarr;</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button className="slider-arrow left" onClick={() => goToSlide(currentSlide - 1)} aria-label="Previous">&#8249;</button>
+        <button className="slider-arrow right" onClick={() => goToSlide(currentSlide + 1)} aria-label="Next">&#8250;</button>
+
+        <div className="slider-dots">
+          {universities.map((uni, i) => (
             <button
               key={uni.id}
-              className="uni-card"
-              onClick={() => setSelectedUni(uni.id)}
-            >
-              {uni.image && <img src={uni.image} alt={uni.name} className="uni-card-img" />}
-              <div className="uni-card-content">
-                <h2>{uni.name}</h2>
-                <p>View PYQ &rarr;</p>
-              </div>
-            </button>
+              className={`dot ${i === currentSlide ? "active" : ""}`}
+              onClick={() => goToSlide(i)}
+              aria-label={`Go to slide ${i + 1}`}
+            />
           ))}
-        </main>
-        <button className="carousel-arrow left" onClick={() => slide(-1)} aria-label="Previous">&#8249;</button>
-        <button className="carousel-arrow right" onClick={() => slide(1)} aria-label="Next">&#8250;</button>
+        </div>
       </div>
 
       <footer className="pyq-footer">
