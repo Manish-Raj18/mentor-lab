@@ -1,16 +1,65 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../css_files/pyq.css";
 
 const API_BASE = "/api";
 
 const universities = [
-  { id: "ranchi", name: "Ranchi University (Ranchi)", image: "ranchi-university.jpg" },
-  { id: "vbu", name: "Vinoba Bhave University (VBU, Hazaribagh)" },
-  { id: "dspmu", name: "Dr. Shyama Prasad Mukherjee University (DSPMU, Ranchi)" },
-  { id: "bbmku", name: "Binod Bihari Mahto Koyalanchal University (BBMKU, Dhanbad)" },
-  { id: "bit", name: "BIT Mesra (Ranchi)" },
-  { id: "skmu", name: "Sidhu Kanhu Murmu University (Dumka)" },
+  {
+    id: "ranchi",
+    name: "Ranchi University",
+    city: "Ranchi",
+    image: "ranchi-university.jpg",
+    category: "State University",
+    gradient: "linear-gradient(135deg, #1a1a2e, #16213e)",
+    description:
+      "One of the oldest universities in Jharkhand, offering PYQs across BCA, BBA and Biotechnology programs.",
+  },
+  {
+    id: "vbu",
+    name: "Vinoba Bhave University",
+    city: "Hazaribagh",
+    category: "State University",
+    gradient: "linear-gradient(135deg, #0d47a1, #1976d2)",
+    description:
+      "Renowned for its strong undergraduate programs in science, commerce and humanities with a vast PYQ archive.",
+  },
+  {
+    id: "dspmu",
+    name: "Dr. Shyama Prasad Mukherjee University",
+    city: "Ranchi",
+    category: "State University",
+    gradient: "linear-gradient(135deg, #1b5e20, #2e7d32)",
+    description:
+      "A leading university in Ranchi providing previous year papers to help you prepare for competitive exams.",
+  },
+  {
+    id: "bbmku",
+    name: "Binod Bihari Mahto Koyalanchal University",
+    city: "Dhanbad",
+    category: "State University",
+    gradient: "linear-gradient(135deg, #bf360c, #e65100)",
+    description:
+      "Empowering students in the coal belt with comprehensive question papers for every semester examination.",
+  },
+  {
+    id: "bit",
+    name: "BIT Mesra",
+    city: "Ranchi",
+    category: "Institute",
+    gradient: "linear-gradient(135deg, #4a148c, #6a1b9a)",
+    description:
+      "A premier institute of technology with rigorous academic standards and well-structured past papers.",
+  },
+  {
+    id: "skmu",
+    name: "Sidhu Kanhu Murmu University",
+    city: "Dumka",
+    category: "State University",
+    gradient: "linear-gradient(135deg, #00695c, #00897b)",
+    description:
+      "A rising university in the Santhal region offering previous year question papers for all major courses.",
+  },
 ];
 
 const subjectsData = {
@@ -113,14 +162,36 @@ const subjectsData = {
   ],
 };
 
+const getVisibleCount = () => {
+  if (typeof window === "undefined") return 3;
+  const w = window.innerWidth;
+  if (w < 640) return 1;
+  if (w < 1024) return 2;
+  if (w < 1400) return 3;
+  return 4;
+};
+
+const initials = (name) =>
+  name
+    .replace(/\([^)]*\)/g, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+
 const PYQ = () => {
   const [selectedUni, setSelectedUni] = useState(null);
   const [pyqData, setPyqData] = useState({});
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [navCount, setNavCount] = useState(0);
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(3);
+  const [isHovering, setIsHovering] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const totalSlides = universities.length;
+  const trackRef = useRef(null);
+  const timerRef = useRef(null);
+  const touchRef = useRef({ x: 0, y: 0, dx: 0 });
+  const total = universities.length;
 
   useEffect(() => {
     if (selectedUni) {
@@ -129,16 +200,59 @@ const PYQ = () => {
   }, [selectedUni]);
 
   useEffect(() => {
-    if (paused || selectedUni) return;
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [paused, selectedUni, totalSlides, navCount]);
+    const handleResize = () => {
+      setVisible(getVisibleCount());
+      setIndex((prev) => Math.max(0, Math.min(prev, total - 1)));
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [total]);
 
-  const goToSlide = (index) => {
-    setCurrentSlide(((index % totalSlides) + totalSlides) % totalSlides);
-    setNavCount((c) => c + 1);
+  useEffect(() => {
+    if (isHovering || isAnimating) return;
+    const start = () => {
+      timerRef.current = setTimeout(() => {
+        goTo((index + 1) % total);
+      }, 3500);
+    };
+    start();
+    return () => clearTimeout(timerRef.current);
+  }, [index, isHovering, isAnimating, total]);
+
+  const goTo = (target) => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setIndex(target);
+    setTimeout(() => setIsAnimating(false), 450);
+  };
+
+  const prev = () => goTo((index - 1 + total) % total);
+  const next = () => goTo((index + 1) % total);
+
+  const onTouchStart = (e) => {
+    touchRef.current.x = e.touches[0].clientX;
+    touchRef.current.y = e.touches[0].clientY;
+    touchRef.current.dx = 0;
+  };
+
+  const onTouchMove = (e) => {
+    const dx = e.touches[0].clientX - touchRef.current.x;
+    const dy = e.touches[0].clientY - touchRef.current.y;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      touchRef.current.dx = dx;
+      const el = trackRef.current;
+      if (el) el.style.transform = `translateX(calc(${-index * (100 / visible)}% + ${dx}px))`;
+    }
+  };
+
+  const onTouchEnd = () => {
+    const el = trackRef.current;
+    if (el) el.style.transform = "";
+    const threshold = 60;
+    if (touchRef.current.dx > threshold) prev();
+    else if (touchRef.current.dx < -threshold) next();
+    touchRef.current.dx = 0;
   };
 
   const normalizeKey = (str) => str.toLowerCase().replace(/\s+/g, " ").trim();
@@ -218,40 +332,53 @@ const PYQ = () => {
       </header>
 
       <div
-        className="slider-wrapper"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        className="pyq-slider"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
-        <div className="slider-viewport">
+        <div className="pyq-slider-viewport">
           <div
-            className="slider-track"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            ref={trackRef}
+            className="pyq-track"
+            style={{ transform: `translateX(-${index * (100 / visible)}%)` }}
           >
             {universities.map((uni) => (
-              <button
-                key={uni.id}
-                className="uni-card"
-                onClick={() => setSelectedUni(uni.id)}
-              >
-                {uni.image && <img src={uni.image} alt={uni.name} className="uni-card-img" />}
-                <div className="uni-card-content">
-                  <h2>{uni.name}</h2>
-                  <p>View PYQ &rarr;</p>
-                </div>
-              </button>
+              <div className="pyq-card-wrap" key={uni.id} style={{ flexBasis: `${100 / visible}%` }}>
+                <article className="pyq-card">
+                  <div className="pyq-card-media" style={{ background: uni.gradient }}>
+                    {uni.image ? (
+                      <img src={uni.image} alt={uni.name} className="pyq-card-img" />
+                    ) : (
+                      <span className="pyq-card-placeholder">{initials(uni.name)}</span>
+                    )}
+                    <span className="pyq-card-badge">{uni.category}</span>
+                  </div>
+                  <div className="pyq-card-body">
+                    <h3 className="pyq-card-title">{uni.name}</h3>
+                    <p className="pyq-card-city">{uni.city}</p>
+                    <p className="pyq-card-desc">{uni.description}</p>
+                    <button className="pyq-card-btn" onClick={() => setSelectedUni(uni.id)}>
+                      Read More
+                    </button>
+                  </div>
+                </article>
+              </div>
             ))}
           </div>
         </div>
 
-        <button className="slider-arrow left" onClick={() => goToSlide(currentSlide - 1)} aria-label="Previous">&#8249;</button>
-        <button className="slider-arrow right" onClick={() => goToSlide(currentSlide + 1)} aria-label="Next">&#8250;</button>
+        <button className="pyq-arrow left" onClick={prev} aria-label="Previous" disabled={isAnimating}>&#8249;</button>
+        <button className="pyq-arrow right" onClick={next} aria-label="Next" disabled={isAnimating}>&#8250;</button>
 
-        <div className="slider-dots">
-          {universities.map((uni, i) => (
+        <div className="pyq-dots">
+          {universities.map((u, i) => (
             <button
-              key={uni.id}
-              className={`dot ${i === currentSlide ? "active" : ""}`}
-              onClick={() => goToSlide(i)}
+              key={u.id}
+              className={`pyq-dot ${i === index ? "active" : ""}`}
+              onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
