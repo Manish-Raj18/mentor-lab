@@ -4,8 +4,7 @@ function BiotechSyllabus() {
   return (
     <div className="bio-roadmap">
       <header className="header">
-        <h1>Biotechnology Roadmap</h1>
-        <p>Your step-by-step guide from foundation sciences to advanced biopharmaceutical development</p>
+        <h1>Your step-by-step guide from foundation sciences to advanced biopharmaceutical development</h1>
       </header>
 
       <div className="middle-section">

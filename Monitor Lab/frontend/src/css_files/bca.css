@@ -13,13 +13,13 @@
   text-align: center;
   margin-bottom: 60px;
   padding: 20px;
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(202, 206, 212, 0.9);
   border-radius: 20px;
 }
 
 .bca-header h1 {
   font-size: 3rem;
-  color: var(--hero-title);
+  color: #000000;
   margin-bottom: 15px;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -27,7 +27,7 @@
 
 .bca-header p {
   font-size: 1.2rem;
-  color: var(--hero-text);
+  color: #000000;
   max-width: 700px;
   margin: 0 auto;
 }
@@ -36,13 +36,15 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
+  background-color: transparent;
+  padding: 30px;
 }
 
 .subject-card {
-  background-color: rgba(224, 224, 224, 0.88);
+  background-color: rgba(7, 22, 43, 0.9);
   border-radius: 20px;
   padding: 35px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(238, 229, 229, 0.05);
   transition: all 0.3s ease;
   border: 1px solid var(--border-color);
   display: flex;
@@ -62,7 +64,7 @@
 
 .subject-card h2 {
   font-size: 1.8rem;
-  color: var(--text-color);
+  color: #151414;
   margin-bottom: 25px;
   text-transform: capitalize;
   border-bottom: 3px solid var(--accent-color);

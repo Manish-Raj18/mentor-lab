@@ -4,8 +4,7 @@ const BcaRoadmap = () => {
   return (
     <div className="bca-roadmap">
       <header className="header">
-            <h1>BCA Roadmap</h1>
-            <p>Your step-by-step guide to Bachelor of Computer Applications</p>
+            <h1>Your step-by-step guide to Bachelor of Computer Applications</h1>
           </header>
 
       <div className="middle-section">
