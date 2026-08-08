@@ -37,6 +37,7 @@ const universities = [
     id: "bbmku",
     name: "Binod Bihari Mahto Koyalanchal University",
     city: "Dhanbad",
+    image: "bbmkuuniversity.jpg",
     category: "State University",
     gradient: "linear-gradient(135deg, #bf360c, #e65100)",
     description:
@@ -165,10 +166,8 @@ const subjectsData = {
 const getVisibleCount = () => {
   if (typeof window === "undefined") return 3;
   const w = window.innerWidth;
-  if (w < 640) return 1;
-  if (w < 1024) return 2;
-  if (w < 1400) return 3;
-  return 4;
+  if (w < 768) return 1;
+  return 3;
 };
 
 const initials = (name) =>
@@ -242,7 +241,7 @@ const PYQ = () => {
     if (Math.abs(dx) > Math.abs(dy)) {
       touchRef.current.dx = dx;
       const el = trackRef.current;
-      if (el) el.style.transform = `translateX(calc(${-index * (100 / visible)}% + ${dx}px))`;
+      if (el) el.style.transform = `translateX(calc(${(100 - 100 / visible) / 2}% - ${index * (100 / visible)}% + ${dx}px))`;
     }
   };
 
@@ -343,30 +342,36 @@ const PYQ = () => {
           <div
             ref={trackRef}
             className="pyq-track"
-            style={{ transform: `translateX(-${index * (100 / visible)}%)` }}
+            style={{
+              transform: `translateX(calc(${(100 - 100 / visible) / 2}% - ${index * (100 / visible)}%))`,
+            }}
           >
-            {universities.map((uni) => (
-              <div className="pyq-card-wrap" key={uni.id} style={{ flexBasis: `${100 / visible}%` }}>
-                <article className="pyq-card">
-                  <div className="pyq-card-media" style={{ background: uni.gradient }}>
-                    {uni.image ? (
-                      <img src={uni.image} alt={uni.name} className="pyq-card-img" />
-                    ) : (
-                      <span className="pyq-card-placeholder">{initials(uni.name)}</span>
-                    )}
-                    <span className="pyq-card-badge">{uni.category}</span>
-                  </div>
-                  <div className="pyq-card-body">
-                    <h3 className="pyq-card-title">{uni.name}</h3>
-                    <p className="pyq-card-city">{uni.city}</p>
-                    <p className="pyq-card-desc">{uni.description}</p>
-                    <button className="pyq-card-btn" onClick={() => setSelectedUni(uni.id)}>
-                      Read More
-                    </button>
-                  </div>
-                </article>
-              </div>
-            ))}
+            {universities.map((uni, i) => {
+              const rel = i - index;
+              const sideClass = rel < 0 ? "pyq-card-prev" : rel > 0 ? "pyq-card-next" : "pyq-card-active";
+              return (
+                <div className={`pyq-card-wrap ${sideClass}`} key={uni.id} style={{ flexBasis: `${100 / visible}%` }}>
+                  <article className="pyq-card">
+                    <div className="pyq-card-media" style={{ background: uni.gradient }}>
+                      {uni.image ? (
+                        <img src={uni.image} alt={uni.name} className="pyq-card-img" />
+                      ) : (
+                        <span className="pyq-card-placeholder">{initials(uni.name)}</span>
+                      )}
+                      <span className="pyq-card-badge">{uni.category}</span>
+                    </div>
+                    <div className="pyq-card-body">
+                      <h3 className="pyq-card-title">{uni.name}</h3>
+                      <p className="pyq-card-city">{uni.city}</p>
+                      <p className="pyq-card-desc">{uni.description}</p>
+                      <button className="pyq-card-btn" onClick={() => setSelectedUni(uni.id)}>
+                        Read More
+                      </button>
+                    </div>
+                  </article>
+                </div>
+              );
+            })}
           </div>
         </div>
 
