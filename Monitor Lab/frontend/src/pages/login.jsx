@@ -112,8 +112,33 @@ function Login() {
     // 3. The JSX UI Layout
     return (
         <div className="container1">
-            <div className="form-box login-card">
-                <div className="login-brand">
+            <div className="auth-shell">
+                <div className="auth-visual">
+                    <img src="/midnight-study-session-stockcake.jpg" alt="Student studying late at night" className="auth-visual-img" />
+                    <div className="auth-visual-overlay" />
+                    <div className="auth-visual-content">
+                        <div className="auth-visual-brand">
+                            <div className="login-logo">
+                                <LogoIcon />
+                            </div>
+                            <span>MENTOR LAB</span>
+                        </div>
+                        <div className="auth-visual-copy">
+                            <h3>Learn smarter. Score higher.</h3>
+                            <p>Everything you need for BCA, BBA &amp; Biotechnology — mock tests, lectures, notes and analytics in one place.</p>
+                        </div>
+                        <ul className="auth-visual-points">
+                            <li><span className="pt-check">✓</span> Practice with full-length mock tests</li>
+                            <li><span className="pt-check">✓</span> Learn from top educators</li>
+                            <li><span className="pt-check">✓</span> Access curated study notes</li>
+                            <li><span className="pt-check">✓</span> Track performance analytics</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="auth-panel">
+                    <div className="form-box login-card">
+                        <div className="login-brand">
                     <div className="login-logo">
                         <LogoIcon />
                     </div>
@@ -177,6 +202,8 @@ function Login() {
                 <div className="login-footer">
                     Don't have an account?
                     <Link to="/signup">Sign up</Link>
+                </div>
+                    </div>
                 </div>
             </div>
         </div>

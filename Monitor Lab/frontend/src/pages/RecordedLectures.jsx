@@ -2,14 +2,9 @@ import "../css_files/recorded.css";
 function RecordedLectures(){
     return(
         <div className="abc">
-        <div className="navbar1">
-    <h1>DRONA GYAN</h1>
-
-    <div className="nav-links">
-      <a href="#">Home</a>
-      <a href="#">Courses</a>
-      <a href="#">Lectures</a>
-    </div>
+        <div className="rl-header">
+    <h1>Recorded Lectures</h1>
+    <p>Watch and revise at your own pace.</p>
   </div>
 
   
@@ -18,7 +13,7 @@ function RecordedLectures(){
     
     <div className="video-section">
 
-      <video controls poster="C:/xampp/htdocs/xampp/900*500">
+      <video controls>
         <source src="/intro 2.mp4" type="video/mp4"/>
         Your browser does not support video.
       </video>
@@ -40,7 +35,7 @@ function RecordedLectures(){
     </div>
 
     
-    <div className="sidebar">
+    <div className="playlist-sidebar">
 
       <h2>Course Playlist</h2>
 

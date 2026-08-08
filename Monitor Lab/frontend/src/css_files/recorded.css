@@ -1,152 +1,179 @@
-.abc{
+﻿.abc{
   background-color: var(--bg-color);
   color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Navbar */
-.navbar1{
+/* Page Header */
+.rl-header{
   background: var(--nav-bg);
   color: var(--hero-text);
-  padding:18px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  padding: 26px 40px;
   border-bottom: 1px solid var(--border-color);
 }
 
-.navbar1 h1{
-  font-size:24px;
+.rl-header h1{
+  font-size: 26px;
+  margin: 0 0 6px;
 }
 
-.nav-links a{
+.rl-header p{
+  margin: 0;
+  font-size: 0.95rem;
   color: var(--hero-text);
   opacity: 0.8;
-  text-decoration:none;
-  margin-left:20px;
-  transition:0.3s;
-}
-
-.nav-links a:hover{
-  color: var(--accent-color);
-  opacity: 1;
 }
 
 /* Main Layout */
 .container{
-  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
   align-items: flex-start;
-  max-width:1200px;
-  margin:auto;
-  display:flex;
-  width: 100vw;
-  gap:30px;
-  padding:20px;
+  gap: 30px;
+  padding: 24px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
 }
 
 /* Video Section */
 .video-section{
   flex: 7;
+  min-width: 0;
   background: var(--card-bg);
-  padding:20px;
-  border-radius:14px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   border: 1px solid var(--border-color);
 }
 
-video{
-  width:100%;
-  border-radius:12px;
+.video-section video{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
 }
 
 .lecture-title{
-  margin-top:18px;
-  font-size:28px;
+  margin-top: 18px;
+  font-size: 28px;
   color: var(--text-color);
 }
 
 .lecture-info{
-  margin-top:10px;
+  margin-top: 10px;
   color: var(--text-color);
   opacity: 0.7;
-  font-size:15px;
+  font-size: 15px;
 }
 
 .description{
-  margin-top:20px;
-  line-height:1.7;
+  margin-top: 20px;
+  line-height: 1.7;
   color: var(--text-color);
   opacity: 0.9;
 }
 
 /* Sidebar */
-.sidebar{
+.playlist-sidebar{
   flex: 3;
+  min-width: 280px;
   background: var(--card-bg);
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.08);
-  height:fit-content;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   border: 1px solid var(--border-color);
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
 
-.sidebar h2{
-  margin-bottom:20px;
+.playlist-sidebar h2{
+  margin-bottom: 20px;
   color: var(--text-color);
 }
 
 .playlist-item{
-  display:flex;
-  gap:12px;
-  margin-bottom:18px;
-  padding:10px;
-  border-radius:10px;
-  transition:0.3s;
-  cursor:pointer;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: 0.3s;
+  cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .playlist-item:hover{
   background: var(--secondary-bg);
+  border-color: var(--border-color);
 }
 
 .thumbnail{
-  width:100px;
-  height:60px;
-  background: var(--secondary-bg);
-  border-radius:8px;
-  flex-shrink:0;
+  position: relative;
+  width: 100px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--secondary-bg), var(--border-color));
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail::after{
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 10px solid var(--text-color);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  opacity: 0.8;
 }
 
 .playlist-content h4{
-  font-size:15px;
-  margin-bottom:6px;
+  font-size: 15px;
+  margin-bottom: 6px;
   color: var(--text-color);
 }
 
 .playlist-content p{
-  font-size:13px;
+  font-size: 13px;
   color: var(--text-color);
   opacity: 0.7;
 }
 
 /* Footer */
-footer{
-  margin-top:30px;
+.abc footer{
+  margin-top: auto;
   background: var(--footer-bg);
   color: var(--hero-text);
-  text-align:center;
-  padding:18px;
+  text-align: center;
+  padding: 18px;
 }
 
 /* Responsive */
-@media(max-width:900px){
+@media(max-width: 900px){
 
   .container{
     flex-direction: column;
+    padding: 16px;
+    gap: 20px;
   }
 
-  .navbar1{
-    flex-direction:column;
-    gap:10px;
+  .rl-header{
+    padding: 20px;
+  }
+
+  .playlist-sidebar{
+    position: static;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
   }
 
 }
