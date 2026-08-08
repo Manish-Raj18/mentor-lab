@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css_files/chatbot.css';
 
-const suggestions = ['BCA syllabus', 'Study notes', 'Mock tests', 'Roadmap'];
-
 const getTime = () =>
   new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -183,13 +181,6 @@ const ChatbotPage = () => {
         </div>
 
         <div className="chatbot-page-input-area">
-          <div className="suggestion-row">
-            {suggestions.map((s) => (
-              <button key={s} className="suggestion-chip" onClick={() => handleSend(s)}>
-                {s}
-              </button>
-            ))}
-          </div>
           <div className="chatbot-page-input">
             <input
               value={input}
