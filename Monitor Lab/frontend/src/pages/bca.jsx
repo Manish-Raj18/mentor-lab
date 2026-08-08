@@ -1,27 +1,12 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import "../css_files/bca.css";
-
-const subjects = [
-  { section: "Programming Languages", icon: "💻", items: ["C Programming", "C++ Programming", "Java Programming", "Python Programming", "HTML & Web Design", "JavaScript", "CSS Styling"] },
-  { section: "Logical Subjects", icon: "🧠", items: ["Database Management System", "Data Structures & Algorithms", "Operating Systems", "System Analysis & Design", "Computer Architecture", "Design & Analysis of Algorithms", "Computer Networks"] },
-  { section: "Mathematics Subjects", icon: "📊", items: ["Differential Calculus", "Integral Calculus", "Differential Equations", "Abstract Algebra", "Linear Algebra", "Matrix Algebra", "Analytical Geometry (3D)", "Probability Theory", "Probability Distributions", "Statistics & Central Tendency", "Measures of Variation", "Correlation Analysis", "Regression Analysis", "Sampling Distribution"], mathCard: true },
-];
+import { bcaCategories } from "../data/bcaSubjects";
 
 function BCA() {
-  const [notes, setNotes] = useState([]);
-
-  useEffect(() => {
-    axios.get("/api/notes?course=BCA")
-      .then(res => setNotes(res.data))
-      .catch(err => console.log(err));
-  }, []);
-
-  const getPdfLink = (subjectName) => {
-    const normalized = subjectName.toLowerCase();
-    const note = notes.find(n => n.subject && n.subject.toLowerCase() === normalized);
-    return note ? `/api/notes/${note._id}/pdf` : null;
-  };
+  const [index, setIndex] = useState(0);
+  const n = bcaCategories.length;
+  const go = (i) => setIndex(((i % n) + n) % n);
 
   return (
     <div className="bca-container">
@@ -30,27 +15,26 @@ function BCA() {
         <p>Explore the comprehensive guide to subjects and programming languages for Bachelor of Computer Applications.</p>
       </header>
 
-      <div className="subjects-grid">
-        {subjects.map((section) => (
-          <section key={section.section} className={`subject-card ${section.mathCard ? "math-card" : ""}`}>
-            <span className="card-icon">{section.icon}</span>
-            <h2>{section.section}</h2>
-            <ul className="subject-list">
-              {section.items.map((item) => {
-                const pdfLink = getPdfLink(item);
-                return (
-                  <li key={item} className="syllabus-item">
-                    {pdfLink ? (
-                      <a href={pdfLink} target="_blank" rel="noreferrer">{item}</a>
-                    ) : (
-                      <span style={{ color: "var(--text-color)", opacity: 0.6 }}>{item}</span>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ))}
+      <div className="bca-coverflow">
+        {bcaCategories.map((c, i) => {
+          const offset = (i - index + n) % n;
+          const pos = offset === 0 ? "center" : offset === 1 ? "right" : "left";
+          return (
+            <Link to={`/bca/${c.slug}`} key={c.slug} className={`bca-card cover-${pos}`}>
+              <img src={c.image} alt={c.name} className="bca-card-image" loading="lazy" />
+              <div className="bca-card-body">
+                <span className="bca-card-icon">{c.icon}</span>
+                <h2>{c.name}</h2>
+                <span className="bca-card-count">{c.items.length} Subjects</span>
+                <p className="bca-card-desc">{c.desc}</p>
+                <span className="bca-card-link">View Subjects →</span>
+              </div>
+            </Link>
+          );
+        })}
+
+        <button className="cover-arrow left" onClick={() => go(index - 1)} aria-label="Previous category">&#8249;</button>
+        <button className="cover-arrow right" onClick={() => go(index + 1)} aria-label="Next category">&#8250;</button>
       </div>
     </div>
   );

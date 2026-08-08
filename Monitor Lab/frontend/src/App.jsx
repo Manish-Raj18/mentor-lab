@@ -26,6 +26,7 @@ import MockTest from "./pages/MockTest";
 import StudyNotes from "./pages/StudyNotes";
 import PerformanceAnalytics from "./pages/PerformanceAnalytics";
 import PYQ from "./pages/PYQ";
+import BCACategoryPage from "./pages/BCACategoryPage";
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/bca" element={<BCA />} />
+          <Route path="/bca/:categorySlug" element={<BCACategoryPage />} />
           <Route path="/bba" element={<BBA />} />
           <Route path="/biotechsylla" element={<BIO />} />
           <Route path="/contact-us" element={<ContactUs />} />
