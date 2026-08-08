@@ -62,6 +62,47 @@ const countryCodes = [
   { code: "+372", country: "EE", label: "Estonia (+372)" },
 ];
 
+const UserIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const EnvelopeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+  </svg>
+);
+
+const PhoneIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+  </svg>
+);
+
+const LockIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+);
+
+const LogoIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+  </svg>
+);
+
+const passwordChecks = [
+  { label: "8+ characters", test: (p) => p.length >= 8 },
+  { label: "Letter", test: (p) => /[a-zA-Z]/.test(p) },
+  { label: "Number", test: (p) => /[0-9]/.test(p) },
+  { label: "Special character", test: (p) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(p) },
+];
+
 function Signup() {
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
@@ -71,6 +112,7 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [errors, setErrors] = useState({});
 
   const famousDomains = [
@@ -137,6 +179,10 @@ function Signup() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
+    if (!agreed) {
+      newErrors.agree = "Please confirm that the information provided is correct and accept the terms to continue.";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -183,124 +229,184 @@ function Signup() {
     }
   };
 
+  const strength = passwordChecks.filter((c) => c.test(password)).length;
+  const strengthLabel = strength === 0 ? "" : strength <= 2 ? "Weak" : strength === 3 ? "Good" : "Strong";
+
   return (
     <div className="container1">
-      <div className="form-box">
-        <h2>Signup</h2>
+      <div className="form-box signup-card">
+        <div className="login-brand">
+          <div className="login-logo">
+            <LogoIcon />
+          </div>
+          <h2>Create Account</h2>
+          <p className="login-subtitle">Join Mentor Lab and start your learning journey today</p>
+        </div>
+
         <form onSubmit={handleSignup}>
-          <div className="input-group">
-            <label>First Name *</label>
-            <input
-              type="text"
-              placeholder="Enter First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              style={errors.firstName ? { borderColor: "#dc3545" } : {}}
-            />
-            {errors.firstName && <span style={{ color: "#dc3545", fontSize: "0.8rem", marginTop: "0.3rem" }}>{errors.firstName}</span>}
+          <div className="field-row">
+            <div className="input-group">
+              <label>First Name *</label>
+              <div className="input-wrap">
+                <span className="input-icon"><UserIcon /></span>
+                <input
+                  type="text"
+                  placeholder="Enter First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className={errors.firstName ? "input-error" : ""}
+                />
+              </div>
+              {errors.firstName && <span className="error-text">{errors.firstName}</span>}
+            </div>
+
+            <div className="input-group">
+              <label>Last Name *</label>
+              <div className="input-wrap">
+                <span className="input-icon"><UserIcon /></span>
+                <input
+                  type="text"
+                  placeholder="Enter Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className={errors.lastName ? "input-error" : ""}
+                />
+              </div>
+              {errors.lastName && <span className="error-text">{errors.lastName}</span>}
+            </div>
           </div>
 
           <div className="input-group">
             <label>Middle Name</label>
-            <input
-              type="text"
-              placeholder="Enter Middle Name (optional)"
-              value={middleName}
-              onChange={(e) => setMiddleName(e.target.value)}
-            />
-          </div>
-
-          <div className="input-group">
-            <label>Last Name *</label>
-            <input
-              type="text"
-              placeholder="Enter Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              style={errors.lastName ? { borderColor: "#dc3545" } : {}}
-            />
-            {errors.lastName && <span style={{ color: "#dc3545", fontSize: "0.8rem", marginTop: "0.3rem" }}>{errors.lastName}</span>}
+            <div className="input-wrap">
+              <span className="input-icon"><UserIcon /></span>
+              <input
+                type="text"
+                placeholder="Enter Middle Name (optional)"
+                value={middleName}
+                onChange={(e) => setMiddleName(e.target.value)}
+              />
+            </div>
           </div>
 
           <div className="input-group">
             <label>Email *</label>
-            <input
-              type="email"
-              placeholder="Enter Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={errors.email ? { borderColor: "#dc3545" } : {}}
-            />
-            {errors.email && <span style={{ color: "#dc3545", fontSize: "0.8rem", marginTop: "0.3rem" }}>{errors.email}</span>}
+            <div className="input-wrap">
+              <span className="input-icon"><EnvelopeIcon /></span>
+              <input
+                type="email"
+                placeholder="Enter Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={errors.email ? "input-error" : ""}
+              />
+            </div>
+            {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
 
           <div className="input-group">
             <label>Phone Number *</label>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div className="phone-row">
               <select
                 value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
-                style={{
-                  width: "140px", flexShrink: 0, padding: "12px",
-                  border: "1px solid var(--border-color)", borderRadius: "6px",
-                  backgroundColor: "var(--input-bg)", color: "var(--input-text)",
-                  fontSize: "14px", outline: "none"
-                }}
+                className="phone-code"
               >
                 {countryCodes.map((c, i) => (
                   <option key={i} value={c.code}>{c.label}</option>
                 ))}
               </select>
-              <input
-                type="tel"
-                placeholder="Enter phone number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/[^0-9\s\-()]/g, ""))}
-                style={{ flex: 1, ...(errors.phone ? { borderColor: "#dc3545" } : {}) }}
-              />
+              <div className="input-wrap input-wrap-flex">
+                <span className="input-icon"><PhoneIcon /></span>
+                <input
+                  type="tel"
+                  placeholder="Enter phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value.replace(/[^0-9\s\-()]/g, ""))}
+                  className={errors.phone ? "input-error" : ""}
+                />
+              </div>
             </div>
-            {errors.phone && <span style={{ color: "#dc3545", fontSize: "0.8rem", marginTop: "0.3rem" }}>{errors.phone}</span>}
+            {errors.phone && <span className="error-text">{errors.phone}</span>}
           </div>
 
           <div className="input-group">
             <label>Password *</label>
-            <input
-              type="password"
-              placeholder="Enter Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={errors.password ? { borderColor: "#dc3545" } : {}}
-            />
-            {errors.password && <span style={{ color: "#dc3545", fontSize: "0.8rem", marginTop: "0.3rem" }}>{errors.password}</span>}
+            <div className="input-wrap">
+              <span className="input-icon"><LockIcon /></span>
+              <input
+                type="password"
+                placeholder="Enter Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={errors.password ? "input-error" : ""}
+              />
+            </div>
+            {errors.password && <span className="error-text">{errors.password}</span>}
             {password && (
-              <div style={{ marginTop: "0.4rem", fontSize: "0.75rem", color: "var(--text-color)", opacity: 0.7 }}>
-                <span style={{ color: password.length >= 8 ? "#28a745" : "#dc3545" }}>8+ chars </span>
-                <span style={{ color: /[a-zA-Z]/.test(password) ? "#28a745" : "#dc3545" }}>letters </span>
-                <span style={{ color: /[0-9]/.test(password) ? "#28a745" : "#dc3545" }}>numbers </span>
-                <span style={{ color: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password) ? "#28a745" : "#dc3545" }}>special </span>
+              <div className="password-strength">
+                <div className="strength-meta">
+                  <span className={`strength-label ${strength >= 4 ? "strong" : strength >= 3 ? "good" : strength >= 1 ? "weak" : ""}`}>
+                    {strengthLabel && `Password strength: ${strengthLabel}`}
+                  </span>
+                </div>
+                <div className="password-meter">
+                  {[0, 1, 2, 3].map((i) => (
+                    <span
+                      key={i}
+                      className={`meter-segment ${i < strength ? `level-${strength}` : ""}`}
+                    />
+                  ))}
+                </div>
+                <div className="strength-checks">
+                  {passwordChecks.map((c) => (
+                    <span key={c.label} className={`strength-check ${c.test(password) ? "pass" : ""}`}>
+                      {c.test(password) ? "✓" : "○"} {c.label}
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
           </div>
 
           <div className="input-group">
             <label>Confirm Password *</label>
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              style={errors.confirmPassword ? { borderColor: "#dc3545" } : {}}
-            />
-            {errors.confirmPassword && <span style={{ color: "#dc3545", fontSize: "0.8rem", marginTop: "0.3rem" }}>{errors.confirmPassword}</span>}
+            <div className="input-wrap">
+              <span className="input-icon"><LockIcon /></span>
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={errors.confirmPassword ? "input-error" : ""}
+              />
+            </div>
+            {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
           </div>
 
-          <button className="btn" type="submit">
-            Signup
+          <div className={`consent-box ${errors.agree ? "consent-error" : ""}`}>
+            <label className="checkbox-label consent-checkbox">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />
+              <span>
+                I confirm that all the information provided above is correct, and I agree to the
+                Mentor Lab <a href="/#terms" onClick={(e) => e.preventDefault()}>Terms of Service</a> and
+                <a href="/#privacy" onClick={(e) => e.preventDefault()}> Privacy Policy</a>.
+              </span>
+            </label>
+            {errors.agree && <span className="error-text">{errors.agree}</span>}
+          </div>
+
+          <button className="login-btn" type="submit">
+            Create Account
           </button>
         </form>
 
-        <div className="link">
-          Already have account? <Link to="/">Login</Link>
+        <div className="login-footer">
+          Already have an account? <Link to="/login">Login</Link>
         </div>
       </div>
     </div>
