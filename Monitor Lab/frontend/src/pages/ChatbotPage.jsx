@@ -3,10 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css_files/chatbot.css';
 
+const suggestions = ['BCA syllabus', 'Study notes', 'Mock tests', 'Roadmap'];
+
+const getTime = () =>
+  new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
 const ChatbotPage = () => {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([
-    { role: 'bot', content: 'Hi! How can I help you today?' }
+    {
+      role: 'bot',
+      content: 'Hi! How can I help you today? Ask me about syllabi, study notes, mock tests, roadmaps or anything about the platform!',
+      time: getTime(),
+    },
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -73,24 +82,25 @@ const ChatbotPage = () => {
     }
   }, [speakingIndex, language, speakBrowser, playTtsChunks]);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const userMsg = { role: 'user', content: input };
+  const handleSend = async (msg) => {
+    const text = (msg ?? input).trim();
+    if (!text) return;
+    const userMsg = { role: 'user', content: text, time: getTime() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input, language });
+      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: text, language });
       const cleanReply = response.data.reply
         .replace(/\r\n/g, '\n')
         .split(/\n\s*\n/)
         .map(p => p.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim())
         .filter(Boolean)
         .join('\n\n');
-      setMessages(prev => [...prev, { role: 'bot', content: cleanReply }]);
+      setMessages(prev => [...prev, { role: 'bot', content: cleanReply, time: getTime() }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting.' }]);
+      setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting.', time: getTime() }]);
     } finally {
       setIsTyping(false);
     }
@@ -101,53 +111,96 @@ const ChatbotPage = () => {
       <div className="chatbot-page-bg">MENTOR LAB</div>
       <div className="chatbot-page-container">
         <div className="chatbot-page-header">
-          <button className="back-btn" onClick={() => navigate(-1)}>
-            ← Back
-          </button>
-          <span className="header-title">Mentor Lab Assistant</span>
-          <select className="lang-select lang-select-header" value={language} onChange={(e) => setLanguage(e.target.value)}>
-            <option value="english">English</option>
-            <option value="hindi">हिन्दी</option>
-          </select>
+          <div className="header-left">
+            <button className="back-btn" onClick={() => navigate(-1)}>
+              ← Back
+            </button>
+          </div>
+          <div className="header-center">
+            <div className="header-bot">
+              <span className="header-bot-avatar">🤖</span>
+              <div className="header-bot-info">
+                <div className="header-title">Mentor Lab Assistant</div>
+                <div className="header-status">
+                  <span className="status-dot" />
+                  Online · replies instantly
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="header-right">
+            <select className="lang-select lang-select-header" value={language} onChange={(e) => setLanguage(e.target.value)} aria-label="Language">
+              <option value="english">English</option>
+              <option value="hindi">हिन्दी</option>
+            </select>
+          </div>
         </div>
+
         <div className="chatbot-page-messages">
           {messages.map((m, i) => (
             <div key={i} className={`message-row ${m.role}`}>
               {m.role === 'bot' && <span className="bot-avatar">🤖</span>}
-              <div className={`chat-bubble ${m.role}`}>
-                <div className="bubble-content">
-                  <span className="bubble-text">{m.content.replace(/\*\*/g, '')}</span>
+              <div className="bubble-stack">
+                {m.role === 'bot' && (
+                  <div className="msg-meta">
+                    <span className="msg-author">Mentor Lab Assistant</span>
+                    <span className="msg-time">{m.time}</span>
+                  </div>
+                )}
+                <div className={`chat-bubble ${m.role}`}>
+                  <div className="bubble-content">
+                    <span className="bubble-text">{m.content.replace(/\*\*/g, '')}</span>
+                  </div>
                 </div>
+                {m.role === 'bot' && (
+                  <button
+                    className={`speak-btn ${speakingIndex === i ? 'speaking' : ''}`}
+                    onClick={() => speakText(m.content, i)}
+                    title={speakingIndex === i ? 'Stop' : 'Listen'}
+                  >
+                    {speakingIndex === i ? '⏹ Stop' : '🔊 Listen'}
+                  </button>
+                )}
               </div>
-              {m.role === 'bot' && (
-                <button
-                  className={`speak-btn ${speakingIndex === i ? 'speaking' : ''}`}
-                  onClick={() => speakText(m.content, i)}
-                  title={speakingIndex === i ? 'Stop' : 'Listen'}
-                >
-                  {speakingIndex === i ? '⏹' : '🔊'}
-                </button>
-              )}
             </div>
           ))}
           {isTyping && (
-            <div className="chat-bubble bot typing">
+            <div className="message-row bot">
               <span className="bot-avatar">🤖</span>
-              <div className="bubble-content typing-dots">
-                <span></span><span></span><span></span>
+              <div className="bubble-stack">
+                <div className="msg-meta">
+                  <span className="msg-author">Mentor Lab Assistant</span>
+                </div>
+                <div className="chat-bubble bot typing">
+                  <div className="typing-dots">
+                    <span></span><span></span><span></span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
-        <div className="chatbot-page-input">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder={language === 'hindi' ? 'अपना संदेश लिखें...' : 'Type a message...'}
-          />
-          <button className="send-btn" onClick={handleSend}>➤</button>
+
+        <div className="chatbot-page-input-area">
+          <div className="suggestion-row">
+            {suggestions.map((s) => (
+              <button key={s} className="suggestion-chip" onClick={() => handleSend(s)}>
+                {s}
+              </button>
+            ))}
+          </div>
+          <div className="chatbot-page-input">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              placeholder={language === 'hindi' ? 'अपना संदेश लिखें...' : 'Type a message...'}
+            />
+            <button className="send-btn" onClick={() => handleSend()} disabled={!input.trim()} aria-label="Send">
+              ➤
+            </button>
+          </div>
         </div>
       </div>
     </div>
