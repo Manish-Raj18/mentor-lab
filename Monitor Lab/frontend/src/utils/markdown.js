@@ -7,14 +7,61 @@ function escapeHtml(str) {
     .replace(/'/g, "&#39;");
 }
 
-export function renderPlainText(text) {
-  const blocks = String(text || "")
-    .replace(/\r\n/g, "\n")
-    .split(/\n{2,}/);
+function isHeadingLine(line) {
+  const len = line.length;
+  if (len < 3 || len > 90) return false;
+  if (/page\s+\d+\s*$/i.test(line)) return false;
 
-  return blocks
-    .map((block) => block.trim())
-    .filter(Boolean)
-    .map((block) => `<p style="white-space: pre-wrap;">${escapeHtml(block)}</p>`)
-    .join("\n");
+  if (/^(unit|module|chapter|topic|lesson|part|section)\b.*\d/i.test(line)) {
+    if (/sem\b/i.test(line)) return false;
+    return true;
+  }
+
+  if (/^\d{1,2}[.)]\s+[A-Z]/.test(line)) {
+    const occurrences = (line.match(/\d{1,2}[.)]/g) || []).length;
+    if (len <= 60 && occurrences === 1 && !/[,:-]/.test(line) && !/[.)]$/.test(line)) return true;
+    return false;
+  }
+
+  if (line === line.toUpperCase() && /[A-Z]{4,}/.test(line) && !/\d$/.test(line)) return true;
+
+  return false;
+}
+
+function isMajorHeading(line) {
+  return /^(unit|module|chapter)\b/i.test(line) || /^\d{1,2}[.)]\s+[A-Z]/.test(line);
+}
+
+export function renderPlainText(text) {
+  const lines = String(text || "")
+    .replace(/\r\n/g, "\n")
+    .split("\n");
+
+  const out = [];
+  let para = [];
+
+  const flush = () => {
+    if (para.length) {
+      out.push(`<p style="white-space: pre-wrap;">${escapeHtml(para.join("\n"))}</p>`);
+      para = [];
+    }
+  };
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (line === "") {
+      flush();
+      continue;
+    }
+    if (isHeadingLine(line)) {
+      flush();
+      const tag = isMajorHeading(line) ? "h2" : "h3";
+      out.push(`<${tag}>${escapeHtml(line)}</${tag}>`);
+      continue;
+    }
+    para.push(line);
+  }
+  flush();
+
+  return out.join("\n");
 }
