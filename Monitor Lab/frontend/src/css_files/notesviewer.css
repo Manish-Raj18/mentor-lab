@@ -290,6 +290,37 @@ body,
   margin: 0 0 1.1rem;
 }
 
+.nv-content ul.nv-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 1.4rem;
+}
+
+.nv-content ul.nv-list li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 0.55rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+.nv-content ul.nv-list li::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 0.72em;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a6fa5, #1a2a6c);
+  box-shadow: 0 1px 3px rgba(26, 42, 108, 0.4);
+}
+
+.nv-code-note .nv-content ul.nv-list li::before {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 1px 3px rgba(34, 197, 94, 0.4);
+}
+
 .nv-content li {
   margin-bottom: 0.45rem;
 }
