@@ -17,13 +17,28 @@ body,
 
 .nv-container {
   min-height: 100vh;
-  background: linear-gradient(rgba(12, 12, 22, 0.55), rgba(12, 12, 22, 0.55)),
+  background: linear-gradient(rgba(34, 34, 60, 0.55), rgba(12, 12, 22, 0.55)),
     url("https://i.pinimg.com/736x/42/8c/db/428cdb05d5bede77393c32e3cff5c11b.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   padding: 3rem 1rem;
   box-sizing: border-box;
+}
+
+.nv-container.nv-course-bca {
+  background-image: linear-gradient(rgba(12, 12, 22, 0.55), rgba(12, 12, 22, 0.55)),
+    url("/bsc-computer-science-ai-data-science-course.webp");
+}
+
+.nv-container.nv-course-bba {
+  background-image: linear-gradient(rgba(12, 12, 22, 0.55), rgba(12, 12, 22, 0.55)),
+    url("/stock-photo-businessman-hand-hold-mba-business-administration-executive-leadership-strategic-management-2695132419.jpg");
+}
+
+.nv-container.nv-course-biotech {
+  background-image: linear-gradient(rgba(12, 12, 22, 0.55), rgba(12, 12, 22, 0.55)),
+    url("https://i.pinimg.com/736x/42/8c/db/428cdb05d5bede77393c32e3cff5c11b.jpg");
 }
 
 .nv-panel {
@@ -128,51 +143,26 @@ body,
   margin-left: auto;
 }
 
-.nv-code-note .nv-hero {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #0d1117, #161b22);
-  border: 1px solid #30363d;
-  border-radius: 14px;
-  padding: 1.5rem 1.75rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.nv-code-note .nv-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-.nv-code-note .nv-hero > * {
-  position: relative;
-}
-
 .nv-code-note .nv-title {
-  color: #e6edf3;
+  color: #1a2a6c;
   font-family: Consolas, Monaco, "Courier New", monospace;
   font-size: 1.75rem;
 }
 
 .nv-code-note .nv-subject {
-  color: #58a6ff;
-  border-color: rgba(88, 166, 255, 0.4);
-  background: rgba(88, 166, 255, 0.12);
+  color: #1a6fb5;
+  border-color: rgba(74, 111, 165, 0.3);
+  background: rgba(74, 111, 165, 0.12);
 }
 
 .nv-code-note .nv-desc {
-  color: #8b949e;
+  color: #4b5563;
 }
 
 .nv-code-note .nv-meta-chip {
-  background: #161b22;
-  border-color: #30363d;
-  color: #8b949e;
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #6b7280;
 }
 
 .nv-content .nv-label {
@@ -326,7 +316,7 @@ body,
 }
 
 .nv-content strong {
-  color: #111827;
+  color: #172033;
   font-weight: 700;
 }
 
@@ -345,7 +335,7 @@ body,
 }
 
 .nv-content pre {
-  background: #0f172a;
+  background: #171c2b;
   color: #e2e8f0;
   padding: 1rem 1.25rem;
   border-radius: 10px;

@@ -110,6 +110,15 @@ function NoteViewer() {
   const wordCount = (note.content || "").trim().split(/\s+/).filter(Boolean).length;
   const readingTime = Math.max(1, Math.round(wordCount / 200));
   const backRoute = COURSE_ROUTES[(note.course || "").toUpperCase()] || "/study-notes";
+  const course = (note.course || "").toUpperCase();
+  const courseClass =
+    course === "BCA"
+      ? "nv-course-bca"
+      : course === "BBA"
+      ? "nv-course-bba"
+      : course === "BIOTECH"
+      ? "nv-course-biotech"
+      : "";
 
   const renderToc = () => (
     <nav className="nv-toc">
@@ -136,7 +145,7 @@ function NoteViewer() {
   );
 
   return (
-    <div className={`nv-container ${lang ? "nv-code-note" : ""}`}>
+    <div className={`nv-container ${lang ? "nv-code-note" : ""} ${courseClass}`}>
       <div className="nv-progress" style={{ width: `${progress}%` }} />
 
       <div className="nv-layout">

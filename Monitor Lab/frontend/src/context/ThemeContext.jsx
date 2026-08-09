@@ -12,7 +12,7 @@ function ThemeProvider({
 }){
 
   const [darkMode,setDarkMode]
-  = useState(false);
+  = useState(true);
 
   return(
 

@@ -15,9 +15,6 @@ function StudyNotes(){
 
       <div className="card-content">
         <h2 className="card-title">BCA</h2>
-
-     
-
        <Link to="/bca" className="card-btn">Click Here</Link>
       </div>
     </div>

@@ -369,7 +369,8 @@
   flex: 1;
   font-size: 0.98rem;
   font-weight: 500;
-  color: #e2e8f0;
+  color: var(--accent-color);
+  opacity: 1;
 }
 
 .download-link {
@@ -401,12 +402,12 @@
 
 .note-actions .download-link.pdf-only {
   background: rgba(192, 57, 43, 0.12);
-  border-color: rgba(192, 57, 43, 0.3);
-  color: #e07060;
+  border-color: rgba(204, 106, 106, 0.3);
+  color: #c16c63;
 }
 
 .note-actions .download-link.pdf-only:hover {
-  background: rgba(192, 57, 43, 0.22);
+  background: rgba(137, 37, 26, 0.22);
 }
 
 .soon-badge {
@@ -449,4 +450,41 @@
   .bca-container {
     padding: 30px 5%;
   }
+}
+
+/* ===== Day mode: box colour ===== */
+.light-theme .detail-panel {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+.light-theme .detail-head {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.light-theme .detail-head h2 {
+  color: #0f172a;
+}
+
+.light-theme .detail-head p,
+.light-theme .subject-hint {
+  color: #64748b;
+}
+
+.light-theme .detail-list {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+.light-theme .detail-list li {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.light-theme .detail-list li:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.light-theme .soon-badge {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #64748b;
 }
