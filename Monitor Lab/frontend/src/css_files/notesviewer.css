@@ -18,7 +18,7 @@ body,
 .nv-container {
   min-height: 100vh;
   background: linear-gradient(rgba(12, 12, 22, 0.55), rgba(12, 12, 22, 0.55)),
-    url("/bsc-computer-science-ai-data-science-course.webp");
+    url("https://i.pinimg.com/736x/42/8c/db/428cdb05d5bede77393c32e3cff5c11b.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
