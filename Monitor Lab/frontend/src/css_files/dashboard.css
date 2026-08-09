@@ -464,6 +464,28 @@
   font-weight: 600;
 }
 
+.type-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.type-badge.type-pdf {
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.12);
+  border: 1px solid rgba(192, 57, 43, 0.3);
+}
+
+.type-badge.type-web {
+  color: #0d7c3e;
+  background: rgba(13, 124, 62, 0.12);
+  border: 1px solid rgba(13, 124, 62, 0.3);
+}
+
 .cell-center {
   text-align: center;
   white-space: nowrap;

@@ -392,6 +392,23 @@
   background: rgba(20, 184, 166, 0.22);
 }
 
+.note-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.note-actions .download-link.pdf-only {
+  background: rgba(192, 57, 43, 0.12);
+  border-color: rgba(192, 57, 43, 0.3);
+  color: #e07060;
+}
+
+.note-actions .download-link.pdf-only:hover {
+  background: rgba(192, 57, 43, 0.22);
+}
+
 .soon-badge {
   padding: 7px 14px;
   border-radius: 9px;

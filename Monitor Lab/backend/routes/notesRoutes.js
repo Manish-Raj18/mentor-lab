@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
+import { PDFParse } from "pdf-parse";
 import Notes from "../model/notes.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -20,7 +21,31 @@ const getBucket = () =>
 
 router.post("/upload", protect, upload.single("pdf"), async (req, res) => {
   try {
-    const { title, description, course, subject } = req.body;
+    const { title, description, course, subject, content } = req.body;
+    if (!title) {
+      return res.status(400).json({ message: "Title is required" });
+    }
+
+    if (!req.file && !content) {
+      return res.status(400).json({ message: "Provide a PDF file or note content" });
+    }
+
+    if (!req.file) {
+      const note = new Notes({
+        title,
+        description,
+        course,
+        subject,
+        content,
+        hasContent: !!content,
+        type: "web",
+      });
+      await note.save();
+      return res.status(201).json(note);
+    }
+
+    const extractedText = await extractPdfText(req.file.buffer);
+
     const bucket = getBucket();
 
     const uploadStream = bucket.openUploadStream(req.file.originalname, {
@@ -38,6 +63,9 @@ router.post("/upload", protect, upload.single("pdf"), async (req, res) => {
       description,
       course,
       subject,
+      content: content || extractedText || undefined,
+      hasContent: !!(content || extractedText),
+      type: "pdf",
       fileId: uploadStream.id,
     });
 
@@ -54,9 +82,21 @@ router.get("/", async (req, res) => {
     const filter = {};
     if (req.query.course) filter.course = req.query.course;
     if (req.query.subject) filter.subject = req.query.subject;
-    const notes = await Notes.find(filter);
+    const notes = await Notes.find(filter).select("-content");
 
     res.json(notes);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const note = await Notes.findById(req.params.id);
+    if (!note) {
+      return res.status(404).json({ message: "Note not found" });
+    }
+    res.json(note);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -118,5 +158,18 @@ router.delete("/:id", protect, async (req, res) => {
     res.status(500).json(error);
   }
 });
+
+async function extractPdfText(buffer) {
+  try {
+    const parser = new PDFParse(new Uint8Array(buffer));
+    await parser.load();
+    const result = await parser.getText();
+    const text = (result.pages || []).map((p) => p.text || "").join("\n");
+    return text.trim() || "";
+  } catch (error) {
+    console.error("PDF text extraction failed:", error.message);
+    return "";
+  }
+}
 
 export default router;

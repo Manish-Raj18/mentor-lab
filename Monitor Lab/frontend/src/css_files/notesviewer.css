@@ -1,0 +1,219 @@
+.nv-container {
+  min-height: 100vh;
+  background: linear-gradient(rgba(12, 12, 22, 0.55), rgba(12, 12, 22, 0.55)),
+    url("/bsc-computer-science-ai-data-science-course.webp");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+.nv-panel {
+  max-width: 860px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  padding: 2rem 2.5rem;
+  color: #1a2a6c;
+}
+
+.nv-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.nv-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  background: #1a2a6c;
+  padding: 8px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nv-back-btn:hover {
+  transform: translateX(-3px);
+  box-shadow: 0 6px 16px rgba(26, 42, 108, 0.35);
+}
+
+.nv-course {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #e8751a;
+  padding: 5px 14px;
+  border-radius: 999px;
+}
+
+.nv-title {
+  font-size: 1.9rem;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+  color: #1a2a6c;
+}
+
+.nv-subject {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a6fa5;
+  background: rgba(74, 111, 165, 0.12);
+  border: 1px solid rgba(74, 111, 165, 0.3);
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+.nv-desc {
+  font-size: 1rem;
+  color: #4b5563;
+  margin: 0 0 1rem;
+}
+
+.nv-rule {
+  border: none;
+  border-top: 2px solid #e8eef5;
+  margin: 1.25rem 0 1.5rem;
+}
+
+.nv-content {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: #1f2937;
+  word-wrap: break-word;
+}
+
+.nv-content h1,
+.nv-content h2,
+.nv-content h3,
+.nv-content h4,
+.nv-content h5,
+.nv-content h6 {
+  color: #1a2a6c;
+  margin: 1.6rem 0 0.6rem;
+  line-height: 1.3;
+}
+
+.nv-content h1 { font-size: 1.6rem; }
+.nv-content h2 { font-size: 1.4rem; }
+.nv-content h3 { font-size: 1.2rem; }
+.nv-content h4 { font-size: 1.05rem; }
+
+.nv-content p {
+  margin: 0 0 1rem;
+}
+
+.nv-content ul,
+.nv-content ol {
+  padding-left: 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.nv-content li {
+  margin-bottom: 0.4rem;
+}
+
+.nv-content strong {
+  color: #111827;
+}
+
+.nv-content a {
+  color: #1a6fb5;
+  text-decoration: underline;
+}
+
+.nv-content code {
+  background: #eef2f7;
+  color: #c0392b;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: Consolas, Monaco, "Courier New", monospace;
+}
+
+.nv-content pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 0 0 1.25rem;
+}
+
+.nv-content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.nv-content blockquote {
+  border-left: 4px solid #4a6fa5;
+  background: #f4f7fb;
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  color: #374151;
+}
+
+.nv-content hr {
+  border: none;
+  border-top: 2px solid #e8eef5;
+  margin: 1.5rem 0;
+}
+
+.nv-foot {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid #e8eef5;
+  text-align: right;
+}
+
+.nv-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4a6fa5, #1a2a6c);
+  padding: 10px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nv-pdf-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(26, 42, 108, 0.35);
+}
+
+.nv-loading,
+.nv-missing {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.nv-missing p {
+  color: #4b5563;
+}
+
+@media (max-width: 640px) {
+  .nv-panel {
+    padding: 1.25rem 1rem;
+  }
+
+  .nv-title {
+    font-size: 1.4rem;
+  }
+}

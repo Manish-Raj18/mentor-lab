@@ -94,19 +94,23 @@ function AdminDashboard() {
 
   const handleNotesUpload = async (e) => {
     e.preventDefault();
-    if (!notesPdf || !notesTitle || !notesCourse || !notesSubject) {
+    if (!notesTitle || !notesCourse || !notesSubject) {
       alert("Please fill all required fields");
+      return;
+    }
+    if (!notesPdf) {
+      alert("Please select a PDF file");
       return;
     }
     setUploading(true);
     try {
       const token = localStorage.getItem("token");
       const fd = new FormData();
-      fd.append("pdf", notesPdf);
       fd.append("title", notesTitle);
       fd.append("description", notesDesc);
       fd.append("course", notesCourse);
       fd.append("subject", notesSubject);
+      fd.append("pdf", notesPdf);
       await axios.post(`${API_BASE}/notes/upload`, fd, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
       });
@@ -642,13 +646,14 @@ function AdminDashboard() {
                     <thead>
                       <tr>
                         <th>Course</th><th>Subject</th><th>Title</th>
-                        <th style={{ textAlign: "center" }}>PDF</th>
+                        <th style={{ textAlign: "center" }}>Type</th>
+                        <th style={{ textAlign: "center" }}>View</th>
                         <th style={{ textAlign: "center" }}>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {notes.length === 0 ? (
-                        <tr><td colSpan="5" className="table-empty">No notes uploaded yet.</td></tr>
+                        <tr><td colSpan="6" className="table-empty">No notes uploaded yet.</td></tr>
                       ) : (
                         notes.map((note) => (
                           <tr key={note._id}>
@@ -656,7 +661,17 @@ function AdminDashboard() {
                             <td>{note.subject || "-"}</td>
                             <td className="cell-bold">{note.title}</td>
                             <td className="cell-center">
-                              <a href={`/api/notes/${note._id}/pdf`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
+                              <span className={`type-badge type-${note.type || "pdf"}`}>{note.type === "web" ? "Web" : "PDF"}</span>
+                            </td>
+                            <td className="cell-center">
+                              {note.hasContent ? (
+                                <a href={`/notes/${note._id}`} className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px", marginRight: "6px" }}>Read Online</a>
+                              ) : null}
+                              {(note.fileId || note.pdfUrl) ? (
+                                <a href={`/api/notes/${note._id}/pdf`} target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px" }}>View PDF</a>
+                              ) : (
+                                <span style={{ color: "var(--text-color)", opacity: 0.5, fontSize: "0.8rem" }}>—</span>
+                              )}
                             </td>
                             <td className="cell-center">
                               <button onClick={() => handleDeleteNote(note._id)} className="btn-remove" style={{ padding: "4px 12px", fontSize: "0.8rem" }}>Delete</button>

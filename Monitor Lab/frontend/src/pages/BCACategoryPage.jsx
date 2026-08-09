@@ -23,10 +23,9 @@ function BCACategoryPage() {
       .catch((err) => console.log(err));
   }, []);
 
-  const getPdfLink = (subjectName) => {
+  const getNoteForSubject = (subjectName) => {
     const normalized = subjectName.toLowerCase();
-    const note = notes.find((n) => n.subject && n.subject.toLowerCase() === normalized);
-    return note ? `/api/notes/${note._id}/pdf` : null;
+    return notes.find((n) => n.subject && n.subject.toLowerCase() === normalized);
   };
 
   if (!category) {
@@ -64,20 +63,33 @@ function BCACategoryPage() {
 
           <div className="detail-toolbar">
             <span className="subject-count">{category.items.length} subjects</span>
-            <span className="subject-hint">Download study notes as PDF</span>
+            <span className="subject-hint">Read study notes online or download as PDF</span>
           </div>
 
           <ul className="detail-list">
             {category.items.map((item) => {
-              const pdfLink = getPdfLink(item);
+              const note = getNoteForSubject(item);
               return (
                 <li key={item}>
                   <span className="subject-dot" />
                   <span className="subject-name">{item}</span>
-                  {pdfLink ? (
-                    <a href={pdfLink} target="_blank" rel="noreferrer" className="download-link">
-                      Download <DownloadIcon />
-                    </a>
+                  {note ? (
+                    <span className="note-actions">
+                      {note.hasContent ? (
+                        <Link to={`/notes/${note._id}`} className="download-link">
+                          Read Online
+                        </Link>
+                      ) : (
+                        <a href={`/api/notes/${note._id}/pdf`} target="_blank" rel="noreferrer" className="download-link">
+                          Download <DownloadIcon />
+                        </a>
+                      )}
+                      {(note.fileId || note.pdfUrl) && (
+                        <a href={`/api/notes/${note._id}/pdf`} target="_blank" rel="noreferrer" className="download-link pdf-only">
+                          PDF
+                        </a>
+                      )}
+                    </span>
                   ) : (
                     <span className="soon-badge">Coming Soon</span>
                   )}

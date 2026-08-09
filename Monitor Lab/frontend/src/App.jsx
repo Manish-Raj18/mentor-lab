@@ -27,6 +27,7 @@ import StudyNotes from "./pages/StudyNotes";
 import PerformanceAnalytics from "./pages/PerformanceAnalytics";
 import PYQ from "./pages/PYQ";
 import BCACategoryPage from "./pages/BCACategoryPage";
+import NoteViewer from "./pages/NoteViewer";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/bca" element={<BCA />} />
           <Route path="/bca/:categorySlug" element={<BCACategoryPage />} />
+          <Route path="/notes/:id" element={<NoteViewer />} />
           <Route path="/bba" element={<BBA />} />
           <Route path="/biotechsylla" element={<BIO />} />
           <Route path="/contact-us" element={<ContactUs />} />
