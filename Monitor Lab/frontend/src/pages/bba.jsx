@@ -20,10 +20,9 @@ function BBA() {
       .catch(err => console.log(err));
   }, []);
 
-  const getPdfLink = (subjectName) => {
+  const getNoteForSubject = (subjectName) => {
     const normalized = subjectName.toLowerCase();
-    const note = notes.find(n => n.subject && n.subject.toLowerCase() === normalized);
-    return note ? `/api/notes/${note._id}/pdf` : null;
+    return notes.find(n => n.subject && n.subject.toLowerCase() === normalized);
   };
 
   return (
@@ -42,11 +41,14 @@ function BBA() {
             </div>
             <ul className="subject-list">
               {cat.items.map((item) => {
-                const pdfLink = getPdfLink(item);
+                const note = getNoteForSubject(item);
                 return (
                   <li key={item} className="subject-item">
-                    {pdfLink ? (
-                      <a href={pdfLink} target="_blank" rel="noreferrer">{item}</a>
+                    {note && (note.fileId || note.pdfUrl || note.hasContent) ? (
+                      <>
+                        <a href={`/notes/${note._id}`}>{item}</a>
+                        <a href={`/api/notes/${note._id}/pdf`} className="pdf-link" target="_blank" rel="noreferrer">PDF</a>
+                      </>
                     ) : (
                       <span style={{ color: "var(--text-color)", opacity: 0.6 }}>{item}</span>
                     )}

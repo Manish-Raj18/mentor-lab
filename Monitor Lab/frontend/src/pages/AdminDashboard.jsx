@@ -664,7 +664,7 @@ function AdminDashboard() {
                               <span className={`type-badge type-${note.type || "pdf"}`}>{note.type === "web" ? "Web" : "PDF"}</span>
                             </td>
                             <td className="cell-center">
-                              {note.hasContent ? (
+                              {(note.fileId || note.pdfUrl || note.hasContent) ? (
                                 <a href={`/notes/${note._id}`} className="btn-primary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "4px 12px", marginRight: "6px" }}>Read Online</a>
                               ) : null}
                               {(note.fileId || note.pdfUrl) ? (

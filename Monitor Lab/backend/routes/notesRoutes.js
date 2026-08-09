@@ -96,6 +96,24 @@ router.get("/:id", async (req, res) => {
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
     }
+
+    // Lazy extraction: convert older PDF notes to web pages on first view
+    if (!note.content && note.fileId) {
+      try {
+        const chunks = [];
+        const downloadStream = getBucket().openDownloadStream(note.fileId);
+        for await (const chunk of downloadStream) chunks.push(chunk);
+        const text = await extractPdfText(Buffer.concat(chunks));
+        if (text) {
+          note.content = text;
+          note.hasContent = true;
+          await note.save();
+        }
+      } catch (error) {
+        console.error("Lazy PDF extraction failed:", error.message);
+      }
+    }
+
     res.json(note);
   } catch (error) {
     res.status(500).json(error);

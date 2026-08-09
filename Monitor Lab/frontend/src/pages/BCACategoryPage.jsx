@@ -4,14 +4,6 @@ import axios from "axios";
 import "../css_files/bca.css";
 import { getCategoryBySlug } from "../data/bcaSubjects";
 
-const DownloadIcon = () => (
-  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-    <polyline points="7 10 12 15 17 10" />
-    <line x1="12" y1="15" x2="12" y2="3" />
-  </svg>
-);
-
 function BCACategoryPage() {
   const { categorySlug } = useParams();
   const category = getCategoryBySlug(categorySlug);
@@ -75,14 +67,10 @@ function BCACategoryPage() {
                   <span className="subject-name">{item}</span>
                   {note ? (
                     <span className="note-actions">
-                      {note.hasContent ? (
+                      {(note.fileId || note.pdfUrl || note.hasContent) && (
                         <Link to={`/notes/${note._id}`} className="download-link">
                           Read Online
                         </Link>
-                      ) : (
-                        <a href={`/api/notes/${note._id}/pdf`} target="_blank" rel="noreferrer" className="download-link">
-                          Download <DownloadIcon />
-                        </a>
                       )}
                       {(note.fileId || note.pdfUrl) && (
                         <a href={`/api/notes/${note._id}/pdf`} target="_blank" rel="noreferrer" className="download-link pdf-only">

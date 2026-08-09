@@ -11,23 +11,19 @@ function BIO() {
       .catch(err => console.log(err));
   }, []);
 
-  const getPdfLink = (subjectName) => {
+  const getNoteForSubject = (subjectName) => {
     const normalized = subjectName.toLowerCase();
-    const note = notes.find(n => n.subject && n.subject.toLowerCase() === normalized);
-    if (note) return `/api/notes/${note._id}/pdf`;
+    return notes.find(n => n.subject && n.subject.toLowerCase() === normalized);
+  };
 
+  const getLocalPdf = (subjectName) => {
     const localFiles = {
       "Biochemistry": "Biochemistry.pdf",
       "Developmental Biology": "Developmental_Biology.pdf",
       "Microbiology": "Microbiology.pdf",
       "Molecular Biology": "Molecular_Biology.pdf",
     };
-
-    if (localFiles[subjectName]) {
-      return `/uploads/${localFiles[subjectName]}`;
-    }
-
-    return null;
+    return localFiles[subjectName] ? `/uploads/${localFiles[subjectName]}` : null;
   };
 
   const sections = [
@@ -59,11 +55,17 @@ function BIO() {
             <h2>{section.title}</h2>
             <ul className="syllabus-list">
               {section.items.map((item) => {
-                const pdfLink = getPdfLink(item);
+                const note = getNoteForSubject(item);
+                const localPdf = note ? null : getLocalPdf(item);
                 return (
                   <li key={item} className="syllabus-item">
-                    {pdfLink ? (
-                      <a href={pdfLink} target="_blank" rel="noreferrer">{item}</a>
+                    {note && (note.fileId || note.pdfUrl || note.hasContent) ? (
+                      <>
+                        <a href={`/notes/${note._id}`}>{item}</a>
+                        <a href={`/api/notes/${note._id}/pdf`} className="pdf-link" target="_blank" rel="noreferrer">PDF</a>
+                      </>
+                    ) : localPdf ? (
+                      <a href={localPdf} target="_blank" rel="noreferrer">{item}</a>
                     ) : (
                       <span style={{ color: "var(--text-color)", opacity: 0.6 }}>{item}</span>
                     )}
