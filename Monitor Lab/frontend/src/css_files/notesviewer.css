@@ -411,9 +411,28 @@
     align-items: center;
   }
 
+  .nv-container {
+    padding-bottom: 46vh;
+  }
+
   .nv-toc {
-    position: static;
-    max-height: none;
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1100;
     width: 100%;
+    max-height: 40vh;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -10px 34px rgba(0, 0, 0, 0.3);
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  }
+
+  .nv-toc-head {
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+    z-index: 1;
   }
 }
