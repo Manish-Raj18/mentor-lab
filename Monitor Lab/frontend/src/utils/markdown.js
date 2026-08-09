@@ -39,6 +39,7 @@ export function renderPlainText(text) {
 
   const out = [];
   let para = [];
+  let headingIndex = 0;
 
   const flush = () => {
     if (para.length) {
@@ -56,7 +57,7 @@ export function renderPlainText(text) {
     if (isHeadingLine(line)) {
       flush();
       const tag = isMajorHeading(line) ? "h2" : "h3";
-      out.push(`<${tag}>${escapeHtml(line)}</${tag}>`);
+      out.push(`<${tag} id="nv-sec-${headingIndex++}">${escapeHtml(line)}</${tag}>`);
       continue;
     }
     para.push(line);
@@ -64,4 +65,20 @@ export function renderPlainText(text) {
   flush();
 
   return out.join("\n");
+}
+
+export function extractHeadings(text) {
+  const headings = [];
+  const lines = String(text || "")
+    .replace(/\r\n/g, "\n")
+    .split("\n");
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (line === "") continue;
+    if (isHeadingLine(line)) {
+      headings.push({ level: isMajorHeading(line) ? 2 : 3, text: line });
+    }
+  }
+  return headings;
 }
