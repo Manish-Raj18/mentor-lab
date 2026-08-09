@@ -16,7 +16,6 @@ function NoteViewer() {
   const [error, setError] = useState(false);
   const [progress, setProgress] = useState(0);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [tocOpen, setTocOpen] = useState(false);
   const headingEls = useRef([]);
 
   const headings = useMemo(
@@ -53,15 +52,7 @@ function NoteViewer() {
       .catch(() => setError(true));
   }, [id]);
 
-  useEffect(() => {
-    document.body.style.overflow = tocOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [tocOpen]);
-
   const jumpTo = (index) => {
-    setTocOpen(false);
     document.getElementById(`nv-sec-${index}`)?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -89,15 +80,10 @@ function NoteViewer() {
   const readingTime = Math.max(1, Math.round(wordCount / 200));
   const backRoute = COURSE_ROUTES[(note.course || "").toUpperCase()] || "/study-notes";
 
-  const renderToc = (drawer) => (
-    <nav className={`nv-toc ${drawer ? "nv-toc-drawer" : ""} ${tocOpen ? "nv-toc-open" : ""}`}>
+  const renderToc = () => (
+    <nav className="nv-toc">
       <div className="nv-toc-head">
         <span className="nv-toc-title">Units</span>
-        {drawer && (
-          <button className="nv-toc-close" onClick={() => setTocOpen(false)} aria-label="Close units">
-            &times;
-          </button>
-        )}
       </div>
       <ul className="nv-toc-list">
         {headings.map((h, i) => (
@@ -121,14 +107,6 @@ function NoteViewer() {
   return (
     <div className="nv-container">
       <div className="nv-progress" style={{ width: `${progress}%` }} />
-
-      {headings.length > 0 && (
-        <button className="nv-toc-fab" onClick={() => setTocOpen(true)} aria-label="Open units">
-          <span className="nv-toc-fab-icon">☰</span> Units
-        </button>
-      )}
-      {headings.length > 0 && tocOpen && <div className="nv-toc-backdrop" onClick={() => setTocOpen(false)} />}
-      {headings.length > 0 && renderToc(true)}
 
       <div className="nv-layout">
         <article className="nv-panel">
@@ -171,7 +149,7 @@ function NoteViewer() {
           )}
         </article>
 
-        {headings.length > 0 && renderToc(false)}
+        {headings.length > 0 && renderToc()}
       </div>
     </div>
   );
