@@ -93,6 +93,101 @@ body,
   margin-bottom: 0.5rem;
 }
 
+.nv-lang {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.nv-lang-prompt {
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #22c55e;
+}
+
+.nv-lang-name {
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #58a6ff;
+  letter-spacing: 0.02em;
+}
+
+.nv-lang-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+.nv-code-note .nv-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0d1117, #161b22);
+  border: 1px solid #30363d;
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.nv-code-note .nv-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.nv-code-note .nv-hero > * {
+  position: relative;
+}
+
+.nv-code-note .nv-title {
+  color: #e6edf3;
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-size: 1.75rem;
+}
+
+.nv-code-note .nv-subject {
+  color: #58a6ff;
+  border-color: rgba(88, 166, 255, 0.4);
+  background: rgba(88, 166, 255, 0.12);
+}
+
+.nv-code-note .nv-desc {
+  color: #8b949e;
+}
+
+.nv-code-note .nv-meta-chip {
+  background: #161b22;
+  border-color: #30363d;
+  color: #8b949e;
+}
+
+.nv-content .nv-label {
+  font-weight: 700;
+  color: #1a2a6c;
+  font-size: 1.02rem;
+  margin: 1.4rem 0 0.4rem;
+}
+
+.nv-code-note .nv-content .nv-label {
+  color: #d29922;
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  letter-spacing: 0.02em;
+}
+
 .nv-title {
   font-size: 2.1rem;
   line-height: 1.2;

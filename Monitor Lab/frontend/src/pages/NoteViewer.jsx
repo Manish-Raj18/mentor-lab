@@ -10,6 +10,17 @@ const COURSE_ROUTES = {
   BIOTECH: "/biotechsylla",
 };
 
+function detectLanguage(content) {
+  const c = String(content || "");
+  if (/#include\s*<iostream>|std::cout|std::cin|using namespace std/.test(c)) return { name: "C++", icon: "&gt;_" };
+  if (/\bpublic\s+class\b|System\.out\.|new Scanner/.test(c)) return { name: "Java", icon: "&gt;_" };
+  if (/\bdef\s+\w+\s*\(|import\s+\w+/.test(c)) return { name: "Python", icon: "&gt;_" };
+  if (/#include\s*<|int\s+main\s*\(|printf\s*\(|scanf\s*\(/.test(c)) return { name: "C", icon: "&gt;_" };
+  if (/\bconst\s+\w+\s*=|useState|\bfunction\s+\w+\s*\(|\blet\s+\w+\s*=\s*["'{(\[]/.test(c)) return { name: "JavaScript", icon: "{ }" };
+  if (/\b<html|<body|\b<style\b|\b<script\b/.test(c)) return { name: "Web", icon: "{ }" };
+  return null;
+}
+
 function NoteViewer() {
   const { id } = useParams();
   const [note, setNote] = useState(null);
@@ -24,6 +35,8 @@ function NoteViewer() {
     () => (note ? extractHeadings(note.content || "") : []),
     [note]
   );
+
+  const lang = useMemo(() => detectLanguage(note?.content || ""), [note]);
 
   useEffect(() => {
     headingEls.current = headings.map((_, i) => document.getElementById(`nv-sec-${i}`));
@@ -123,7 +136,7 @@ function NoteViewer() {
   );
 
   return (
-    <div className="nv-container">
+    <div className={`nv-container ${lang ? "nv-code-note" : ""}`}>
       <div className="nv-progress" style={{ width: `${progress}%` }} />
 
       <div className="nv-layout">
@@ -134,6 +147,13 @@ function NoteViewer() {
           </div>
 
           <header className="nv-hero">
+            {lang && (
+              <div className="nv-lang">
+                <span className="nv-lang-prompt" dangerouslySetInnerHTML={{ __html: lang.icon }} />
+                <span className="nv-lang-name">{lang.name}</span>
+                <span className="nv-lang-tag">Programming Notes</span>
+              </div>
+            )}
             <h1 className="nv-title">{note.title}</h1>
             {note.subject && <div className="nv-subject">{note.subject}</div>}
             {note.description && <p className="nv-desc">{note.description}</p>}
