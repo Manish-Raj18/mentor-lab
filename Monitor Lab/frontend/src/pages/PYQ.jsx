@@ -19,6 +19,7 @@ const universities = [
     id: "vbu",
     name: "Vinoba Bhave University",
     city: "Hazaribagh",
+    image: "vinoba bhave.jpg",
     category: "State University",
     gradient: "linear-gradient(135deg, #0d47a1, #1976d2)",
     description:
@@ -28,6 +29,7 @@ const universities = [
     id: "dspmu",
     name: "Dr. Shyama Prasad Mukherjee University",
     city: "Ranchi",
+    image: "Dr. Shyama Prasad Mukherjee University.gif",
     category: "State University",
     gradient: "linear-gradient(135deg, #1b5e20, #2e7d32)",
     description:
@@ -47,6 +49,7 @@ const universities = [
     id: "bit",
     name: "BIT Mesra",
     city: "Ranchi",
+    image: "bit misra.jpeg",
     category: "Institute",
     gradient: "linear-gradient(135deg, #4a148c, #6a1b9a)",
     description:
@@ -56,6 +59,7 @@ const universities = [
     id: "skmu",
     name: "Sidhu Kanhu Murmu University",
     city: "Dumka",
+    image: "Sidhu Kanhu Murmu University.webp",
     category: "State University",
     gradient: "linear-gradient(135deg, #00695c, #00897b)",
     description:
@@ -164,10 +168,10 @@ const subjectsData = {
 };
 
 const getVisibleCount = () => {
-  if (typeof window === "undefined") return 3;
+  if (typeof window === "undefined") return 2;
   const w = window.innerWidth;
   if (w < 768) return 1;
-  return 3;
+  return 2;
 };
 
 const initials = (name) =>
@@ -183,7 +187,7 @@ const PYQ = () => {
   const [selectedUni, setSelectedUni] = useState(null);
   const [pyqData, setPyqData] = useState({});
   const [index, setIndex] = useState(0);
-  const [visible, setVisible] = useState(3);
+  const [visible, setVisible] = useState(2);
   const [isHovering, setIsHovering] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -281,13 +285,12 @@ const PYQ = () => {
     const uni = universities.find((u) => u.id === selectedUni);
     return (
       <div className="pyq-page">
-        <header className="pyq-header">
-          <div className="pyq-header-top">
-            <button className="back-btn" onClick={() => setSelectedUni(null)}>
-              &larr; Back
-            </button>
-            <h1>{uni.name}</h1>
-          </div>
+        <header className="pyq-header pyq-header-inner">
+          <button className="back-btn" onClick={() => setSelectedUni(null)}>
+            <span className="back-arrow">&larr;</span>
+            <span>Back</span>
+          </button>
+          <h1>{uni.name}</h1>
           <p>Select a course and download PYQ papers</p>
         </header>
 

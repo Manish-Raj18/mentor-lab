@@ -294,3 +294,26 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Dark mode */
+.dark-theme .bio-roadmap {
+    --accent-color: #2dd4bf;
+    --card-bg: #16222e;
+    --bg-color: #0d1822;
+    --text-color: #dbeafe;
+    --secondary-bg: #1c2a3a;
+    --hero-text: #ffffff;
+    --border-color: #264459;
+
+    background-image: linear-gradient(rgba(5, 12, 20, 0.2), rgba(5, 12, 20, 0.2)), url('/biotechroadmap.webp');
+}
+
+.dark-theme .bio-roadmap .bio-card {
+    background-color: rgba(22, 34, 46, 0.92);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.dark-theme .bio-roadmap .note-container {
+    background-color: var(--secondary-bg);
+    border-color: var(--border-color);
+}

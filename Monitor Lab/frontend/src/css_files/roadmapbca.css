@@ -287,3 +287,26 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Dark mode */
+.dark-theme .bca-roadmap {
+    --accent-color: #4a6fa5;
+    --card-bg: #1f2a44;
+    --bg-color: #0e1626;
+    --text-color: #e2e8f0;
+    --secondary-bg: #27324f;
+    --hero-text: #ffffff;
+    --border-color: #2b3a5e;
+
+    background-image: linear-gradient(rgba(8, 12, 24, 0.2), rgba(8, 12, 24, 0.2)), url('/tianyi-ma-WiONHd_zYI4-unsplash.jpg');
+}
+
+.dark-theme .bca-roadmap .bca-card {
+    background-color: rgba(31, 42, 68, 0.92);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.dark-theme .bca-roadmap .note-container {
+    background-color: rgba(39, 50, 79, 0.9);
+    border-color: var(--border-color);
+}

@@ -2,13 +2,14 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f0f2f5;
+  background: linear-gradient(rgba(240, 242, 245, 0.2), rgba(240, 242, 245, 0.2)),
+    url('/blurred-background-vibrant-atmosphere-contemporary-260nw-2626676017.webp') center/cover no-repeat fixed;
 }
 
 /* ===== Header ===== */
 .pyq-page .pyq-header {
   position: relative;
-  background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+  background: linear-gradient(135deg, rgba(42, 42, 42, 0.45), rgba(58, 58, 58, 0.45));
   color: #fff;
   text-align: center;
   padding: 40px 20px 30px;
@@ -34,23 +35,56 @@
   margin-bottom: 8px;
 }
 
-.pyq-page .back-btn {
-  flex-shrink: 0;
-  color: #fff;
+.pyq-page .pyq-header-inner {
+  position: relative;
+  background: linear-gradient(135deg, #383855, #16213e);
+}
+
+.pyq-page .pyq-header-inner .back-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 12px;
   font-size: 0.8rem;
+  line-height: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pyq-page .pyq-header-inner .back-arrow {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.pyq-page .pyq-header-inner h1 {
+  margin: 0;
+}
+
+.pyq-page .pyq-header-inner p {
+  margin: 0;
+}
+
+.pyq-page .back-btn {
+  flex-shrink: 10;
+  color: #fff;
+  font-size: ;
   transition: all 0.2s;
-  background: #1a73e8;
+  background: #337ad7;
   border: none;
   cursor: pointer;
   font-family: inherit;
-  font-weight: 600;
-  padding: 6px 16px;
-  border-radius: 6px;
+  font-weight: 50;
+  padding: 5px 15px;
+  border-radius: 10px;
+  width: fit-content;
 }
 
 .pyq-page .back-btn:hover {
-  background: #1557b0;
+  background: #173c6d;
   color: #fff;
+  
 }
 
 /* ===== Card Slider ===== */
@@ -135,7 +169,7 @@
 .pyq-page .pyq-card-media {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -186,7 +220,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 18px 20px 20px;
+  padding: 12px 16px 14px;
   text-align: left;
 }
 
@@ -207,9 +241,9 @@
 
 .pyq-page .pyq-card-desc {
   font-size: 0.88rem;
-  line-height: 1.55;
+  line-height: 1.5;
   color: #555;
-  margin: 0 0 16px;
+  margin: 0 0 12px;
   flex: 1;
 }
 
@@ -426,7 +460,8 @@
 
 /* ===== Dark Mode ===== */
 .dark-theme .pyq-page {
-  background: #1a1a2e;
+  background: linear-gradient(rgba(10, 10, 20, 0.55), rgba(10, 10, 20, 0.55)),
+    url('/blurred-background-vibrant-atmosphere-contemporary-260nw-2626676017.webp') center/cover no-repeat fixed;
 }
 
 .dark-theme .pyq-page .pyq-card,
