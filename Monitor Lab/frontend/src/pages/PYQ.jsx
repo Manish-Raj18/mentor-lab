@@ -9,7 +9,7 @@ const universities = [
     id: "ranchi",
     name: "Ranchi University",
     city: "Ranchi",
-    image: "ranchi-university.jpg",
+    image: "/ranchi-university.jpg",
     category: "State University",
     gradient: "linear-gradient(135deg, #1a1a2e, #16213e)",
     description:
@@ -19,7 +19,7 @@ const universities = [
     id: "vbu",
     name: "Vinoba Bhave University",
     city: "Hazaribagh",
-    image: "vinoba bhave.jpg",
+    image: "/vinoba bhave.jpg",
     category: "State University",
     gradient: "linear-gradient(135deg, #0d47a1, #1976d2)",
     description:
@@ -29,7 +29,7 @@ const universities = [
     id: "dspmu",
     name: "Dr. Shyama Prasad Mukherjee University",
     city: "Ranchi",
-    image: "Dr. Shyama Prasad Mukherjee University.gif",
+    image: "/Dr. Shyama Prasad Mukherjee University.gif",
     category: "State University",
     gradient: "linear-gradient(135deg, #1b5e20, #2e7d32)",
     description:
@@ -39,7 +39,7 @@ const universities = [
     id: "bbmku",
     name: "Binod Bihari Mahto Koyalanchal University",
     city: "Dhanbad",
-    image: "bbmkuuniversity.jpg",
+    image: "/bbmkuuniversity.jpg",
     category: "State University",
     gradient: "linear-gradient(135deg, #bf360c, #e65100)",
     description:
@@ -49,7 +49,7 @@ const universities = [
     id: "bit",
     name: "BIT Mesra",
     city: "Ranchi",
-    image: "bit misra.jpeg",
+    image: "/bit misra.jpeg",
     category: "Institute",
     gradient: "linear-gradient(135deg, #4a148c, #6a1b9a)",
     description:
@@ -59,7 +59,7 @@ const universities = [
     id: "skmu",
     name: "Sidhu Kanhu Murmu University",
     city: "Dumka",
-    image: "Sidhu Kanhu Murmu University.webp",
+    image: "/Sidhu Kanhu Murmu University.webp",
     category: "State University",
     gradient: "linear-gradient(135deg, #00695c, #00897b)",
     description:
@@ -284,7 +284,7 @@ const PYQ = () => {
   if (selectedUni) {
     const uni = universities.find((u) => u.id === selectedUni);
     return (
-      <div className="pyq-page">
+      <div className="pyq-page pyq-page-inner" style={{ "--uni-bg": `url('${uni.image}')` }}>
         <header className="pyq-header pyq-header-inner">
           <button className="back-btn" onClick={() => setSelectedUni(null)}>
             <span className="back-arrow">&larr;</span>

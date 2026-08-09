@@ -6,6 +6,10 @@
     url('/blurred-background-vibrant-atmosphere-contemporary-260nw-2626676017.webp') center/cover no-repeat fixed;
 }
 
+.pyq-page.pyq-page-inner {
+  background: linear-gradient(rgba(15, 15, 35, 0.3), rgba(15, 15, 35, 0.3)), var(--uni-bg) center/cover no-repeat fixed;
+}
+
 /* ===== Header ===== */
 .pyq-page .pyq-header {
   position: relative;
@@ -462,6 +466,10 @@
 .dark-theme .pyq-page {
   background: linear-gradient(rgba(10, 10, 20, 0.55), rgba(10, 10, 20, 0.55)),
     url('/blurred-background-vibrant-atmosphere-contemporary-260nw-2626676017.webp') center/cover no-repeat fixed;
+}
+
+.dark-theme .pyq-page.pyq-page-inner {
+  background: linear-gradient(rgba(12, 12, 24, 0.65), rgba(12, 12, 24, 0.65)), var(--uni-bg) center/cover no-repeat fixed;
 }
 
 .dark-theme .pyq-page .pyq-card,
