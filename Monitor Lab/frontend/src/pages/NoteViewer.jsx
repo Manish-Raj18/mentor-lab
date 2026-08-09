@@ -17,6 +17,8 @@ function NoteViewer() {
   const [progress, setProgress] = useState(0);
   const [activeIndex, setActiveIndex] = useState(-1);
   const headingEls = useRef([]);
+  const tocListRef = useRef(null);
+  const prevActiveRef = useRef(-1);
 
   const headings = useMemo(
     () => (note ? extractHeadings(note.content || "") : []),
@@ -52,6 +54,22 @@ function NoteViewer() {
       .catch(() => setError(true));
   }, [id]);
 
+  useEffect(() => {
+    const prev = prevActiveRef.current;
+    prevActiveRef.current = activeIndex;
+    if (activeIndex === prev || activeIndex < 0) return;
+
+    const list = tocListRef.current;
+    if (!list) return;
+    const item = list.querySelector(`.nv-toc-item[data-index="${activeIndex}"]`);
+    if (!item) return;
+
+    const listRect = list.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+    const offset = itemRect.top - listRect.top - list.clientHeight / 2 + itemRect.height / 2;
+    list.scrollTop += offset;
+  }, [activeIndex]);
+
   const jumpTo = (index) => {
     document.getElementById(`nv-sec-${index}`)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -85,9 +103,9 @@ function NoteViewer() {
       <div className="nv-toc-head">
         <span className="nv-toc-title">Units</span>
       </div>
-      <ul className="nv-toc-list">
+      <ul className="nv-toc-list" ref={tocListRef}>
         {headings.map((h, i) => (
-          <li key={i} className={`nv-toc-item nv-toc-l${h.level}`}>
+          <li key={i} className={`nv-toc-item nv-toc-l${h.level}`} data-index={i}>
             <a
               href={`#nv-sec-${i}`}
               className={activeIndex === i ? "nv-toc-active" : ""}
