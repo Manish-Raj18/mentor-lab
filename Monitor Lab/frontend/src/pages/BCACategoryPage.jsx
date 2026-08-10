@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import CodeCompiler from "../components/CodeCompiler";
 import "../css_files/bca.css";
 import { getCategoryBySlug } from "../data/bcaSubjects";
 
@@ -86,6 +87,8 @@ function BCACategoryPage() {
             })}
           </ul>
         </main>
+
+        {categorySlug === "programming-languages" && <CodeCompiler />}
     </div>
   );
 }
