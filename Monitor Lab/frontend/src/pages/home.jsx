@@ -21,7 +21,7 @@ function Home() {
       <div className="course-container">
         <div className="course-card">
           <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y29tcHV0ZXIlMjBzY2llbmNlfGVufDB8fDB8fHwww=600" alt=""/>
-          <h3>BCA</h3>
+          <h3>Bachelor Of Computer Application</h3>
           <p>Complete preparation course for BCA.</p>
           <Link to="/roadmapbca">
             <button>Explore</button>
@@ -29,7 +29,7 @@ function Home() {
         </div>
         <div className="course-card">
           <img src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YnVzaW5lc3MlMjBzdHVkaWVzfGVufDB8fDB8fHwww=600" alt=""/>
-          <h3>BBA</h3>
+          <h3>Bachelor Of Buisness Administration</h3>
           <p>Complete preparation course for BBA.</p>
           <Link to="/bbaroadmap">
             <button>Explore</button>
@@ -37,7 +37,7 @@ function Home() {
         </div>
         <div className="course-card">
           <img src="https://images.unsplash.com/photo-1727091506038-5451111dc2fb?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dw=100" alt=""/>
-          <h3>BIOTECH</h3>
+          <h3>Biotechnology</h3>
           <p>Complete preparation course for Biotech.</p>
           <Link to="/biotech">
             <button>Explore</button>

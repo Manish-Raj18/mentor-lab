@@ -14,7 +14,7 @@ function RecordedLectures(){
     <div className="video-section">
 
       <video controls>
-        <source src="/intro 2.mp4" type="video/mp4"/>
+        <source src="/intro2.mp4" type="video/mp4"/>
         Your browser does not support video.
       </video>
 
