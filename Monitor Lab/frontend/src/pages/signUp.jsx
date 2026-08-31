@@ -140,16 +140,40 @@ function Signup() {
     return errors;
   };
 
+  const countryPhoneLength = (code) => {
+    const lengths = {
+      "+1": 10, "+44": 10, "+91": 10, "+61": 9, "+86": 11, "+81": 10,
+      "+49": 11, "+33": 9, "+55": 11, "+7": 10, "+82": 10, "+39": 10,
+      "+34": 9, "+31": 9, "+46": 9, "+47": 8, "+48": 9, "+90": 10,
+      "+971": 9, "+966": 9, "+65": 8, "+60": 10, "+66": 9, "+63": 10,
+      "+62": 10, "+27": 9, "+234": 10, "+254": 9, "+92": 10, "+880": 10,
+      "+94": 9, "+977": 10, "+95": 8, "+855": 9, "+84": 10, "+852": 8,
+      "+886": 9, "+52": 10, "+54": 10, "+56": 9, "+57": 10, "+51": 9,
+      "+20": 10, "+212": 9, "+216": 8, "+353": 9, "+41": 9, "+43": 10,
+      "+358": 9, "+45": 8, "+354": 7, "+351": 9, "+352": 8, "+370": 8,
+      "+371": 8, "+372": 7, "+64": 9,
+    };
+    return lengths[code];
+  };
+
   const validatePhone = (num) => {
     const cleaned = num.replace(/[\s\-()]/g, "");
-    return /^[0-9]{6,15}$/.test(cleaned);
+    if (!/^[0-9]+$/.test(cleaned)) return false;
+    const expectedLen = countryPhoneLength(countryCode);
+    if (expectedLen) return cleaned.length === expectedLen;
+    return cleaned.length >= 6 && cleaned.length <= 15;
   };
 
   const validate = () => {
     const newErrors = {};
 
     if (!firstName.trim()) newErrors.firstName = "First name is required";
+    else if (/[^a-zA-Z\s]/.test(firstName)) newErrors.firstName = "First name must contain only letters";
+
     if (!lastName.trim()) newErrors.lastName = "Last name is required";
+    else if (/[^a-zA-Z\s]/.test(lastName)) newErrors.lastName = "Last name must contain only letters";
+
+    if (middleName.trim() && /[^a-zA-Z\s]/.test(middleName)) newErrors.middleName = "Middle name must contain only letters";
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
@@ -161,7 +185,10 @@ function Signup() {
     if (!phone.trim()) {
       newErrors.phone = "Phone number is required";
     } else if (!validatePhone(phone)) {
-      newErrors.phone = "Please enter a valid phone number (6-15 digits)";
+      const expectedLen = countryPhoneLength(countryCode);
+      newErrors.phone = expectedLen
+        ? `Please enter a valid phone number (${expectedLen} digits for this country)`
+        : "Please enter a valid phone number";
     }
 
     if (!password) {
@@ -253,7 +280,7 @@ function Signup() {
                   type="text"
                   placeholder="Enter First Name"
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => setFirstName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
                   className={errors.firstName ? "input-error" : ""}
                 />
               </div>
@@ -268,7 +295,7 @@ function Signup() {
                   type="text"
                   placeholder="Enter Last Name"
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => setLastName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
                   className={errors.lastName ? "input-error" : ""}
                 />
               </div>
@@ -284,7 +311,7 @@ function Signup() {
                 type="text"
                 placeholder="Enter Middle Name (optional)"
                 value={middleName}
-                onChange={(e) => setMiddleName(e.target.value)}
+                onChange={(e) => setMiddleName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
               />
             </div>
           </div>
@@ -309,7 +336,10 @@ function Signup() {
             <div className="phone-row">
               <select
                 value={countryCode}
-                onChange={(e) => setCountryCode(e.target.value)}
+                onChange={(e) => {
+                  setCountryCode(e.target.value);
+                  setPhone((prev) => prev.replace(/[\s\-()]/g, "").slice(0, countryPhoneLength(e.target.value) || 15));
+                }}
                 className="phone-code"
               >
                 {countryCodes.map((c, i) => (
@@ -322,6 +352,7 @@ function Signup() {
                   type="tel"
                   placeholder="Enter phone number"
                   value={phone}
+                  maxLength={countryPhoneLength(countryCode) || 15}
                   onChange={(e) => setPhone(e.target.value.replace(/[^0-9\s\-()]/g, ""))}
                   className={errors.phone ? "input-error" : ""}
                 />

@@ -2,6 +2,22 @@ import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 
+const countryPhoneLength = (code) => {
+    const lengths = {
+        "+1": 10, "+44": 10, "+91": 10, "+61": 9, "+86": 11, "+81": 10,
+        "+49": 11, "+33": 9, "+55": 11, "+7": 10, "+82": 10, "+39": 10,
+        "+34": 9, "+31": 9, "+46": 9, "+47": 8, "+48": 9, "+90": 10,
+        "+971": 9, "+966": 9, "+65": 8, "+60": 10, "+66": 9, "+63": 10,
+        "+62": 10, "+27": 9, "+234": 10, "+254": 9, "+92": 10, "+880": 10,
+        "+94": 9, "+977": 10, "+95": 8, "+855": 9, "+84": 10, "+852": 8,
+        "+886": 9, "+52": 10, "+54": 10, "+56": 9, "+57": 10, "+51": 9,
+        "+20": 10, "+212": 9, "+216": 8, "+353": 9, "+41": 9, "+43": 10,
+        "+358": 9, "+45": 8, "+354": 7, "+351": 9, "+352": 8, "+370": 8,
+        "+371": 8, "+372": 7, "+64": 9,
+    };
+    return lengths[code];
+};
+
 const famousDomains = [
     "gmail.com", "yahoo.com", "yahoo.co.in", "yahoo.co.uk", "outlook.com",
     "hotmail.com", "live.com", "rediffmail.com", "protonmail.com", "proton.me",
@@ -14,6 +30,27 @@ const famousDomains = [
 export const register = async (req, res) => {
     try {
         const { firstName, middleName, lastName, email, password, phone } = req.body;
+
+        const nameOnlyRegex = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/;
+        if (firstName !== undefined && (!firstName.trim() || !nameOnlyRegex.test(firstName.trim()))) {
+            return res.status(400).json({ message: "First name must contain only letters" });
+        }
+        if (lastName !== undefined && (!lastName.trim() || !nameOnlyRegex.test(lastName.trim()))) {
+            return res.status(400).json({ message: "Last name must contain only letters" });
+        }
+        if (middleName && middleName.trim() && !nameOnlyRegex.test(middleName.trim())) {
+            return res.status(400).json({ message: "Middle name must contain only letters" });
+        }
+
+        if (phone) {
+            const match = phone.match(/^(\+\d+)(\d+)$/);
+            const code = match ? match[1] : "";
+            const number = match ? match[2] : phone;
+            const expectedLen = countryPhoneLength(code);
+            if (!/^[0-9]+$/.test(number) || (expectedLen && number.length !== expectedLen)) {
+                return res.status(400).json({ message: `Please enter a valid phone number (${expectedLen ? expectedLen + " digits for this country" : "for this country"})` });
+            }
+        }
 
         const domain = email?.split("@")[1]?.toLowerCase();
         if (!domain || !famousDomains.includes(domain)) {
