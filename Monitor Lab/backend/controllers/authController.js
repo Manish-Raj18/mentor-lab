@@ -133,12 +133,13 @@ export const addActivity = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const { title, score } = req.body;
+        const { title, score, resultId } = req.body;
         
         user.recentActivity.push({
             title,
             date: new Date(),
-            score
+            score,
+            resultId: resultId || null,
         });
 
         // Simple stats update logic

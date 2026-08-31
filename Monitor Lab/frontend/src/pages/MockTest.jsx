@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "../css_files/mock.css";
 
@@ -10,6 +11,7 @@ const getAuthHeaders = () => {
 };
 
 const MockTest = () => {
+  const navigate = useNavigate();
   const [screen, setScreen] = useState('select');
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +22,7 @@ const MockTest = () => {
   const [questionStatuses, setQuestionStatuses] = useState({});
   const [showResult, setShowResult] = useState(false);
   const [resultData, setResultData] = useState(null);
+  const [resultId, setResultId] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const timerRef = useRef(null);
   const [candidateName, setCandidateName] = useState('');
@@ -144,15 +147,17 @@ const MockTest = () => {
         answers: answerIndices,
       }, { headers: getAuthHeaders() });
 
-      const { correct, wrong, score, totalQuestions, maxScore } = res.data;
+      const { correct, wrong, score, totalQuestions, maxScore, resultId: newResultId } = res.data;
 
       const token = localStorage.getItem("token");
       await axios.post(`${API_BASE}/auth/add-activity`, {
         title: `Mock Test: ${selectedTest.title}`,
-        score: `${score} / ${maxScore}`
+        score: `${score} / ${maxScore}`,
+        resultId: newResultId,
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       setResultData({ attempted, correct, wrong, score, total: totalQuestions, maxScore });
+      setResultId(newResultId);
     } catch (err) {
       console.error("Failed to save result:", err);
       setResultData({ attempted, correct: 0, wrong: 0, score: 0, total: questions.length, maxScore: questions.length * 4 });
@@ -259,9 +264,18 @@ const MockTest = () => {
             <h3>Final Score Obtained</h3>
             <h1>{resultData.score} / {resultData.maxScore}</h1>
           </div>
-          <button className="btn-restart" onClick={() => { setScreen('select'); setShowResult(false); setResultData(null); setCurrentIndex(0); setUserAnswers({}); setQuestionStatuses({}); setSelectedTest(null); }}>
+          <button className="btn-restart" onClick={() => { setScreen('select'); setShowResult(false); setResultData(null); setResultId(null); setCurrentIndex(0); setUserAnswers({}); setQuestionStatuses({}); setSelectedTest(null); }}>
             Back to Test Selection
           </button>
+          {resultId && (
+            <button
+              className="btn-restart"
+              style={{ marginTop: "0.8rem", backgroundColor: "var(--secondary-bg)", color: "var(--text-color)", border: "1px solid var(--border-color)" }}
+              onClick={() => navigate(`/test-review/${resultId}`)}
+            >
+              Review Answers
+            </button>
+          )}
         </div>
       </div>
     );

@@ -30,6 +30,7 @@ import BCACategoryPage from "./pages/BCACategoryPage";
 import BbaCategoryPage from "./pages/BbaCategoryPage";
 import BiotechCategoryPage from "./pages/BiotechCategoryPage";
 import NoteViewer from "./pages/NoteViewer";
+import TestReview from "./pages/TestReview";
 
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
           <Route path="/biotech" element={<Biotech />} />
           <Route path="/chatbot" element={<ChatbotPage />} />
           <Route path="/mock-test" element={<ProtectedRoute><MockTest /></ProtectedRoute>} />
+          <Route path="/test-review/:resultId" element={<ProtectedRoute><TestReview /></ProtectedRoute>} />
           <Route path="/analytics" element={<ProtectedRoute><PerformanceAnalytics /></ProtectedRoute>} />
           <Route path="/pyq" element={<PYQ />} />
         </Routes>

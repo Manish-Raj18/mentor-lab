@@ -5,6 +5,7 @@ import multer from "multer";
 import { createRequire } from "module";
 import fs from "fs";
 import MockTest from "../model/mocktest.js";
+import Result from "../model/result.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const require = createRequire(import.meta.url);
@@ -163,6 +164,50 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+// Get all results for logged-in user (for Profile page) - MUST be before /:id
+router.get("/results/mine", protect, async (req, res) => {
+  try {
+    const results = await Result.find({ userId: req.user._id })
+      .sort({ createdAt: -1 })
+      .select("-answers");
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get single result with full review data (Authenticated users) - MUST be before /:id
+router.get("/result/:resultId", protect, async (req, res) => {
+  try {
+    const result = await Result.findOne({
+      _id: req.params.resultId,
+      userId: req.user._id,
+    });
+    if (!result) {
+      return res.status(404).json({ message: "Result not found" });
+    }
+
+    const test = await MockTest.findById(result.testId);
+    if (!test) {
+      return res.status(404).json({ message: "Original test not found" });
+    }
+
+    const questions = test.questions.map((q, idx) => ({
+      questionIndex: idx,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+    }));
+
+    res.json({
+      result,
+      questions,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Get Single Mock Test by ID (Authenticated users, correctAnswer hidden)
 router.get("/:id", protect, async (req, res) => {
   try {
@@ -188,20 +233,52 @@ router.post("/:id/submit", protect, async (req, res) => {
     let computedAttempted = 0;
     let computedCorrect = 0;
     let computedWrong = 0;
+    const detailedAnswers = [];
+
     test.questions.forEach((q, idx) => {
       if (answers[idx] !== undefined) {
         computedAttempted++;
-        if (q.options[answers[idx]] === q.correctAnswer) {
+        const selectedAnswer = q.options[answers[idx]];
+        const isCorrect = selectedAnswer === q.correctAnswer;
+        if (isCorrect) {
           computedCorrect++;
         } else {
           computedWrong++;
         }
+        detailedAnswers.push({
+          questionIndex: idx,
+          selectedOption: answers[idx],
+          isCorrect,
+          correctAnswer: q.correctAnswer,
+          selectedAnswer,
+        });
+      } else {
+        detailedAnswers.push({
+          questionIndex: idx,
+          selectedOption: -1,
+          isCorrect: false,
+          correctAnswer: q.correctAnswer,
+          selectedAnswer: null,
+        });
       }
     });
 
     const computedScore = (computedCorrect * 4) - (computedWrong * 1);
 
+    const savedResult = await Result.create({
+      userId: req.user._id,
+      testId: test._id,
+      title: test.title,
+      answers: detailedAnswers,
+      score: computedScore,
+      maxScore: test.questions.length * 4,
+      attempted: computedAttempted,
+      correct: computedCorrect,
+      wrong: computedWrong,
+    });
+
     res.json({
+      resultId: savedResult._id,
       testId: test._id,
       title: test.title,
       attempted: computedAttempted,

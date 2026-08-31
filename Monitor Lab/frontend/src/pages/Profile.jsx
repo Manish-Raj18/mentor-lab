@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "../css_files/profile.css";
 
 function Profile() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -88,8 +90,18 @@ function Profile() {
                       <h4>{activity.title}</h4>
                       <p>{new Date(activity.date).toLocaleDateString()}</p>
                     </div>
-                    <div className="activity-score">
-                      {activity.score}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                      <div className="activity-score">
+                        {activity.score}
+                      </div>
+                      {activity.resultId && (
+                        <button
+                          className="activity-review-btn"
+                          onClick={() => navigate(`/test-review/${activity.resultId}`)}
+                        >
+                          Review
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))

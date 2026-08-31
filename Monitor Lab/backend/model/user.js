@@ -55,7 +55,12 @@ const userSchema = new mongoose.Schema({
     {
       title: String,
       date: Date,
-      score: String
+      score: String,
+      resultId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Result",
+        default: null,
+      }
     }
   ]
 }, {
