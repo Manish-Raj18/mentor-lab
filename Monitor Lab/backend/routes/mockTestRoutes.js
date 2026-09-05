@@ -4,12 +4,15 @@ import express from "express";
 import multer from "multer";
 import { createRequire } from "module";
 import fs from "fs";
+import crypto from "crypto";
 import MockTest from "../model/mocktest.js";
 import Result from "../model/result.js";
+import Purchase from "../model/purchase.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const require = createRequire(import.meta.url);
 const { PDFParse } = require("pdf-parse");
+const Razorpay = require("razorpay");
 
 const router = express.Router();
 
@@ -24,6 +27,27 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
+
+const hasRazorpayKeys =
+  process.env.RAZORPAY_KEY_ID &&
+  process.env.RAZORPAY_KEY_SECRET &&
+  !process.env.RAZORPAY_KEY_ID.startsWith("YOUR_") &&
+  !process.env.RAZORPAY_KEY_SECRET.startsWith("YOUR_");
+
+const razorpay = hasRazorpayKeys
+  ? new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    })
+  : null;
+
+const hasAccess = async (userId, test) => {
+  if (!test) return false;
+  const price = test.price || 0;
+  if (price <= 0) return true;
+  const purchase = await Purchase.findOne({ userId, testId: test._id });
+  return Boolean(purchase);
+};
 
 // Helper function to parse questions from text
 const parseQuestions = (text) => {
@@ -130,6 +154,7 @@ router.post("/upload-pdf", protect, upload.single("pdf"), async (req, res) => {
       subject: req.body.subject,
       topic: req.body.topic,
       duration: req.body.duration || 60,
+      price: req.body.price || 0,
       questions: questions
     });
 
@@ -158,7 +183,15 @@ router.post("/add", protect, async (req, res) => {
 router.get("/", protect, async (req, res) => {
   try {
     const tests = await MockTest.find().select("-questions.correctAnswer");
-    res.json(tests);
+    const purchases = await Purchase.find({ userId: req.user._id }).select("testId status");
+    const purchasedIds = new Set(purchases.map(p => p.testId.toString()));
+    const result = tests.map(t => ({
+      ...t.toObject(),
+      price: t.price || 0,
+      purchased: (t.price || 0) <= 0 || purchasedIds.has(t._id.toString()),
+      paymentPending: false,
+    }));
+    res.json(result);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -215,8 +248,137 @@ router.get("/:id", protect, async (req, res) => {
     if (!test) {
       return res.status(404).json({ message: "Mock test not found" });
     }
-    res.json(test);
+    if (!(await hasAccess(req.user._id, test))) {
+      return res.status(403).json({ message: "Please purchase this mock test to access it" });
+    }
+    res.json({ ...test.toObject(), purchased: true });
   } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Create Razorpay order for a paid test
+router.post("/:id/order", protect, async (req, res) => {
+  try {
+    const test = await MockTest.findById(req.params.id);
+    if (!test) {
+      return res.status(404).json({ message: "Mock test not found" });
+    }
+    const price = test.price || 0;
+    if (price <= 0) {
+      return res.json({ free: true, purchased: true, testId: test._id });
+    }
+    if (await hasAccess(req.user._id, test)) {
+      return res.json({ purchased: true, testId: test._id });
+    }
+    if (!razorpay) {
+      return res.json({
+        simulate: true,
+        amount: price,
+        currency: "INR",
+        testId: test._id,
+      });
+    }
+
+    const order = await razorpay.orders.create({
+      amount: price * 100,
+      currency: "INR",
+      receipt: `test_${test._id}_${req.user._id}`,
+      notes: { testId: test._id.toString(), userId: req.user._id.toString() },
+    });
+
+    res.json({
+      orderId: order.id,
+      amount: price,
+      currency: "INR",
+      keyId: process.env.RAZORPAY_KEY_ID,
+      testId: test._id,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Manual UPI payment confirmation (auto-unlocks once student submits a real UPI transaction reference)
+router.post("/:id/simulate-pay", protect, async (req, res) => {
+  try {
+    if (hasRazorpayKeys) {
+      return res.status(403).json({ message: "Real Razorpay keys are configured — use real payment" });
+    }
+    const test = await MockTest.findById(req.params.id);
+    if (!test) {
+      return res.status(404).json({ message: "Mock test not found" });
+    }
+    if (await hasAccess(req.user._id, test)) {
+      return res.json({ purchased: true, testId: test._id });
+    }
+    const price = test.price || 0;
+    const transactionId = (req.body?.transactionId || "").trim();
+    if (price > 0 && !transactionId) {
+      return res.status(400).json({ message: "UPI Transaction ID (UTR) required to confirm payment" });
+    }
+    const purchase = await Purchase.findOneAndUpdate(
+      { userId: req.user._id, testId: test._id },
+      {
+        userId: req.user._id,
+        testId: test._id,
+        amount: price,
+        status: "simulated",
+        orderId: "sim_" + crypto.randomUUID(),
+        paymentId: transactionId || "sim_" + crypto.randomUUID(),
+      },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, purchased: true, testId: test._id, purchase });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Verify Razorpay payment and record purchase
+router.post("/:id/verify", protect, async (req, res) => {
+  try {
+    const { orderId, paymentId, signature } = req.body;
+    const test = await MockTest.findById(req.params.id);
+    if (!test) {
+      return res.status(404).json({ message: "Mock test not found" });
+    }
+    const price = test.price || 0;
+
+    if (price > 0) {
+      if (!process.env.RAZORPAY_KEY_SECRET) {
+        return res.status(500).json({ message: "Razorpay is not configured on the server" });
+      }
+      if (!orderId || !paymentId || !signature) {
+        return res.status(400).json({ message: "Missing payment details" });
+      }
+      const expected = crypto
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(`${orderId}|${paymentId}`)
+        .digest("hex");
+      if (expected !== signature) {
+        return res.status(400).json({ message: "Payment verification failed" });
+      }
+    }
+
+    const purchase = await Purchase.findOneAndUpdate(
+      { userId: req.user._id, testId: test._id },
+      {
+        userId: req.user._id,
+        testId: test._id,
+        orderId,
+        paymentId,
+        amount: price,
+        status: "paid",
+      },
+      { upsert: true, new: true }
+    );
+
+    res.json({ success: true, testId: test._id, purchase });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -228,6 +390,9 @@ router.post("/:id/submit", protect, async (req, res) => {
     const test = await MockTest.findById(req.params.id);
     if (!test) {
       return res.status(404).json({ message: "Mock test not found" });
+    }
+    if (!(await hasAccess(req.user._id, test))) {
+      return res.status(403).json({ message: "Please purchase this mock test to submit" });
     }
 
     let computedAttempted = 0;

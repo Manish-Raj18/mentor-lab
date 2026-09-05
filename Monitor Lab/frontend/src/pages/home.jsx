@@ -1,6 +1,26 @@
+import {useRef, useEffect} from 'react'
 import {Link} from 'react-router-dom'
+import { QRCodeCanvas } from "qrcode.react";
 import "../css_files/style.css";
-function Home() { 
+function Home() {
+  const qrRef = useRef(null);
+
+  const registerUrl = `${window.location.origin}/signup?ref=qr`;
+
+  useEffect(() => {
+    if (window.location.hash === "#qr-register") {
+      document.getElementById("qr-register")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
+  const downloadQR = () => {
+    const canvas = qrRef.current;
+    if (!canvas) return;
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "mentor-lab-register-qr.png";
+    link.click();
+  };
   return (
 <div className="home">
  
@@ -100,6 +120,63 @@ function Home() {
     </div>
   </section>
 
+
+  <section id="qr-register" className="qr-section" style={{
+    padding: "3.5rem 1.2rem",
+    display: "flex",
+    justifyContent: "center",
+  }}>
+    <div style={{
+      background: "var(--card-bg)",
+      border: "1px solid var(--border-color)",
+      borderRadius: "14px",
+      padding: "2.2rem 2.4rem",
+      textAlign: "center",
+      maxWidth: 420,
+      width: "100%",
+      boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+    }}>
+      <h2 style={{ margin: 0, color: "var(--accent-color)", fontSize: "1.6rem" }}>Scan to Register</h2>
+      <p style={{ color: "var(--text-color, #555)", opacity: 0.75, margin: "0.5rem 0 1.2rem", fontSize: "0.9rem" }}>
+        QR scan karein aur seedha register ho jayein.
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.9rem" }}>
+        <div style={{
+          background: "#fff",
+          padding: "0.8rem",
+          borderRadius: "10px",
+          border: "1px solid #ddd",
+          display: "inline-block",
+        }}>
+          <QRCodeCanvas
+            ref={qrRef}
+            value={registerUrl}
+            size={200}
+            level="M"
+            marginSize={0}
+          />
+        </div>
+        <p style={{ margin: 0, color: "var(--text-color, #555)", fontWeight: 600, fontSize: "0.9rem" }}>
+          Scan this to Register
+        </p>
+        <button
+          onClick={downloadQR}
+          style={{
+            background: "none",
+            border: "1px solid var(--accent-color)",
+            color: "var(--accent-color)",
+            borderRadius: "8px",
+            padding: "0.5rem 1.2rem",
+            fontWeight: 600,
+            fontSize: "0.85rem",
+            cursor: "pointer",
+          }}
+        >
+          ⬇ Download QR (PNG)
+        </button>
+      </div>
+    </div>
+  </section>
 
   <footer className="footer">
     <p>© 2026 MENTOR LAB. All Rights Reserved.</p>

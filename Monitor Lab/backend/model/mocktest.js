@@ -9,6 +9,11 @@ const mockTestSchema = new mongoose.Schema({
   subject: String,
   topic: String,
   duration: Number, // minutes
+  price: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
   questions: [
     {
       question: String,

@@ -10,6 +10,7 @@ const questions = [
     subject: "Biotech",
     topic: "Cell Biology",
     duration: 30,
+    price: 99,
     questions: [
       {
         question: "Which organelle is known as the powerhouse of the cell?",
@@ -23,6 +24,7 @@ const questions = [
     subject: "Biotech",
     topic: "Genetics",
     duration: 20,
+    price: 99,
     questions: [
       {
         question: "Who is the father of genetics?",
@@ -36,6 +38,7 @@ const questions = [
     subject: "BCA",
     topic: "Programming Languages",
     duration: 45,
+    price: 0,
     questions: [
       {
         question: "Which keyword is used to return a value from a function in C?",
@@ -49,6 +52,7 @@ const questions = [
     subject: "BCA",
     topic: "Logical Subjects",
     duration: 30,
+    price: 99,
     questions: [
       {
         question: "What does SQL stand for?",
@@ -62,6 +66,7 @@ const questions = [
     subject: "BBA",
     topic: "Management & Strategy",
     duration: 40,
+    price: 99,
     questions: [
       {
         question: "How many principles of management were given by Henri Fayol?",

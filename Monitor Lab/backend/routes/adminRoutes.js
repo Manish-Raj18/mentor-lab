@@ -4,8 +4,72 @@ import Course from "../model/course.js";
 import Notes from "../model/notes.js";
 import Lecture from "../model/lecture.js";
 import MockTest from "../model/mocktest.js";
+import Purchase from "../model/purchase.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+
+router.get("/purchases", protect, async (req, res) => {
+  try {
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: "Only admins can view purchases" });
+    }
+    const purchases = await Purchase.find()
+      .populate("userId", "name email")
+      .populate("testId", "title subject price")
+      .sort({ createdAt: -1 });
+    res.json(purchases);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/purchase/manual", protect, async (req, res) => {
+  try {
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: "Only admins can unlock mock tests" });
+    }
+    const { userId, testId } = req.body;
+    if (!userId || !testId) {
+      return res.status(400).json({ message: "userId and testId are required" });
+    }
+    const test = await MockTest.findById(testId);
+    if (!test) {
+      return res.status(404).json({ message: "Mock test not found" });
+    }
+    const purchase = await Purchase.findOneAndUpdate(
+      { userId, testId },
+      { userId, testId, status: "manual", amount: test.price || 0, orderId: "manual", paymentId: "manual" },
+      { upsert: true, new: true }
+    );
+    res.json(purchase);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/purchase/confirm", protect, async (req, res) => {
+  try {
+    if (!req.user.isAdmin) {
+      return res.status(403).json({ message: "Only admins can confirm payments" });
+    }
+    const { purchaseId } = req.body;
+    if (!purchaseId) {
+      return res.status(400).json({ message: "purchaseId is required" });
+    }
+    const purchase = await Purchase.findByIdAndUpdate(
+      purchaseId,
+      { status: "simulated" },
+      { new: true }
+    );
+    if (!purchase) {
+      return res.status(404).json({ message: "Purchase not found" });
+    }
+    res.json(purchase);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 router.get("/stats", async (req, res) => {
   try {

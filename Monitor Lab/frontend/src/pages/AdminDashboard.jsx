@@ -15,6 +15,8 @@ const navItems = [
   { key: "overview", label: "Overview", icon: "📊" },
   { key: "mocktests", label: "Mock Tests", icon: "📝" },
   { key: "students", label: "Students", icon: "👥" },
+  { key: "purchases", label: "Purchases", icon: "🔓" },
+  { key: "paymentsettings", label: "Payment Settings", icon: "🏦" },
   { key: "uploadnotes", label: "Upload Notes", icon: "📄" },
   { key: "uploadpyq", label: "Upload PYQ", icon: "📋" },
 ];
@@ -35,10 +37,21 @@ function AdminDashboard() {
   const [uploadMode, setUploadMode] = useState("pdf");
   const [notes, setNotes] = useState([]);
   const [pyqs, setPyqs] = useState([]);
-  const [formData, setFormData] = useState({ title: "", subject: "", topic: "", duration: 60 });
+  const [formData, setFormData] = useState({ title: "", subject: "", topic: "", duration: 60, price: 0 });
   const [pdfFile, setPdfFile] = useState(null);
   const [manualQuestions, setManualQuestions] = useState([{ question: "", options: ["", "", "", ""], correctAnswer: "" }]);
   const [uploading, setUploading] = useState(false);
+
+  const [purchases, setPurchases] = useState([]);
+  const [unlockStudent, setUnlockStudent] = useState("");
+  const [unlockTest, setUnlockTest] = useState("");
+
+  const [payUpi, setPayUpi] = useState("");
+  const [payPhone, setPayPhone] = useState("");
+  const [payName, setPayName] = useState("");
+  const [payQr, setPayQr] = useState(null);
+  const [payQrUrl, setPayQrUrl] = useState("");
+  const [paySaving, setPaySaving] = useState(false);
 
   const [notesCourse, setNotesCourse] = useState("");
   const [notesSubject, setNotesSubject] = useState("");
@@ -163,7 +176,50 @@ function AdminDashboard() {
     fetchStudents();
     fetchNotes();
     fetchPyqs();
+    fetchPurchases();
+    fetchPaymentSettings();
   }, []);
+
+  const fetchPaymentSettings = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${API_BASE}/payment/settings/admin`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPayUpi(res.data.upiId || "");
+      setPayPhone(res.data.phone || "");
+      setPayName(res.data.payeeName || "");
+      setPayQrUrl(res.data.qrUrl || "");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handlePaymentSettingsSave = async (e) => {
+    e.preventDefault();
+    setPaySaving(true);
+    try {
+      const token = localStorage.getItem("token");
+      const fd = new FormData();
+      fd.append("upiId", payUpi);
+      fd.append("phone", payPhone);
+      fd.append("payeeName", payName);
+      if (payQr) fd.append("qr", payQr);
+      const res = await axios.post(`${API_BASE}/payment/settings/admin`, fd, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
+      });
+      setPayUpi(res.data.upiId);
+      setPayPhone(res.data.phone);
+      setPayName(res.data.payeeName);
+      setPayQrUrl(res.data.qrUrl);
+      setPayQr(null);
+      alert("Payment settings saved! Students will see your QR and UPI details at checkout.");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to save payment settings");
+    } finally {
+      setPaySaving(false);
+    }
+  };
 
   const getStats = async () => {
     try {
@@ -213,6 +269,55 @@ function AdminDashboard() {
     }
   };
 
+  const fetchPurchases = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${API_BASE}/admin/purchases`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPurchases(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleManualUnlock = async (e) => {
+    e.preventDefault();
+    if (!unlockStudent || !unlockTest) {
+      alert("Please select a student and a mock test");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(`${API_BASE}/admin/purchase/manual`, {
+        userId: unlockStudent,
+        testId: unlockTest,
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert("Mock test unlocked for the student!");
+      setUnlockStudent("");
+      setUnlockTest("");
+      fetchPurchases();
+    } catch (err) {
+      alert(err.response?.data?.message || "Unlock failed");
+    }
+  };
+
+  const handlePurchaseConfirm = async (id) => {
+    if (!confirm("Payment confirm karke student ke liye test unlock karein?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(`${API_BASE}/admin/purchase/confirm`, { purchaseId: id }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert("Payment confirmed — test unlocked for the student!");
+      fetchPurchases();
+    } catch (err) {
+      alert(err.response?.data?.message || "Confirm failed");
+    }
+  };
+
   const handleUploadPDF = async (e) => {
     e.preventDefault();
     if (!pdfFile || !formData.title) {
@@ -228,13 +333,14 @@ function AdminDashboard() {
       fd.append("subject", formData.subject);
       fd.append("topic", formData.topic);
       fd.append("duration", formData.duration);
+      fd.append("price", formData.price);
 
       await axios.post(`${API_BASE}/mocktest/upload-pdf`, fd, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
       });
       alert("Mock test uploaded successfully!");
       setShowForm(false);
-      setFormData({ title: "", subject: "", topic: "", duration: 60 });
+      setFormData({ title: "", subject: "", topic: "", duration: 60, price: 0 });
       setPdfFile(null);
       fetchTests();
       getStats();
@@ -264,13 +370,14 @@ function AdminDashboard() {
         subject: formData.subject,
         topic: formData.topic,
         duration: formData.duration,
+        price: formData.price,
         questions: validQuestions
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Mock test created successfully!");
       setShowForm(false);
-      setFormData({ title: "", subject: "", topic: "", duration: 60 });
+      setFormData({ title: "", subject: "", topic: "", duration: 60, price: 0 });
       setManualQuestions([{ question: "", options: ["", "", "", ""], correctAnswer: "" }]);
       fetchTests();
       getStats();
@@ -476,6 +583,10 @@ function AdminDashboard() {
                       <label>Duration (minutes)</label>
                       <input type="number" value={formData.duration} onChange={e => setFormData({ ...formData, duration: e.target.value })} />
                     </div>
+                    <div className="form-field">
+                      <label>Price (₹) &mdash; 0 for free</label>
+                      <input type="number" min="0" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} placeholder="0" />
+                    </div>
                   </div>
 
                   {uploadMode === "pdf" ? (
@@ -535,12 +646,13 @@ function AdminDashboard() {
                         <th>Title</th><th>Subject</th><th>Topic</th>
                         <th style={{ textAlign: "center" }}>Questions</th>
                         <th style={{ textAlign: "center" }}>Duration</th>
+                        <th style={{ textAlign: "center" }}>Price</th>
                         <th style={{ textAlign: "center" }}>Created</th>
                       </tr>
                     </thead>
                     <tbody>
                       {tests.length === 0 ? (
-                        <tr><td colSpan="6" className="table-empty">No mock tests found. Click "Add New Mock Test" to create one.</td></tr>
+                        <tr><td colSpan="7" className="table-empty">No mock tests found. Click "Add New Mock Test" to create one.</td></tr>
                       ) : (
                         tests.map((test) => (
                           <tr key={test._id}>
@@ -549,6 +661,7 @@ function AdminDashboard() {
                             <td>{test.topic || "-"}</td>
                             <td className="cell-center">{test.questions.length}</td>
                             <td className="cell-center">{test.duration || 60} min</td>
+                            <td className="cell-center">{test.price > 0 ? `₹${test.price}` : "Free"}</td>
                             <td className="cell-center cell-small">{new Date(test.createdAt).toLocaleDateString()}</td>
                           </tr>
                         ))
@@ -589,6 +702,161 @@ function AdminDashboard() {
                       )}
                     </tbody>
                   </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeSection === "purchases" && (
+            <div>
+              <div className="section-header">
+                <h2>Mock Test Purchases &amp; Unlocks</h2>
+              </div>
+              <div className="form-card">
+                <form onSubmit={handleManualUnlock}>
+                  <div className="form-grid">
+                    <div className="form-field">
+                      <label>Student *</label>
+                      <select value={unlockStudent} onChange={e => setUnlockStudent(e.target.value)}>
+                        <option value="">Select Student</option>
+                        {students.map(s => (
+                          <option key={s._id} value={s._id}>{s.name} ({s.email})</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-field">
+                      <label>Mock Test *</label>
+                      <select value={unlockTest} onChange={e => setUnlockTest(e.target.value)}>
+                        <option value="">Select Test</option>
+                        {tests.map(t => (
+                          <option key={t._id} value={t._id}>{t.title}{t.price > 0 ? ` (₹${t.price})` : " (Free)"}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" className="btn-primary">Manually Unlock for Student</button>
+                </form>
+              </div>
+
+              <div className="section-header" style={{ marginTop: "2rem" }}>
+                <h2>All Purchases</h2>
+              </div>
+              <div className="table-card">
+                <div className="table-scroll">
+                  <table className="dashboard-table">
+                    <thead>
+                      <tr>
+                        <th>Student</th><th>Mock Test</th><th style={{ textAlign: "center" }}>Amount</th>
+                        <th style={{ textAlign: "center" }}>Status</th>
+                        <th style={{ textAlign: "center" }}>Date</th>
+                        <th style={{ textAlign: "center" }}>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {purchases.length === 0 ? (
+                        <tr><td colSpan="6" className="table-empty">No purchases yet.</td></tr>
+                      ) : (
+                        purchases.map((p) => (
+                          <tr key={p._id}>
+                            <td className="cell-bold">{p.userId?.name || "-"}</td>
+                            <td>{p.testId?.title || "-"}</td>
+                            <td className="cell-center">{p.amount > 0 ? `₹${p.amount}` : "Free"}</td>
+                            <td className="cell-center">
+                              <span className={`type-badge type-${p.status === "pending" ? "pdf" : "web"}`}>
+                                {p.status === "pending" ? "Pending" : p.status === "manual" ? "Manual" : p.status === "simulated" ? "Simulated" : "Razorpay"}
+                              </span>
+                            </td>
+                            <td className="cell-center cell-small">{new Date(p.createdAt).toLocaleDateString()}</td>
+                            <td className="cell-center">
+                              {p.status === "pending" ? (
+                                <button className="btn-primary" onClick={() => handlePurchaseConfirm(p._id)} style={{ padding: "0.3rem 0.7rem", fontSize: "0.75rem" }}>
+                                  Confirm Payment
+                                </button>
+                              ) : (
+                                <span style={{ color: "#999", fontSize: "0.75rem" }}>—</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeSection === "paymentsettings" && (
+            <div>
+              <div className="section-header">
+                <h2>Payment Settings</h2>
+              </div>
+              <p style={{ color: "var(--text-color)", opacity: 0.7, marginBottom: "1rem" }}>
+                Apna QR code image, UPI ID aur payment number yahan daaliye — students ko checkout modal mein
+                yahi QR aur UPI details dikhengi (simulated payment ke liye).
+              </p>
+              <div className="form-card">
+                <form onSubmit={handlePaymentSettingsSave}>
+                  <div className="form-grid">
+                    <div className="form-field">
+                      <label>UPI ID</label>
+                      <input
+                        value={payUpi}
+                        onChange={e => setPayUpi(e.target.value)}
+                        placeholder="yourname@upi"
+                      />
+                    </div>
+                    <div className="form-field">
+                      <label>Payment Number / Phone</label>
+                      <input
+                        value={payPhone}
+                        onChange={e => setPayPhone(e.target.value)}
+                        placeholder="9876543210"
+                      />
+                    </div>
+                    <div className="form-field">
+                      <label>Payee Name</label>
+                      <input
+                        value={payName}
+                        onChange={e => setPayName(e.target.value)}
+                        placeholder="Mentor Lab"
+                      />
+                    </div>
+                    <div className="form-field">
+                      <label>QR Code Image (optional)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={e => setPayQr(e.target.files[0] || null)}
+                      />
+                      {payQr && <small style={{ color: "#28a745" }}>{payQr.name} — naya QR upload karne ke liye selected</small>}
+                    </div>
+                  </div>
+                  <button type="submit" className="btn-primary" disabled={paySaving}>
+                    {paySaving ? "Saving..." : "Save Payment Settings"}
+                  </button>
+                </form>
+              </div>
+
+              <div className="section-header" style={{ marginTop: "2rem" }}>
+                <h2>Current Preview</h2>
+              </div>
+              <div className="form-card" style={{ maxWidth: "440px" }}>
+                <div style={{ display: "flex", gap: "0.8rem", alignItems: "center" }}>
+                  {payQrUrl ? (
+                    <img
+                      src={payQrUrl}
+                      alt="QR preview"
+                      style={{ width: "110px", height: "110px", objectFit: "contain", background: "#fff", border: "1px solid #ddd", borderRadius: "8px", padding: "0.3rem" }}
+                    />
+                  ) : (
+                    <div style={{ width: "110px", height: "110px", background: "var(--secondary-bg)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", color: "var(--text-color)", opacity: 0.6 }}>QR not set</div>
+                  )}
+                  <div style={{ fontSize: "0.9rem", color: "var(--text-color)" }}>
+                    <div><strong>{payName || "—"}</strong></div>
+                    <div>{payUpi || "UPI: not set"}</div>
+                    <div>{payPhone ? `📞 ${payPhone}` : "Phone: not set"}</div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -259,6 +259,8 @@ function Signup() {
   const strength = passwordChecks.filter((c) => c.test(password)).length;
   const strengthLabel = strength === 0 ? "" : strength <= 2 ? "Weak" : strength === 3 ? "Good" : "Strong";
 
+  const isQrReferral = new URLSearchParams(window.location.search).get("ref") === "qr";
+
   return (
     <div className="container1">
       <div className="form-box signup-card">
@@ -269,6 +271,26 @@ function Signup() {
           <h2>Create Account</h2>
           <p className="login-subtitle">Join Mentor Lab and start your learning journey today</p>
         </div>
+
+        {isQrReferral && (
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            background: "#d4edda",
+            color: "#155724",
+            border: "1px solid #c3e6cb",
+            borderRadius: "8px",
+            padding: "0.6rem 1rem",
+            fontWeight: 700,
+            fontSize: "0.85rem",
+            marginBottom: "1rem",
+            textAlign: "center",
+          }}>
+            ✓ Joined via QR Code
+          </div>
+        )}
 
         <form onSubmit={handleSignup}>
           <div className="field-row">

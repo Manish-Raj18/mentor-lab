@@ -27,6 +27,12 @@ const MockTest = () => {
   const timerRef = useRef(null);
   const [candidateName, setCandidateName] = useState('');
   const paletteScrollRef = useRef(null);
+  const [showSimModal, setShowSimModal] = useState(false);
+  const [pendingSimTest, setPendingSimTest] = useState(null);
+  const [simAmount, setSimAmount] = useState(0);
+  const [simProcessing, setSimProcessing] = useState(false);
+  const [paySettings, setPaySettings] = useState({ qrUrl: "", upiId: "", phone: "", payeeName: "" });
+  const [simUtr, setSimUtr] = useState("");
 
   useEffect(() => {
     if (paletteScrollRef.current) {
@@ -129,6 +135,111 @@ const MockTest = () => {
     moveNext();
   };
 
+  const handlePurchase = async (test) => {
+    try {
+      const orderRes = await axios.post(`${API_BASE}/mocktest/${test._id}/order`, {}, { headers: getAuthHeaders() });
+      const orderData = orderRes.data;
+
+      if (orderData.free || orderData.purchased) {
+        setTests(prev => prev.map(t => t._id === test._id ? { ...t, purchased: true } : t));
+        return;
+      }
+
+      if (orderData.simulate) {
+        setPendingSimTest(test);
+        setSimAmount(orderData.amount);
+        setSimUtr("");
+        try {
+          const pRes = await axios.get(`${API_BASE}/payment/settings`);
+          setPaySettings(pRes.data);
+        } catch {
+          setPaySettings({ qrUrl: "", upiId: "", phone: "", payeeName: "" });
+        }
+        setShowSimModal(true);
+        return;
+      }
+
+      await loadRazorpay();
+
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount * 100,
+        currency: orderData.currency || "INR",
+        name: "Monitor Lab",
+        description: test.title,
+        order_id: orderData.orderId,
+        handler: async (response) => {
+          try {
+            await axios.post(`${API_BASE}/mocktest/${test._id}/verify`, {
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+            }, { headers: getAuthHeaders() });
+            setTests(prev => prev.map(t => t._id === test._id ? { ...t, purchased: true } : t));
+            alert("Purchase successful! You can now start the test.");
+          } catch (err) {
+            alert(err.response?.data?.message || "Payment verification failed. Contact support.");
+          }
+        },
+        prefill: { name: candidateName, email: "" },
+        notes: { testId: test._id },
+        theme: { color: "#3399cc" },
+        modal: { ondismiss: () => {} },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", () => {
+        alert("Payment failed. Please try again.");
+      });
+      rzp.open();
+    } catch (err) {
+      alert(err.response?.data?.message || "Could not start purchase. Try again later.");
+    }
+  };
+
+  const loadRazorpay = () => new Promise((resolve, reject) => {
+    if (window.Razorpay) return resolve();
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = resolve;
+    script.onerror = () => reject(new Error("Failed to load payment gateway"));
+    document.body.appendChild(script);
+  });
+
+  const payBtnBaseStyle = {
+    width: "100%", padding: "0.75rem", border: "none", borderRadius: "6px",
+    background: "#02014d", color: "#fff", fontWeight: 700, fontSize: "0.95rem",
+  };
+
+  const completeSim = async () => {
+    setSimProcessing(true);
+    try {
+      const res = await axios.post(`${API_BASE}/mocktest/${pendingSimTest._id}/simulate-pay`, { transactionId: simUtr }, { headers: getAuthHeaders() });
+      if (res.data.purchased) {
+        setTests(prev => prev.map(t => t._id === pendingSimTest._id ? { ...t, purchased: true, paymentPending: false } : t));
+        setSimProcessing(false);
+        setShowSimModal(false);
+        setSimUtr("");
+        alert("Payment successful! Test unlock ho gaya — ab aap test shuru kar sakte hain.");
+      } else {
+        setSimProcessing(false);
+        alert("Payment could not be processed. Try again.");
+      }
+    } catch (err) {
+      setSimProcessing(false);
+      alert(err.response?.data?.message || "Payment processing failed. Try again.");
+    }
+  };
+
+  const handleSimUpiPay = async () => {
+    if (simProcessing) return;
+    if (!simUtr.trim()) {
+      alert("UPI payment ke baad mila Transaction ID (UTR) daaliye. SaharaPar payment app me 'Transaction History' me dikhta hai.");
+      return;
+    }
+    completeSim();
+  };
+
   const handleSubmit = async (auto = false) => {
     if (!auto && !confirm("Do you really want to submit this test?")) return;
     clearInterval(timerRef.current);
@@ -215,35 +326,156 @@ const MockTest = () => {
               }}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.1)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
+                onClick={() => {
+                  if (test.purchased) startTest(test); else handlePurchase(test);
+                }}
               >
                 <h3 style={{ color: "var(--accent-color)", margin: 0, fontSize: "1.1rem" }}>{test.title}</h3>
                 <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap" }}>
                   {test.subject && <span style={{ background: "var(--secondary-bg)", color: "var(--text-color)", padding: "0.2rem 0.6rem", borderRadius: "4px", fontSize: "0.75rem", fontWeight: "bold" }}>{test.subject}</span>}
                   {test.topic && <span style={{ background: "var(--secondary-bg)", color: "var(--text-color)", padding: "0.2rem 0.6rem", borderRadius: "4px", fontSize: "0.75rem" }}>{test.topic}</span>}
+                  {test.price > 0 && !test.purchased && <span style={{ background: "#ffc107", color: "#000", padding: "0.2rem 0.6rem", borderRadius: "4px", fontSize: "0.75rem", fontWeight: "bold" }}>PAID</span>}
                 </div>
                 <p style={{ color: "var(--text-color)", opacity: 0.7, fontSize: "0.85rem", margin: 0 }}>
                   {test.questions.length} Questions &middot; {test.duration || 60} min
                 </p>
-                <button
-                  onClick={() => startTest(test)}
-                  style={{
-                    marginTop: "auto",
-                    padding: "0.6rem",
-                    background: "var(--accent-color)",
-                    color: "var(--hero-text)",
-                    border: "none",
-                    borderRadius: "6px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    fontSize: "0.9rem"
-                  }}
-                >
-                  Start Test
-                </button>
+                {test.price > 0 && (
+                  <p style={{ margin: 0, fontSize: "1rem", fontWeight: "bold", color: "var(--accent-color)" }}>
+                    {test.purchased ? "Access Unlocked" : `₹${test.price}`}
+                  </p>
+                )}
+                {test.purchased ? (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); startTest(test); }}
+                    style={{
+                      marginTop: "auto",
+                      padding: "0.6rem",
+                      background: "var(--accent-color)",
+                      color: "var(--hero-text)",
+                      border: "none",
+                      borderRadius: "6px",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      fontSize: "0.9rem"
+                    }}
+                  >
+                    Start Test
+                  </button>
+                ) : (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handlePurchase(test); }}
+                    style={{
+                      marginTop: "auto",
+                      padding: "0.6rem",
+                      background: "#ffc107",
+                      color: "#000",
+                      border: "none",
+                      borderRadius: "6px",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      fontSize: "0.9rem"
+                    }}
+                  >
+                    Purchase ₹{test.price}
+                  </button>
+                )}
               </div>
             ))}
           </div>
         </div>
+
+        {showSimModal && (
+          <div style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
+            display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999
+          }}>
+            <div style={{
+              background: "#ffffff", borderRadius: "12px", width: "min(420px, 92vw)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.35)", overflow: "hidden"
+            }}>
+              <div style={{ background: "#02014d", color: "#fff", padding: "1.1rem 1.4rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <strong style={{ fontSize: "1.05rem" }}>Monitor Lab</strong>
+                  <div style={{ fontSize: "0.75rem", opacity: 0.8 }}>Secure Checkout</div>
+                </div>
+                <div style={{ textAlign: "right", fontSize: "0.8rem" }}>
+                  <div style={{ opacity: 0.8 }}>Amount Payable</div>
+                  <strong style={{ fontSize: "1rem" }}>₹{simAmount}.00</strong>
+                </div>
+              </div>
+
+              <div style={{ padding: "1.2rem 1.4rem", color: "#1a1a1a" }}>
+                <div>
+                  <div style={{
+                    display: "flex", gap: "1rem", alignItems: "center", background: "#f4f6fb",
+                    padding: "1rem", borderRadius: "8px", marginBottom: "1rem"
+                  }}>
+                    {paySettings.qrUrl ? (
+                      <img
+                        src={paySettings.qrUrl}
+                        alt="UPI QR"
+                        style={{ width: "130px", height: "130px", objectFit: "contain", background: "#fff", borderRadius: "6px", border: "1px solid #ddd" }}
+                      />
+                    ) : (
+                      <div style={{
+                        width: "130px", height: "130px", background: "#e8ebf3", borderRadius: "8px",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        textAlign: "center", fontSize: "0.7rem", color: "#777"
+                      }}>
+                        QR not set
+                        <br />
+                        by admin
+                      </div>
+                    )}
+                    <div style={{ flex: 1, fontSize: "0.85rem" }}>
+                      <div style={{ fontWeight: 700, color: "#02014d", marginBottom: "0.3rem" }}>UPI Payment</div>
+                      {paySettings.payeeName && <div><strong>{paySettings.payeeName}</strong></div>}
+                      {paySettings.upiId && <div style={{ marginTop: "0.2rem" }}>UPI: <strong>{paySettings.upiId}</strong></div>}
+                      {paySettings.phone && <div style={{ marginTop: "0.2rem" }}>📞 <strong>{paySettings.phone}</strong></div>}
+                      {!paySettings.upiId && !paySettings.phone && (
+                        <div style={{ marginTop: "0.2rem", opacity: 0.7 }}>UPI details not set by admin</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <p style={{ fontSize: "0.78rem", color: "#666", marginBottom: "1rem" }}>
+                    QR scan karein ya UPI ID par ₹{simAmount}.00 bhejein, fir payment app se mila UPI Transaction ID (UTR) neeche daalein.
+                  </p>
+
+                  <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 600, marginBottom: "0.3rem" }}>UPI Transaction ID / UTR *</label>
+                  <input
+                    value={simUtr}
+                    disabled={simProcessing}
+                    onChange={(e) => setSimUtr(e.target.value)}
+                    placeholder="e.g. 412345678901"
+                    style={{ width: "100%", padding: "0.55rem 0.7rem", border: "1px solid #ccc", borderRadius: "6px", marginBottom: "1rem", fontSize: "0.9rem" }}
+                  />
+
+                  <button
+                    onClick={handleSimUpiPay}
+                    disabled={simProcessing}
+                    style={{ ...payBtnBaseStyle, background: simProcessing ? "#6b6b6b" : "#02014d", cursor: simProcessing ? "wait" : "pointer" }}
+                  >
+                    {simProcessing ? "Verifying Payment..." : `Confirm — I have paid ₹${simAmount}.00`}
+                  </button>
+                </div>
+
+                <p style={{ textAlign: "center", fontSize: "0.72rem", color: "#777", marginTop: "0.8rem" }}>
+                Secure checkout &middot; Payment confirm hone par test turant unlock ho jata hai
+                </p>
+              </div>
+
+              <div style={{ textAlign: "center", paddingBottom: "1rem" }}>
+                <button
+                  onClick={() => !simProcessing && setShowSimModal(false)}
+                  style={{ background: "none", border: "none", color: "#888", fontSize: "0.8rem", cursor: simProcessing ? "not-allowed" : "pointer" }}
+                >
+                  Cancel Payment
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
