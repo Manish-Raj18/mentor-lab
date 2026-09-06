@@ -33,6 +33,7 @@ const MockTest = () => {
   const [simProcessing, setSimProcessing] = useState(false);
   const [paySettings, setPaySettings] = useState({ qrUrl: "", upiId: "", phone: "", payeeName: "" });
   const [simUtr, setSimUtr] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (paletteScrollRef.current) {
@@ -292,14 +293,56 @@ const MockTest = () => {
     setCurrentIndex(idx);
   };
 
+  const filteredTests = tests.filter((test) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      (test.title && test.title.toLowerCase().includes(q)) ||
+      (test.subject && test.subject.toLowerCase().includes(q)) ||
+      (test.topic && test.topic.toLowerCase().includes(q))
+    );
+  });
+
   if (screen === 'select') {
     return (
       <div style={{ minHeight: "100vh", background: "var(--bg-color)", padding: "2rem" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <h1 style={{ textAlign: "center", color: "var(--text-color)", marginBottom: "0.5rem" }}>Mock Test Portal</h1>
-          <p style={{ textAlign: "center", color: "var(--text-color)", opacity: 0.7, marginBottom: "2rem" }}>
+          <p style={{ textAlign: "center", color: "var(--text-color)", opacity: 0.7, marginBottom: "1.5rem" }}>
             Welcome{candidateName ? `, ${candidateName}` : ''}. Select a test below to begin.
           </p>
+
+          {!loading && !fetchError && tests.length > 0 && (
+            <div style={{ marginBottom: "1.2rem", position: "relative", maxWidth: "450px", marginLeft: "auto", marginRight: "auto" }}>
+              <input
+                type="text"
+                placeholder="Search tests by title, subject, or topic..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "0.65rem 1rem 0.65rem 2.6rem",
+                  borderRadius: "8px",
+                  border: "1px solid var(--border-color)",
+                  background: "var(--card-bg)",
+                  color: "var(--text-color)",
+                  fontSize: "0.95rem",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+              <span style={{
+                position: "absolute",
+                left: "0.8rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                fontSize: "0.95rem",
+                opacity: 0.5,
+                pointerEvents: "none",
+                color: "var(--text-color)",
+              }}>&#128269;</span>
+            </div>
+          )}
 
           {loading && <p style={{ textAlign: "center", color: "var(--text-color)" }}>Loading available tests...</p>}
           {fetchError && <p style={{ textAlign: "center", color: "#dc3545" }}>{fetchError}</p>}
@@ -311,8 +354,15 @@ const MockTest = () => {
             </div>
           )}
 
+          {!loading && !fetchError && tests.length > 0 && filteredTests.length === 0 && (
+            <div style={{ textAlign: "center", padding: "2rem", background: "var(--card-bg)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+              <h3 style={{ color: "var(--text-color)" }}>No Matching Tests Found</h3>
+              <p style={{ color: "var(--text-color)", opacity: 0.6, marginTop: "0.5rem" }}>Try a different search keyword.</p>
+            </div>
+          )}
+
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1.2rem" }}>
-            {tests.map((test) => (
+            {filteredTests.map((test) => (
               <div key={test._id} style={{
                 background: "var(--card-bg)",
                 border: "1px solid var(--border-color)",
