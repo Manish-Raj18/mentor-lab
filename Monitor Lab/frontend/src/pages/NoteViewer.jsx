@@ -68,6 +68,19 @@ function NoteViewer() {
   }, [id]);
 
   useEffect(() => {
+    if (note && note._id) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        axios
+          .post(`/api/certificate/notes/${note._id}/read`, {}, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .catch(() => {});
+      }
+    }
+  }, [note]);
+
+  useEffect(() => {
     const prev = prevActiveRef.current;
     prevActiveRef.current = activeIndex;
     if (activeIndex === prev || activeIndex < 0) return;

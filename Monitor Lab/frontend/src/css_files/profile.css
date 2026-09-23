@@ -135,6 +135,95 @@
     color: var(--accent-color);
 }
 
+.cert-link {
+    display: inline-block;
+    margin-top: 0.9rem;
+    padding: 0.55rem 1rem;
+    background-color: var(--accent-color);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.cert-link:hover {
+    opacity: 0.85;
+}
+
+.profile-college-edit {
+    margin-top: 1rem;
+}
+
+.college-edit-btn {
+    background: none;
+    border: 1px dashed var(--border-color, #c8cdda);
+    color: var(--text-color);
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.college-edit-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.college-edit-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.college-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--border-color, #c8cdda);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: var(--card-bg, #fff);
+    color: var(--text-color);
+    outline: none;
+}
+
+.college-input:focus {
+    border-color: var(--accent-color);
+}
+
+.college-save-btn {
+    background: var(--accent-color, #02014d);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.college-cancel-btn {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color, #c8cdda);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.college-saved-msg {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #2e7d32;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
 .profile-actions {
     margin-top: 2rem;
     display: flex;

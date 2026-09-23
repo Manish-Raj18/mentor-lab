@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import "../css_files/profile.css";
 
@@ -8,6 +8,10 @@ function Profile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [certCount, setCertCount] = useState(0);
+  const [college, setCollege] = useState("");
+  const [editingCollege, setEditingCollege] = useState(false);
+  const [collegeSaved, setCollegeSaved] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -17,6 +21,7 @@ function Profile() {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUser(response.data);
+        setCollege(response.data.college || "");
       } catch (err) {
         setError("Failed to load profile");
       } finally {
@@ -24,8 +29,37 @@ function Profile() {
       }
     };
 
+    const fetchCerts = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("/api/certificate/mine", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setCertCount((response.data || []).length);
+      } catch {
+        setCertCount(0);
+      }
+    };
+
     fetchProfile();
+    fetchCerts();
   }, []);
+
+  const saveCollege = async () => {
+    if (editingCollege && college.trim() !== (user.college || "")) {
+      try {
+        const token = localStorage.getItem("token");
+        await axios.put("/api/auth/profile", { college: college.trim() }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setCollegeSaved(true);
+        setTimeout(() => setCollegeSaved(false), 2500);
+      } catch {
+        alert("Failed to save college. Try again.");
+      }
+    }
+    setEditingCollege(false);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -47,6 +81,25 @@ function Profile() {
           <div className="profile-meta">
             <span>📧 {user.email}</span>
             <span>🆔 {user.studentId || "N/A"}</span>
+            <span>🏫 {user.college || "College not set"}</span>
+          </div>
+          <div className="profile-college-edit">
+            {editingCollege ? (
+              <div className="college-edit-row">
+                <input
+                  type="text"
+                  value={college}
+                  onChange={(e) => setCollege(e.target.value)}
+                  placeholder="Enter your college name"
+                  className="college-input"
+                />
+                <button className="college-save-btn" onClick={saveCollege}>Save</button>
+                <button className="college-cancel-btn" onClick={() => { setCollege(user.college || ""); setEditingCollege(false); }}>Cancel</button>
+              </div>
+            ) : (
+              <button className="college-edit-btn" onClick={() => setEditingCollege(true)}>✏️ {user.college ? "Edit College" : "Add College"}</button>
+            )}
+            {collegeSaved && <span className="college-saved-msg">✅ College saved — certificate me update hoga</span>}
           </div>
         </div>
       </div>
@@ -75,6 +128,16 @@ function Profile() {
                   <span className="stat-label">Hours Learnt</span>
                 </div>
             </div>
+          </div>
+          <div className="profile-card">
+            <h3>🎓 Certificates</h3>
+            <div className="stat-grid">
+                <div className="stat-item">
+                  <span className="stat-value">{certCount}</span>
+                  <span className="stat-label">Earned</span>
+                </div>
+            </div>
+            <Link to="/certificates" className="cert-link">View My Certificates →</Link>
           </div>
         </aside>
 

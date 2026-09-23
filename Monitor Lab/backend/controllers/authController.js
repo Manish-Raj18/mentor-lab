@@ -153,6 +153,7 @@ export const updateProfile = async (req, res) => {
 
         user.name = req.body.name || user.name;
         user.studentId = req.body.studentId || user.studentId;
+        user.college = req.body.college || user.college;
 
         const updatedUser = await user.save();
         res.status(200).json(updatedUser);

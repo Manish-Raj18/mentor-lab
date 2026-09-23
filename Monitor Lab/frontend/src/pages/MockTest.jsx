@@ -34,6 +34,8 @@ const MockTest = () => {
   const [paySettings, setPaySettings] = useState({ qrUrl: "", upiId: "", phone: "", payeeName: "" });
   const [simUtr, setSimUtr] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [certificate, setCertificate] = useState(null);
+  const [checkingCert, setCheckingCert] = useState(false);
 
   useEffect(() => {
     if (paletteScrollRef.current) {
@@ -97,6 +99,7 @@ const MockTest = () => {
     setUserAnswers({});
     setQuestionStatuses({});
     setTimeLeft((test.duration || 60) * 60);
+    setCertificate(null);
     setScreen('test');
   };
 
@@ -270,6 +273,22 @@ const MockTest = () => {
 
       setResultData({ attempted, correct, wrong, score, total: totalQuestions, maxScore });
       setResultId(newResultId);
+
+      if (selectedTest.subject) {
+        setCheckingCert(true);
+        try {
+          const certRes = await axios.get(`${API_BASE}/certificate/progress/${encodeURIComponent(selectedTest.subject)}`, {
+            headers: getAuthHeaders(),
+          });
+          if (certRes.data.complete && certRes.data.certificate) {
+            setCertificate(certRes.data.certificate);
+          }
+        } catch (err) {
+          console.error("Failed to check certificate:", err);
+        } finally {
+          setCheckingCert(false);
+        }
+      }
     } catch (err) {
       console.error("Failed to save result:", err);
       setResultData({ attempted, correct: 0, wrong: 0, score: 0, total: questions.length, maxScore: questions.length * 4 });
@@ -546,7 +565,7 @@ const MockTest = () => {
             <h3>Final Score Obtained</h3>
             <h1>{resultData.score} / {resultData.maxScore}</h1>
           </div>
-          <button className="btn-restart" onClick={() => { setScreen('select'); setShowResult(false); setResultData(null); setResultId(null); setCurrentIndex(0); setUserAnswers({}); setQuestionStatuses({}); setSelectedTest(null); }}>
+          <button className="btn-restart" onClick={() => { setScreen('select'); setShowResult(false); setResultData(null); setResultId(null); setCurrentIndex(0); setUserAnswers({}); setQuestionStatuses({}); setSelectedTest(null); setCertificate(null); }}>
             Back to Test Selection
           </button>
           {resultId && (
@@ -557,6 +576,27 @@ const MockTest = () => {
             >
               Review Answers
             </button>
+          )}
+          {checkingCert && (
+            <p style={{ marginTop: "1rem", color: "var(--text-color)", opacity: 0.7 }}>
+              Checking course completion…
+            </p>
+          )}
+          {certificate && (
+            <div className="result-certificate" style={{ marginTop: "1.2rem", padding: "1.2rem", border: "2px solid #c9a227", borderRadius: "10px", background: "linear-gradient(180deg, #fffdf5, #fff)" }}>
+              <div style={{ fontSize: "2rem" }}>🎓</div>
+              <h3 style={{ color: "#02014d", margin: "0.3rem 0" }}>Congratulations — Course Completed!</h3>
+              <p style={{ color: "#555", fontSize: "0.9rem", margin: "0.3rem 0" }}>
+                You have read all study material and attempted all mock tests for <strong>{certificate.course}</strong>.
+              </p>
+              <button
+                className="btn-restart"
+                style={{ marginTop: "0.8rem", background: "#02014d", color: "#ffd966", border: "none", fontWeight: "bold" }}
+                onClick={() => navigate(`/certificate/${certificate._id}`)}
+              >
+                View & Download Certificate
+              </button>
+            </div>
           )}
         </div>
       </div>

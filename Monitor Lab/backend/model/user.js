@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
+  college: {
+    type: String,
+    default: ""
+  },
   performanceStats: {
     type: Object,
     default: {
@@ -61,6 +65,18 @@ const userSchema = new mongoose.Schema({
         ref: "Result",
         default: null,
       }
+    }
+  ],
+  readNotes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Notes",
+    }
+  ],
+  certificates: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Certificate",
     }
   ]
 }, {

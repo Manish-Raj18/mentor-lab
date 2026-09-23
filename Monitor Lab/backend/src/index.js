@@ -11,6 +11,7 @@ import notesRoutes from "../routes/notesRoutes.js";
 import pyqRoutes from "../routes/pyqRoutes.js";
 import aiRoutes from "../routes/aiRoutes.js";
 import paymentRoutes from "../routes/paymentRoutes.js";
+import certificateRoutes from "../routes/certificateRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,7 @@ app.use("/api/notes", notesRoutes);
 app.use("/api/pyq", pyqRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/certificate", certificateRoutes);
 
 const uploadsDir = path.join(rootDir, "uploads");
 app.use("/uploads", express.static(uploadsDir, {
