@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css_files/login.css";
-import signupImg from "../assets/signup-illustration.png";
+import signupImg from "../assets/mentor_lab_signup.png";
 
 const countryCodes = [
   { code: "+1", country: "US", label: "United States (+1)" },

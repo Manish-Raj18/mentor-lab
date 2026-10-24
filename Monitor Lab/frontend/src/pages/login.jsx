@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../css_files/login.css"
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import loginImg from "../assets/login-illustration.png";
+import loginImg from "../assets/mentor_lab_login.png";
 
 const EnvelopeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
