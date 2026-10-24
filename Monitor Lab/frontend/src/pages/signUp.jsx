@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css_files/login.css";
+import signupImg from "../assets/signup-illustration.png";
 
 const countryCodes = [
   { code: "+1", country: "US", label: "United States (+1)" },
@@ -262,8 +263,12 @@ function Signup() {
   const isQrReferral = new URLSearchParams(window.location.search).get("ref") === "qr";
 
   return (
-    <div className="container1">
-      <div className="form-box signup-card">
+    <div className="container1 auth-split">
+      <div className="auth-illustration">
+        <img src={signupImg} alt="Sign up illustration" />
+      </div>
+      <div className="auth-form-wrapper">
+        <div className="form-box signup-card">
         <div className="login-brand">
           <div className="login-logo">
             <LogoIcon />
@@ -460,6 +465,7 @@ function Signup() {
 
         <div className="login-footer">
           Already have an account? <Link to="/login">Login</Link>
+        </div>
         </div>
       </div>
     </div>

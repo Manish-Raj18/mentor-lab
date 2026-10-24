@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../css_files/login.css"
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import loginImg from "../assets/login-illustration.png";
 
 const EnvelopeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -111,8 +112,12 @@ function Login() {
 
     // 3. The JSX UI Layout
     return (
-        <div className="container1">
-            <div className="form-box login-card">
+        <div className="container1 auth-split">
+            <div className="auth-illustration">
+                <img src={loginImg} alt="Login illustration" />
+            </div>
+            <div className="auth-form-wrapper">
+                <div className="form-box login-card">
                 <div className="login-brand">
                     <div className="login-logo">
                         <LogoIcon />
@@ -177,6 +182,7 @@ function Login() {
                 <div className="login-footer">
                     Don't have an account?
                     <Link to="/signup">Sign up</Link>
+                </div>
                 </div>
             </div>
         </div>
