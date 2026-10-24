@@ -13,7 +13,7 @@ const callGroq = async (systemPrompt, userMessage) => {
       Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
     },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-20b",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
@@ -25,7 +25,7 @@ const callGroq = async (systemPrompt, userMessage) => {
   if (data.choices && data.choices.length > 0) {
     return data.choices[0].message.content;
   }
-  throw new Error("No response from AI");
+  throw new Error(data.error?.message || "No response from AI");
 };
 
 export const chat = async (req, res) => {
@@ -45,7 +45,6 @@ RESPONSE STYLE (strictly follow):
   try {
     const userMsg = `${message}\n\nIMPORTANT: ${langInstr}`;
     const reply = await callGroq(systemPrompt, userMsg);
-    console.log("RAW GROQ REPLY:", JSON.stringify(reply));
     const formattedReply = reply
       .replace(/\r\n/g, '\n')
       .split(/\n\s*\n/)
@@ -53,7 +52,6 @@ RESPONSE STYLE (strictly follow):
       .filter(Boolean)
       .join('\n\n')
       .trim();
-    console.log("FORMATTED REPLY:", JSON.stringify(formattedReply));
     res.json({ reply: formattedReply });
   } catch (error) {
     console.error("Error communicating with Groq API:", error);
