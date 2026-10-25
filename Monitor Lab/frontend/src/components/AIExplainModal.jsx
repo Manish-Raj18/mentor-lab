@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import "../css_files/ai_explain.css";
 
@@ -9,7 +9,7 @@ function AIExplainModal({ subject, course, onClose }) {
   const [language, setLanguage] = useState("english");
   const utteranceRef = useRef(null);
 
-  const handleExplain = async () => {
+  const handleExplain = useCallback(async () => {
     setLoading(true);
     setExplanation("");
     try {
@@ -19,16 +19,17 @@ function AIExplainModal({ subject, course, onClose }) {
         language,
       });
       setExplanation(res.data.reply);
-    } catch (err) {
+    } catch {
       setExplanation("Failed to get explanation. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [course, language, subject]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     handleExplain();
-  }, [language]);
+  }, [handleExplain]);
 
   const toggleSpeak = () => {
     if (speaking) {

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../css_files/login.css"
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import loginImg from "../assets/mentor_lab_login.png";
 
@@ -46,7 +46,6 @@ function Login() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
     // 2. Form submission handler marked as async
     const handleLogin = async (e) => {

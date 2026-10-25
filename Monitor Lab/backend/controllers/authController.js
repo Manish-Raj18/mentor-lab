@@ -1,6 +1,23 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import generateToken from "../utils/generateToken.js";
+import { sendPasswordResetOtp } from "../utils/mailer.js";
+
+const OTP_TTL_MS = 10 * 60 * 1000;
+const OTP_RESEND_COOLDOWN_MS = 60 * 1000;
+const OTP_MAX_ATTEMPTS = 5;
+
+const hashToken = (token) =>
+    crypto.createHash("sha256").update(token).digest("hex");
+
+const isStrongPassword = (password) =>
+    typeof password === "string" &&
+    password.length >= 8 &&
+    /[a-zA-Z]/.test(password) &&
+    /[0-9]/.test(password) &&
+    /[^a-zA-Z0-9]/.test(password);
 
 const countryPhoneLength = (code) => {
     const lengths = {
@@ -189,5 +206,182 @@ export const addActivity = async (req, res) => {
     } catch (error) {
         console.error("Add activity error:", error);
         res.status(500).json({ message: "Server error" });
+    }
+};
+
+// 6. REQUEST PASSWORD RESET CODE
+export const forgotPassword = async (req, res) => {
+    try {
+        const email = String(req.body.email || "").trim().toLowerCase();
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        const genericMessage = "If an account exists for that email, a verification code has been sent.";
+
+        const user = await User.findOne({ email }).select(
+            "+resetOtpHash +resetOtpExpires +resetOtpRequestedAt +resetOtpAttempts"
+        );
+
+        // Do not reveal whether the email is registered.
+        if (!user) {
+            return res.status(200).json({ message: genericMessage });
+        }
+
+        const now = Date.now();
+        if (user.resetOtpRequestedAt) {
+            const elapsed = now - user.resetOtpRequestedAt.getTime();
+            if (elapsed < OTP_RESEND_COOLDOWN_MS) {
+                const retryAfter = Math.ceil((OTP_RESEND_COOLDOWN_MS - elapsed) / 1000);
+                return res.status(429).json({
+                    message: `Please wait ${retryAfter}s before requesting another code.`,
+                    retryAfter,
+                });
+            }
+        }
+
+        const otp = String(crypto.randomInt(100000, 1000000));
+        user.resetOtpHash = await bcrypt.hash(otp, 10);
+        user.resetOtpExpires = new Date(now + OTP_TTL_MS);
+        user.resetOtpRequestedAt = new Date(now);
+        user.resetOtpAttempts = 0;
+        await user.save();
+
+        let delivered = false;
+        try {
+            const result = await sendPasswordResetOtp(email, otp);
+            delivered = result.delivered;
+        } catch (mailError) {
+            console.error("Password reset email failed:", mailError.message);
+        }
+
+        if (!delivered) {
+            console.warn(`[password-reset] SMTP unavailable. OTP for ${email}: ${otp}`);
+        }
+
+        const payload = { message: genericMessage };
+        if (!delivered && process.env.NODE_ENV !== "production") {
+            payload.devOtp = otp;
+        }
+
+        return res.status(200).json(payload);
+    } catch (error) {
+        console.error("Forgot password error:", error);
+        res.status(500).json({ message: "Server error while requesting password reset" });
+    }
+};
+
+// 7. VERIFY PASSWORD RESET CODE
+export const verifyResetOtp = async (req, res) => {
+    try {
+        const email = String(req.body.email || "").trim().toLowerCase();
+        const otp = String(req.body.otp || "").trim();
+
+        if (!email || !/^\d{6}$/.test(otp)) {
+            return res.status(400).json({ message: "Enter the 6-digit verification code" });
+        }
+
+        const user = await User.findOne({ email }).select(
+            "+resetOtpHash +resetOtpExpires +resetOtpAttempts"
+        );
+
+        const invalidMessage = "Invalid or expired verification code. Please request a new one.";
+        if (!user || !user.resetOtpHash || !user.resetOtpExpires) {
+            return res.status(400).json({ message: invalidMessage });
+        }
+
+        if (user.resetOtpExpires.getTime() < Date.now()) {
+            user.resetOtpHash = null;
+            user.resetOtpExpires = null;
+            user.resetOtpAttempts = 0;
+            await user.save();
+            return res.status(400).json({ message: invalidMessage });
+        }
+
+        if ((user.resetOtpAttempts || 0) >= OTP_MAX_ATTEMPTS) {
+            user.resetOtpHash = null;
+            user.resetOtpExpires = null;
+            user.resetOtpAttempts = 0;
+            await user.save();
+            return res.status(429).json({ message: "Too many incorrect attempts. Please request a new code." });
+        }
+
+        const isMatch = await bcrypt.compare(otp, user.resetOtpHash);
+        if (!isMatch) {
+            user.resetOtpAttempts = (user.resetOtpAttempts || 0) + 1;
+            await user.save();
+            return res.status(400).json({ message: invalidMessage });
+        }
+
+        const resetJti = crypto.randomBytes(24).toString("hex");
+
+        user.resetOtpHash = null;
+        user.resetOtpExpires = null;
+        user.resetOtpRequestedAt = null;
+        user.resetOtpAttempts = 0;
+        user.resetTokenHash = hashToken(resetJti);
+        await user.save();
+
+        const resetToken = jwt.sign(
+            { id: user._id, purpose: "password-reset", jti: resetJti },
+            process.env.JWT_SECRET,
+            { expiresIn: "10m" }
+        );
+
+        return res.status(200).json({ message: "Verification code confirmed", resetToken });
+    } catch (error) {
+        console.error("Verify reset OTP error:", error);
+        res.status(500).json({ message: "Server error while verifying the code" });
+    }
+};
+
+// 8. RESET PASSWORD
+export const resetPassword = async (req, res) => {
+    try {
+        const { resetToken, password } = req.body;
+
+        if (!resetToken || !password) {
+            return res.status(400).json({ message: "Reset token and new password are required" });
+        }
+
+        if (!isStrongPassword(password)) {
+            return res.status(400).json({
+                message: "Password must be at least 8 characters and include a letter, a number, and a special character",
+            });
+        }
+
+        let decoded;
+        try {
+            decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
+        } catch {
+            return res.status(400).json({ message: "This reset link has expired. Please request a new code." });
+        }
+
+        if (decoded.purpose !== "password-reset" || !decoded.id || !decoded.jti) {
+            return res.status(400).json({ message: "Invalid reset token" });
+        }
+
+        const user = await User.findById(decoded.id).select("+resetTokenHash");
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.resetTokenHash || user.resetTokenHash !== hashToken(decoded.jti)) {
+            return res.status(400).json({ message: "This reset token has already been used. Please request a new code." });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+        user.resetOtpHash = null;
+        user.resetOtpExpires = null;
+        user.resetOtpRequestedAt = null;
+        user.resetOtpAttempts = 0;
+        user.resetTokenHash = null;
+        await user.save();
+
+        return res.status(200).json({ message: "Password updated successfully. You can now sign in." });
+    } catch (error) {
+        console.error("Reset password error:", error);
+        res.status(500).json({ message: "Server error while resetting the password" });
     }
 };

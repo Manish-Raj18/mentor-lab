@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css_files/login.css";
 import signupImg from "../assets/mentor_lab_signup.png";
@@ -101,7 +101,7 @@ const passwordChecks = [
   { label: "8+ characters", test: (p) => p.length >= 8 },
   { label: "Letter", test: (p) => /[a-zA-Z]/.test(p) },
   { label: "Number", test: (p) => /[0-9]/.test(p) },
-  { label: "Special character", test: (p) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(p) },
+  { label: "Special character", test: (p) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/.test(p) },
 ];
 
 function Signup() {
@@ -125,7 +125,7 @@ function Signup() {
   ];
 
   const validateEmail = (email) => {
-    const re = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     if (!re.test(email)) return { valid: false, msg: "Please enter a valid email address" };
     const domain = email.split("@")[1].toLowerCase();
     if (!famousDomains.includes(domain)) return { valid: false, msg: "Please use a well-known email provider (Gmail, Yahoo, Outlook, etc.)" };
@@ -137,7 +137,7 @@ function Signup() {
     if (pwd.length < 8) errors.push("at least 8 characters");
     if (!/[a-zA-Z]/.test(pwd)) errors.push("at least one letter");
     if (!/[0-9]/.test(pwd)) errors.push("at least one number");
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(pwd)) errors.push("at least one special character");
+    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/.test(pwd)) errors.push("at least one special character");
     return errors;
   };
 

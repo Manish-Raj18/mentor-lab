@@ -1,13 +1,12 @@
-import React, { useContext, useState } from 'react';
-import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
 import "../css_files/navbar.css";
-import { ThemeContext } from '../context/ThemeContext';
+import { ThemeContext } from '../context/theme-context';
 
 const Navbar = () => {
   const { darkMode, setDarkMode } = useContext(ThemeContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
-  const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => {

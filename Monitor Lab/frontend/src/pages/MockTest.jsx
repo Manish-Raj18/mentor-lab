@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "../css_files/mock.css";
@@ -63,28 +63,12 @@ const MockTest = () => {
       try {
         const res = await axios.get(`${API_BASE}/auth/profile`, { headers: getAuthHeaders() });
         setCandidateName(res.data.name);
-      } catch (err) {
+      } catch {
         setCandidateName('Student');
       }
     };
     fetchProfile();
   }, []);
-
-  useEffect(() => {
-    if (screen === 'test' && timeLeft > 0) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current);
-            handleSubmit(true);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(timerRef.current);
-  }, [screen, timeLeft > 0]);
 
   const formatTime = (secs) => {
     const h = Math.floor(secs / 3600);
@@ -295,6 +279,24 @@ const MockTest = () => {
     }
     setShowResult(true);
   };
+
+  const timerActive = screen === 'test' && timeLeft > 0;
+
+  useEffect(() => {
+    if (timerActive) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current);
+            handleSubmit(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [timerActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getBtnClass = (idx) => {
     if (idx === currentIndex) return "num-btn active-num";

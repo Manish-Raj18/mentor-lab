@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import "../css_files/profile.css";
@@ -22,7 +22,7 @@ function Profile() {
         });
         setUser(response.data);
         setCollege(response.data.college || "");
-      } catch (err) {
+      } catch {
         setError("Failed to load profile");
       } finally {
         setLoading(false);

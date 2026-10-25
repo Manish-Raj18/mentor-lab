@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import '../css_files/about.css';
 
@@ -108,6 +107,7 @@ function AboutUs() {
           {team.map((member) => (
             <div className="team-card" key={member.name}>
               <div className="team-photo-wrap">
+                <img src={member.photo} alt="" aria-hidden="true" className="team-photo-bg" />
                 <img src={member.photo} alt={member.name} className="team-photo" />
                 <div className="team-overlay">
                   <span>Member of the Mentor Lab family</span>

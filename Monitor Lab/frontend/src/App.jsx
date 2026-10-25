@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useContext } from "react";
-import { ThemeContext } from "./context/ThemeContext";
+import { ThemeContext } from "./context/theme-context";
 import Navbar from "./pages/NavBar";
 import Home from "./pages/home";
 import BCA from "./pages/bca";

@@ -16,7 +16,7 @@ function detectLanguage(content) {
   if (/\bpublic\s+class\b|System\.out\.|new Scanner/.test(c)) return { name: "Java", icon: "&gt;_" };
   if (/\bdef\s+\w+\s*\(|import\s+\w+/.test(c)) return { name: "Python", icon: "&gt;_" };
   if (/#include\s*<|int\s+main\s*\(|printf\s*\(|scanf\s*\(/.test(c)) return { name: "C", icon: "&gt;_" };
-  if (/\bconst\s+\w+\s*=|useState|\bfunction\s+\w+\s*\(|\blet\s+\w+\s*=\s*["'{(\[]/.test(c)) return { name: "JavaScript", icon: "{ }" };
+  if (/\bconst\s+\w+\s*=|useState|\bfunction\s+\w+\s*\(|\blet\s+\w+\s*=\s*["'{([]/.test(c)) return { name: "JavaScript", icon: "{ }" };
   if (/\b<html|<body|\b<style\b|\b<script\b/.test(c)) return { name: "Web", icon: "{ }" };
   return null;
 }

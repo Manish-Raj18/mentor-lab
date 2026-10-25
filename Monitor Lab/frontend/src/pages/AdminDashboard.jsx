@@ -72,6 +72,33 @@ function AdminDashboard() {
     { id: "skmu", name: "Sido Kanhu Murmu University (Dumka)" },
   ]);
 
+  async function getStats() {
+    try {
+      const response = await axios.get(`${API_BASE}/admin/stats`);
+      setStats(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function fetchNotes() {
+    try {
+      const res = await axios.get(`${API_BASE}/notes`);
+      setNotes(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function fetchPyqs() {
+    try {
+      const res = await axios.get(`${API_BASE}/pyq`);
+      setPyqs(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const handlePyqUpload = async (e) => {
     e.preventDefault();
     if (!pyqPdf || !pyqUniversity || !pyqCourse || !pyqSubject) {
@@ -170,17 +197,7 @@ function AdminDashboard() {
     }
   };
 
-  useEffect(() => {
-    getStats();
-    fetchTests();
-    fetchStudents();
-    fetchNotes();
-    fetchPyqs();
-    fetchPurchases();
-    fetchPaymentSettings();
-  }, []);
-
-  const fetchPaymentSettings = async () => {
+  async function fetchPaymentSettings() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(`${API_BASE}/payment/settings/admin`, {
@@ -193,7 +210,7 @@ function AdminDashboard() {
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
   const handlePaymentSettingsSave = async (e) => {
     e.preventDefault();
@@ -221,16 +238,7 @@ function AdminDashboard() {
     }
   };
 
-  const getStats = async () => {
-    try {
-      const response = await axios.get(`${API_BASE}/admin/stats`);
-      setStats(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const fetchTests = async () => {
+  async function fetchTests() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(`${API_BASE}/mocktest`, {
@@ -240,36 +248,18 @@ function AdminDashboard() {
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const fetchStudents = async () => {
+  async function fetchStudents() {
     try {
       const res = await axios.get(`${API_BASE}/admin/students`);
       setStudents(res.data);
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const fetchNotes = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/notes`);
-      setNotes(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const fetchPyqs = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/pyq`);
-      setPyqs(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const fetchPurchases = async () => {
+  async function fetchPurchases() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(`${API_BASE}/admin/purchases`, {
@@ -279,7 +269,18 @@ function AdminDashboard() {
     } catch (err) {
       console.log(err);
     }
-  };
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    getStats();
+    fetchTests();
+    fetchStudents();
+    fetchNotes();
+    fetchPyqs();
+    fetchPurchases();
+    fetchPaymentSettings();
+  }, []);
 
   const handleManualUnlock = async (e) => {
     e.preventDefault();

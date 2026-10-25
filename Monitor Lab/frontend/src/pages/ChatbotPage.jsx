@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css_files/chatbot.css';
@@ -97,7 +97,7 @@ const ChatbotPage = () => {
         .filter(Boolean)
         .join('\n\n');
       setMessages(prev => [...prev, { role: 'bot', content: cleanReply, time: getTime() }]);
-    } catch (error) {
+    } catch {
       setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting.', time: getTime() }]);
     } finally {
       setIsTyping(false);

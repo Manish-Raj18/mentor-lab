@@ -1,8 +1,10 @@
-﻿import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import "../css_files/pyq.css";
 
 const API_BASE = "/api";
+
+const normalizeKey = (str) => str.toLowerCase().replace(/\s+/g, " ").trim();
 
 const universities = [
   {
@@ -196,11 +198,34 @@ const PYQ = () => {
   const touchRef = useRef({ x: 0, y: 0, dx: 0 });
   const total = universities.length;
 
+  const fetchPYQs = useCallback(async (universityId) => {
+    try {
+      const res = await axios.get(`${API_BASE}/pyq?universityId=${universityId}`);
+      const map = {};
+      res.data.forEach((pyq) => {
+        const key = `${normalizeKey(pyq.course)}:${normalizeKey(pyq.subject)}`;
+        map[key] = pyq;
+      });
+      setPyqData(map);
+    } catch (error) {
+      console.error("Failed to load PYQ papers:", error);
+      setPyqData({});
+    }
+  }, []);
+
+  const goTo = useCallback((target) => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setIndex(target);
+    setTimeout(() => setIsAnimating(false), 450);
+  }, [isAnimating]);
+
   useEffect(() => {
     if (selectedUni) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchPYQs(selectedUni);
     }
-  }, [selectedUni]);
+  }, [selectedUni, fetchPYQs]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -221,14 +246,7 @@ const PYQ = () => {
     };
     start();
     return () => clearTimeout(timerRef.current);
-  }, [index, isHovering, isAnimating, total]);
-
-  const goTo = (target) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setIndex(target);
-    setTimeout(() => setIsAnimating(false), 450);
-  };
+  }, [goTo, index, isHovering, isAnimating, total]);
 
   const prev = () => goTo((index - 1 + total) % total);
   const next = () => goTo((index + 1) % total);
@@ -256,23 +274,6 @@ const PYQ = () => {
     if (touchRef.current.dx > threshold) prev();
     else if (touchRef.current.dx < -threshold) next();
     touchRef.current.dx = 0;
-  };
-
-  const normalizeKey = (str) => str.toLowerCase().replace(/\s+/g, " ").trim();
-
-  const fetchPYQs = async (universityId) => {
-    try {
-      const res = await axios.get(`${API_BASE}/pyq?universityId=${universityId}`);
-      const map = {};
-      res.data.forEach((pyq) => {
-        const key = `${normalizeKey(pyq.course)}:${normalizeKey(pyq.subject)}`;
-        map[key] = pyq;
-      });
-      setPyqData(map);
-    } catch (error) {
-      console.error("Failed to load PYQ papers:", error);
-      setPyqData({});
-    }
   };
 
   const getPdfLink = (course, subject) => {
