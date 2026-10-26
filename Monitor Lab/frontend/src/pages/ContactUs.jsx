@@ -1,5 +1,8 @@
 import { useState } from "react";
+import axios from "axios";
 import "../css_files/style.css";
+
+const API_BASE = "/api";
 
 function ContactUs() {
   const [formData, setFormData] = useState({
@@ -8,15 +11,37 @@ function ContactUs() {
     subject: "",
     message: "",
   });
+  const [status, setStatus] = useState({ type: "", text: "" });
+  const [sending, setSending] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Thank you for reaching out! We will get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    if (sending) return;
+
+    setSending(true);
+    setStatus({ type: "", text: "" });
+
+    try {
+      const response = await axios.post(`${API_BASE}/contact`, formData);
+      setStatus({
+        type: "success",
+        text: response.data?.message || "Thank you for reaching out! Your message has been sent.",
+      });
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      setStatus({
+        type: "error",
+        text:
+          error.response?.data?.message ||
+          "Something went wrong while sending your message. Please try again or email mentorlab06@gmail.com.",
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -38,6 +63,7 @@ function ContactUs() {
               value={formData.name}
               onChange={handleChange}
               required
+              maxLength={80}
               style={{ padding: "12px", borderRadius: "8px", border: "1px solid #ccc", fontSize: "16px" }}
             />
             <input
@@ -47,6 +73,7 @@ function ContactUs() {
               value={formData.email}
               onChange={handleChange}
               required
+              maxLength={120}
               style={{ padding: "12px", borderRadius: "8px", border: "1px solid #ccc", fontSize: "16px" }}
             />
             <input
@@ -56,6 +83,7 @@ function ContactUs() {
               value={formData.subject}
               onChange={handleChange}
               required
+              maxLength={150}
               style={{ padding: "12px", borderRadius: "8px", border: "1px solid #ccc", fontSize: "16px" }}
             />
             <textarea
@@ -65,28 +93,47 @@ function ContactUs() {
               value={formData.message}
               onChange={handleChange}
               required
+              maxLength={5000}
               style={{ padding: "12px", borderRadius: "8px", border: "1px solid #ccc", fontSize: "16px", resize: "vertical" }}
             />
             <button
               type="submit"
+              disabled={sending}
               style={{
                 padding: "12px 24px",
                 borderRadius: "8px",
                 border: "none",
-                backgroundColor: "#4a90d9",
+                backgroundColor: sending ? "#9db9d6" : "#4a90d9",
                 color: "#fff",
                 fontSize: "16px",
-                cursor: "pointer",
+                cursor: sending ? "not-allowed" : "pointer",
               }}
             >
-              Send Message
+              {sending ? "Sending..." : "Send Message"}
             </button>
+
+            {status.text && (
+              <p
+                role="status"
+                style={{
+                  margin: 0,
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  fontSize: "15px",
+                  backgroundColor: status.type === "success" ? "#ecfdf5" : "#fef2f2",
+                  border: `1px solid ${status.type === "success" ? "#6ee7b7" : "#fca5a5"}`,
+                  color: status.type === "success" ? "#065f46" : "#991b1b",
+                }}
+              >
+                {status.text}
+              </p>
+            )}
           </form>
 
           <div style={{ marginTop: "40px", textAlign: "center" }}>
             <h3>Other Ways to Reach Us</h3>
-            <p>Email: support@mentorlab.com</p>
-            <p>Phone: +91-9876543210</p>
+            <p>Email: mentorlab06@gmail.com</p>
+            <p>Phone: +91-9031772278</p>
             <p>Address: Mentor Lab, Education Hub, India</p>
           </div>
         </div>

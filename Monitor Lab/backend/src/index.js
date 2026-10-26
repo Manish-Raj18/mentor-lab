@@ -12,6 +12,7 @@ import pyqRoutes from "../routes/pyqRoutes.js";
 import aiRoutes from "../routes/aiRoutes.js";
 import paymentRoutes from "../routes/paymentRoutes.js";
 import certificateRoutes from "../routes/certificateRoutes.js";
+import contactRoutes from "../routes/contactRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +20,10 @@ const rootDir = path.resolve(__dirname, "..");
 
 dotenv.config();
 const app = express();
+
+// Behind a hosting reverse proxy the real visitor IP is in X-Forwarded-For,
+// which keeps per-IP limits (e.g. the contact form cooldown) accurate.
+app.set("trust proxy", 1);
 
 // Middleware configuration
 app.use(cors());
@@ -33,6 +38,7 @@ app.use("/api/pyq", pyqRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/certificate", certificateRoutes);
+app.use("/api/contact", contactRoutes);
 
 const uploadsDir = path.join(rootDir, "uploads");
 app.use("/uploads", express.static(uploadsDir, {
