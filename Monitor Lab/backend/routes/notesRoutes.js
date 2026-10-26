@@ -3,7 +3,6 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import mongoose from "mongoose";
 import { PDFParse } from "pdf-parse";
 import Notes from "../model/notes.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -14,10 +13,19 @@ const uploadDir = path.resolve(__dirname, "..", "uploads");
 
 const router = express.Router();
 
-const upload = multer({ storage: multer.memoryStorage() });
+fs.mkdirSync(uploadDir, { recursive: true });
 
-const getBucket = () =>
-  new mongoose.mongo.GridFSBucket(mongoose.connection.db, { bucketName: "pdfs" });
+const safeName = (name) => {
+  const base = path.basename(String(name || "file.pdf")).replace(/[^a-zA-Z0-9._-]/g, "_");
+  return base.toLowerCase().endsWith(".pdf") ? base : `${base}.pdf`;
+};
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${safeName(file.originalname)}`),
+});
+
+const upload = multer({ storage });
 
 router.post("/upload", protect, upload.single("pdf"), async (req, res) => {
   try {
@@ -44,19 +52,8 @@ router.post("/upload", protect, upload.single("pdf"), async (req, res) => {
       return res.status(201).json(note);
     }
 
-    const extractedText = await extractPdfText(req.file.buffer);
-
-    const bucket = getBucket();
-
-    const uploadStream = bucket.openUploadStream(req.file.originalname, {
-      metadata: { title, course, subject },
-    });
-
-    await new Promise((resolve, reject) => {
-      uploadStream.on("finish", resolve);
-      uploadStream.on("error", reject);
-      uploadStream.end(req.file.buffer);
-    });
+    const fileBuffer = await fs.promises.readFile(req.file.path);
+    const extractedText = await extractPdfText(fileBuffer);
 
     const note = new Notes({
       title,
@@ -66,14 +63,17 @@ router.post("/upload", protect, upload.single("pdf"), async (req, res) => {
       content: content || extractedText || undefined,
       hasContent: !!(content || extractedText),
       type: "pdf",
-      fileId: uploadStream.id,
+      pdfUrl: req.file.filename,
     });
 
     await note.save();
 
     res.status(201).json(note);
   } catch (error) {
-    res.status(500).json(error);
+    if (req.file?.filename) {
+      fs.unlink(path.join(uploadDir, req.file.filename), () => {});
+    }
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -98,12 +98,10 @@ router.get("/:id", async (req, res) => {
     }
 
     // Lazy extraction: convert older PDF notes to web pages on first view
-    if (!note.content && note.fileId) {
+    if (!note.content && note.pdfUrl) {
       try {
-        const chunks = [];
-        const downloadStream = getBucket().openDownloadStream(note.fileId);
-        for await (const chunk of downloadStream) chunks.push(chunk);
-        const text = await extractPdfText(Buffer.concat(chunks));
+        const buffer = await fs.promises.readFile(path.join(uploadDir, note.pdfUrl));
+        const text = await extractPdfText(buffer);
         if (text) {
           note.content = text;
           note.hasContent = true;
@@ -127,20 +125,9 @@ router.get("/:id/pdf", async (req, res) => {
       return res.status(404).json({ message: "Note not found" });
     }
 
-    res.set("Content-Type", "application/pdf");
-    res.set("Content-Disposition", "inline");
-
-    if (note.fileId) {
-      const downloadStream = getBucket().openDownloadStream(note.fileId);
-      downloadStream.on("error", () => {
-        if (!res.headersSent) {
-          res.status(404).json({ message: "File not found" });
-        } else {
-          res.destroy();
-        }
-      });
-      downloadStream.pipe(res);
-    } else if (note.pdfUrl) {
+    if (note.pdfUrl) {
+      res.set("Content-Type", "application/pdf");
+      res.set("Content-Disposition", "inline");
       res.sendFile(path.join(uploadDir, note.pdfUrl));
     } else {
       res.status(404).json({ message: "File not found" });
@@ -157,13 +144,7 @@ router.delete("/:id", protect, async (req, res) => {
       return res.status(404).json({ message: "Note not found" });
     }
 
-    if (note.fileId) {
-      try {
-        await getBucket().delete(note.fileId);
-      } catch (err) {
-        // ignore if the file is already missing
-      }
-    } else if (note.pdfUrl) {
+    if (note.pdfUrl) {
       const filePath = path.join(uploadDir, note.pdfUrl);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);

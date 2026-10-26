@@ -3,7 +3,6 @@ import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import mongoose from "mongoose";
 import PYQ from "../model/pyq.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -13,35 +12,40 @@ const uploadDir = path.resolve(__dirname, "..", "uploads");
 
 const router = express.Router();
 
-const upload = multer({ storage: multer.memoryStorage() });
+fs.mkdirSync(uploadDir, { recursive: true });
 
-const getBucket = () =>
-  new mongoose.mongo.GridFSBucket(mongoose.connection.db, { bucketName: "pyqs" });
+const safeName = (name) => {
+  const base = path.basename(String(name || "file.pdf")).replace(/[^a-zA-Z0-9._-]/g, "_");
+  return base.toLowerCase().endsWith(".pdf") ? base : `${base}.pdf`;
+};
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${safeName(file.originalname)}`),
+});
+
+const upload = multer({ storage });
 
 router.post("/upload", protect, upload.single("pdf"), async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({ message: "PDF file is required" });
+    }
     const { universityId, universityName, course, subject } = req.body;
-    const uploadStream = getBucket().openUploadStream(req.file.originalname, {
-      metadata: { universityName, course, subject },
-    });
-
-    await new Promise((resolve, reject) => {
-      uploadStream.on("finish", resolve);
-      uploadStream.on("error", reject);
-      uploadStream.end(req.file.buffer);
-    });
-
     const pyq = new PYQ({
       universityId,
       universityName,
       course,
       subject,
-      fileId: uploadStream.id,
+      pdfUrl: req.file.filename,
     });
     await pyq.save();
     res.status(201).json(pyq);
   } catch (error) {
-    res.status(500).json(error);
+    if (req.file?.filename) {
+      fs.unlink(path.join(uploadDir, req.file.filename), () => {});
+    }
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -52,20 +56,9 @@ router.get("/:id/pdf", async (req, res) => {
       return res.status(404).json({ message: "PYQ not found" });
     }
 
-    res.set("Content-Type", "application/pdf");
-    res.set("Content-Disposition", "inline");
-
-    if (pyq.fileId) {
-      const downloadStream = getBucket().openDownloadStream(pyq.fileId);
-      downloadStream.on("error", () => {
-        if (!res.headersSent) {
-          res.status(404).json({ message: "File not found" });
-        } else {
-          res.destroy();
-        }
-      });
-      downloadStream.pipe(res);
-    } else if (pyq.pdfUrl) {
+    if (pyq.pdfUrl) {
+      res.set("Content-Type", "application/pdf");
+      res.set("Content-Disposition", "inline");
       res.sendFile(path.join(uploadDir, pyq.pdfUrl));
     } else {
       res.status(404).json({ message: "File not found" });
@@ -82,13 +75,7 @@ router.delete("/:id", protect, async (req, res) => {
       return res.status(404).json({ message: "PYQ not found" });
     }
 
-    if (pyq.fileId) {
-      try {
-        await getBucket().delete(pyq.fileId);
-      } catch (err) {
-        // ignore if the file is already missing
-      }
-    } else if (pyq.pdfUrl) {
+    if (pyq.pdfUrl) {
       const filePath = path.join(uploadDir, pyq.pdfUrl);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);

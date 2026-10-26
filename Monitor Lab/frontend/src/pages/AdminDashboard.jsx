@@ -116,7 +116,7 @@ function AdminDashboard() {
       fd.append("course", pyqCourse);
       fd.append("subject", pyqSubject);
       await axios.post(`${API_BASE}/pyq/upload`, fd, {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
+        headers: { Authorization: `Bearer ${token}` }
       });
       alert("PYQ uploaded successfully!");
       setPyqUniversity("");
@@ -152,7 +152,7 @@ function AdminDashboard() {
       fd.append("subject", notesSubject);
       fd.append("pdf", notesPdf);
       await axios.post(`${API_BASE}/notes/upload`, fd, {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
+        headers: { Authorization: `Bearer ${token}` }
       });
       alert("Notes uploaded successfully!");
       setNotesCourse("");
@@ -223,7 +223,7 @@ function AdminDashboard() {
       fd.append("payeeName", payName);
       if (payQr) fd.append("qr", payQr);
       const res = await axios.post(`${API_BASE}/payment/settings/admin`, fd, {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setPayUpi(res.data.upiId);
       setPayPhone(res.data.phone);
@@ -337,7 +337,7 @@ function AdminDashboard() {
       fd.append("price", formData.price);
 
       await axios.post(`${API_BASE}/mocktest/upload-pdf`, fd, {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
+        headers: { Authorization: `Bearer ${token}` }
       });
       alert("Mock test uploaded successfully!");
       setShowForm(false);

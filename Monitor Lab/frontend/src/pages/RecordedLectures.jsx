@@ -1,5 +1,13 @@
-import "../css_files/recorded.css";
+﻿import "../css_files/recorded.css";
+import { useState } from "react";
+
 function RecordedLectures(){
+    const [currentLecture, setCurrentLecture] = useState({
+        video: "/intro2.mp4",
+        title: "Introduction",
+        description: "Welcome to Mentor Lab Recorded Lectures."
+    });
+
     return(
         <div className="abc">
         <div className="rl-header">
@@ -13,22 +21,20 @@ function RecordedLectures(){
     
     <div className="video-section">
 
-      <video controls>
-        <source src="/intro2.mp4" type="video/mp4"/>
+      <video controls key={currentLecture.video}>
+        <source src={currentLecture.video} type="video/mp4"/>
         Your browser does not support video.
       </video>
 
       <h2 className="lecture-title">
-        Welcome To The Recorded Lectures.
+        {currentLecture.title}
       </h2>
 
-      <p className="lecture-info">
-        Instructor: Manish Raj • Duration: 5 mins • Uploaded: May 2026
-      </p>
+      
 
       <div className="description">
         <p>
-          We Hope That Through The Help Of These Uploaded Lectures. You May Enhance Your Theoritical Knowledge.
+          {currentLecture.description}
         </p>
       </div>
 
@@ -39,39 +45,70 @@ function RecordedLectures(){
 
       <h2>Course Playlist</h2>
 
-      <div className="playlist-item">
+      <div className="playlist-item" onClick={() => setCurrentLecture({
+          video: "/intro2.mp4",
+          title: "Introduction",
+          description: "Welcome to Mentor Lab Recorded Lectures."
+      })} style={{cursor: "pointer"}}>
+        <div className="thumbnail"></div>
+
+        <div className="playlist-content">
+          <h4>Introduction</h4>
+    
+          <p>Intro</p>
+        </div>
+      </div>
+
+      <div className="playlist-item" onClick={() => setCurrentLecture({
+          video: "/html-tutorial-crash-course.mp4",
+          title: "Lecture 1 - HTML Basics",
+          description: "HTML Tutorial for Beginners - HTML Crash Course. Learn HTML from scratch."
+      })} style={{cursor: "pointer"}}>
         <div className="thumbnail"></div>
 
         <div className="playlist-content">
           <h4>Lecture 1 - HTML Basics</h4>
-          <p>32 mins</p>
+    
+          <p>1:09:33 hrs</p>
         </div>
       </div>
 
-      <div className="playlist-item">
+      <div className="playlist-item" onClick={() => setCurrentLecture({
+          video: "/learn-css-in-1-hour.mp4",
+          title: "Lecture 2 - CSS Styling",
+          description: "Learn CSS in 1 hour. Master CSS fundamentals."
+      })} style={{cursor: "pointer"}}>
         <div className="thumbnail"></div>
 
         <div className="playlist-content">
           <h4>Lecture 2 - CSS Styling</h4>
-          <p>40 mins</p>
+          <p>1:00:00 hrs</p>
         </div>
       </div>
 
-      <div className="playlist-item">
+      <div className="playlist-item" onClick={() => setCurrentLecture({
+          video: "/complete-flexbox-in-1-video.mp4",
+          title: "Lecture 3 - Flexbox & Grid",
+          description: "Complete FLEXBOX in 1 Video. Master Flexbox layout."
+      })} style={{cursor: "pointer"}}>
         <div className="thumbnail"></div>
 
         <div className="playlist-content">
           <h4>Lecture 3 - Flexbox & Grid</h4>
-          <p>38 mins</p>
+          <p>58:19 hrs</p>
         </div>
       </div>
 
-      <div className="playlist-item">
+      <div className="playlist-item" onClick={() => setCurrentLecture({
+          video: "/responsive-web-development.mp4",
+          title: "Lecture 4 - Responsive Design",
+          description: "Responsive Web Development - Building Websites for All Devices."
+      })} style={{cursor: "pointer"}}>
         <div className="thumbnail"></div>
 
         <div className="playlist-content">
           <h4>Lecture 4 - Responsive Design</h4>
-          <p>50 mins</p>
+          <p>1:23:25 hrs</p>
         </div>
       </div>
 
@@ -81,7 +118,7 @@ function RecordedLectures(){
 
   
   <footer>
-    © 2026 Drona Gyan Platform | All Rights Reserved
+    © 2026 Mentor Lab Platform | All Rights Reserved
   </footer>
 
         </div>

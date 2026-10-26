@@ -21,6 +21,9 @@ const createAdmin = async () => {
 
     if (userExists) {
       console.log(`Updating existing user (${adminEmail}) to Admin and resetting password...`);
+      userExists.firstName = userExists.firstName || "System";
+      userExists.lastName = userExists.lastName || "Admin";
+      userExists.name = userExists.name || "System Admin";
       userExists.isAdmin = true;
       userExists.password = hashedPassword;
       await userExists.save();
@@ -28,8 +31,12 @@ const createAdmin = async () => {
     } else {
       console.log(`Creating new Admin user: ${adminEmail}...`);
       await User.create({
+        firstName: "System",
+        middleName: "",
+        lastName: "Admin",
         name: "System Admin",
         email: adminEmail,
+        phone: "",
         password: hashedPassword,
         isAdmin: true
       });

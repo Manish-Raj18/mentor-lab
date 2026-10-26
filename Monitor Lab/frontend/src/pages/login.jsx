@@ -97,6 +97,13 @@ function Login() {
             localStorage.clear();
 
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("user", JSON.stringify(response.data));
+
+            if (response.data.isAdmin) {
+                localStorage.setItem("isAdmin", "true");
+                window.location.href = "/admin";
+                return;
+            }
 
             window.location.href = "/";
 
@@ -181,6 +188,9 @@ function Login() {
                 <div className="login-footer">
                     Don't have an account?
                     <Link to="/signup">Sign up</Link>
+                </div>
+                <div className="login-footer">
+                    <Link to="/admin-login">Admin Login</Link>
                 </div>
                 </div>
             </div>
